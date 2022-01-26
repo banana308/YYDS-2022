@@ -430,7 +430,6 @@ def get_submitbet(pkk):
     '''
 
 if __name__=='__main__':
-    #312
     '''
     # 120测试环境
     URL = "http://192.168.10.120:6210"
