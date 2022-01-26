@@ -203,6 +203,8 @@ def get_today_odds():
             print("共计赛事：" + str(len(EARLY_matchid_list)))
         else:
             print("共计赛事：" + str(len(EARLY_matchid_list)))
+
+
 #根据赛事ID，遍历每一场赛事的盘口
 def get_odds():
     global isLive,num_outcomeId,aa,bb,cc,dd,ee,matchId,count01
@@ -311,26 +313,6 @@ def get_submitbet(pkk):
         'lang': 'ZH',
         'accessCode':toten_list[pkk]
     }
-    # data = {
-    # "oddsChangeType":1,
-    # "betAmount":betAmount,
-    # "betType":0,
-    # "betId":1641955081804,
-    # "selections":[
-    # {
-    # # "isLive":isLive,
-    # "isLive": False,
-    # "originalOdds": 2.38,
-    # "creditOdds":  2.33,
-    # "outcomeId": "sr:match:31002137_18_total=3.25_12",
-    # "oddsType": 1
-    # }],
-    # # "mixedNum": ["1_1_0_10"],
-    # "mixedNum": ["6_57_1_10"],
-    # "browserFingerprintId":"5ec55c2d078b1b2f30986bb78a518511",
-    # "terminal":"pc",
-    # "betIp":"192.168.10.120"
-    # }
     data={
         "oddsChangeType": 1,
         "mixedNum": ["6_57_1_10"],
@@ -355,10 +337,6 @@ def get_submitbet(pkk):
         "terminal": "pc",
         "betIp": "192.168.10.120"
     }
-    # ['28176710', '28176712', '28382106', '28382104', '28382470', '27751480']
-    # match_list = ['28892786', '28892780', '28892776', '27958254', '27958268', '27958262']
-    # ['31043649', '31384331', '31275647', '31275651', '27772262', '27772260']
-
     '''
     "originalOdds":(int(odds_list[i])+0.05),
     "creditOdds":odds_list[i],
