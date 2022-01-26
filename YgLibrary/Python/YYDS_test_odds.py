@@ -33,12 +33,7 @@ ods_list=[]
 count01 = 0
 count = 3
 
-#120测试环境
-URL="http://192.168.10.120:6210"
-#sky本地
-# URL="http://192.168.10.196:8095"
-#58测试环境
-# URL="http://192.168.10.236:6210"
+
 
 
 #请求登录接口，获取toten
@@ -116,7 +111,7 @@ def get_today_odds():
         yy = "EARLY"
     print("下注盘：" + str(ods))
     ods_list.append(ods)
-    url = "http://192.168.10.120:6210/creditMatchPC/matchList"
+    url=str(URL) +"/creditMatchPC/matchList"
     headers01 = {
         'content-type': 'application/json',
         'lang':'ZH',
@@ -253,8 +248,7 @@ def get_odds():
             print("下注赛事ID：" + str(matchId))
     '''
 
-
-    url = "http://192.168.10.120:6210/creditMatchPC/totalMarketList?"
+    url = str(URL) +"/creditMatchPC/totalMarketList?"
     headers01 = {
         'content-type': 'application/json',
         'lang':'ZH',
@@ -436,27 +430,30 @@ def get_submitbet(pkk):
     '''
 
 if __name__=='__main__':
-    # for j in range(704, 1001):
-    #     get_toten(j)
-    #     # get_balance(j)
-    #     get_submitbet()
-
-    # print(orderNo_list)
-    # print(len(orderNo_list))
-        with ThreadPoolExecutor(max_workers=10) as t:  # 创建一个最大容纳数量为5的线程池
-            for j in range(0, 1001):
-                task1 = t.submit(get_toten,j)
-            get_time(80)
-            print(len(toten_list))
-            print(toten_list)
-            get_time(10)
-            with ThreadPoolExecutor(max_workers=3) as t1:  # 创建一个最大容纳数量为5的线程池
-                for i in range(0, len(toten_list)):
-                    task2 = t1.submit(get_submitbet,i)
-                    # task2 = t1.submit(get_balance,i
-                get_time(180)
-                print(orderNo_list)
-                print(len(orderNo_list))
+    '''
+    # 120测试环境
+    URL = "http://192.168.10.120:6210"
+    # sky本地
+    # URL="http://192.168.10.196:8095"
+    # 58测试环境
+    # URL="http://192.168.10.236:6210"
+    '''
+    # 120测试环境
+    URL = "http://192.168.10.120:6210"
+    with ThreadPoolExecutor(max_workers=10) as t:  # 创建一个最大容纳数量为5的线程池
+        for j in range(0, 1001):
+            task1 = t.submit(get_toten,j)
+        get_time(60)
+        print(len(toten_list))
+        print(toten_list)
+        get_time(10)
+        with ThreadPoolExecutor(max_workers=3) as t1:  # 创建一个最大容纳数量为5的线程池
+            for i in range(0, len(toten_list)):
+                task2 = t1.submit(get_submitbet,i)
+                # task2 = t1.submit(get_balance,i
+            get_time(180)
+            print(orderNo_list)
+            print(len(orderNo_list))
 
 
 
@@ -488,5 +485,14 @@ if __name__=='__main__':
             print("已下注比赛ID："+str(num_list))
             print("共计下注比赛：" + str(len(num_list))+"场")
             print("共计下注盘："+str(ods_list))
+            
+            
+   # for j in range(704, 1001):
+    #     get_toten(j)
+    #     # get_balance(j)
+    #     get_submitbet()
+
+    # print(orderNo_list)
+    # print(len(orderNo_list))
 '''
 
