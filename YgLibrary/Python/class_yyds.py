@@ -28,22 +28,14 @@ class Comples:
 
     def yyds(self):
         for i in range(0,int(number+1)):
-            if i==None:
-                exit()
-            else:
                 if i % 2 != 0:
                     print(f"{i}是奇数")
                 else:
                     print(f"{i}是偶数")
 
-
-
-
-
-
 if __name__=="__main__":
     number=11
     number_one=30
     x = Comples(number,number_one)
-    # print(x.nn,x.nb)
+    print(x.nn,x.nb)
     print(x.yyds())
