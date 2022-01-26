@@ -29,9 +29,9 @@ class Comples:
     def yyds(self):
         for i in range(0,int(number+1)):
                 if i % 2 != 0:
-                    print(f"{i}是奇数")
+                    print(f"\033[31m{i}是奇数\033[0m")
                 else:
-                    print(f"{i}是偶数")
+                    print(f"\033[32m{i}是偶数\033[0m")
 
 if __name__=="__main__":
     number=11
