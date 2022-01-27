@@ -330,8 +330,8 @@ def get_submitbet(pkk):
              "outcomeId": "sr:match:30675437_18_total=2.75_13", "oddsType": 1},
             {"isLive": False, "originalOdds": 1.73, "creditOdds": 1.68,
              "outcomeId": "sr:match:27977204_18_total=2.75_12", "oddsType": 1},
-            {"isLive": False, "originalOdds": 1.63, "creditOdds": 1.58, "outcomeId": "sr:match:28748058_18_total=2_12",
-             "oddsType": 1}
+            {"isLive": False, "originalOdds": 1.63, "creditOdds": 1.58,
+             "outcomeId": "sr:match:28748058_18_total=2_12","oddsType": 1}
         ],
         "browserFingerprintId": "5ec55c2d078b1b2f30986bb78a518511",
         "terminal": "pc",
