@@ -1,3 +1,4 @@
+import math
 import sys
 import time
 import pygame
@@ -53,6 +54,7 @@ while True:
     pygame.display.update()
 '''
 
+'''
 #2.2.4绘制矩形(pygame.draw.rect())
 pygame.display.set_caption("2.2.4绘制矩形pygame.draw.rect()")
 pos_x=300
@@ -82,7 +84,41 @@ while True:
     pos = pos_x, pos_y, 100, 100
     pygame.draw.rect(screen, color, pos, width)
     pygame.display.update()
+'''
+
+'''
+#2.2.5绘制线条pygame.draw.line()
+pygame.display.set_caption("2.2.5绘制线条pygame.draw.line()")
+while True:
+    Ty()
+    screen.fill((0,80,0))
+
+    #draw the line
+    origin=100,100  #线的起点
+    destination=500,400 #线的终点
+    color=100,255,200  #线的颜色
+    width=10  #线条的宽度
+    pygame.draw.line(screen,color,origin,destination,width)
+
+    pygame.display.update()
+'''
 
 
+'''
+#2.2.6绘制弧形pygame.draw.arc()
+pygame.display.set_caption("2.2.6绘制弧形pygame.draw.arc()")
 
+while True:
+    Ty()
+    screen.fill((0,0,200))
 
+    #draw the arc
+    color=100,255,200 #圆弧的颜色
+    position=200,150,200,200 #圆弧的起点坐标，终点坐标
+    start_angle=math.radians(0) #圆弧的起点角度
+    eng_angle=math.radians(180) #圆弧的终点角度
+    width=8  #圆弧的线宽
+    pygame.draw.arc(screen,color,position,start_angle,eng_angle,width)
+
+    pygame.display.update()
+'''
