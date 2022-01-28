@@ -27,11 +27,6 @@ piece2=False
 piece3=False
 piece4=False
 
-
-
-
-
-
 while True:
     # 循环获取事件，监听事件
     for event in pygame.event.get():  # pygame.event.get 从队列中获取事件
