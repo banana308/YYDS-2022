@@ -9,8 +9,9 @@
 #下载Git地址：
 # https://git-scm.com/downloads
 
-#下载Pygame地址：
+#Pygame地址:
 #http://www.pygame.org/download.shtml
+#pip install -U pygame
 
 # #Git配置指令
 # 一、Git的user name和email设置
