@@ -16,17 +16,6 @@ class Point():
     def ToString(self):
         return "{X:"+str(self.x)+",Y:"+str(self.y)+"}"+"\n"
 
-#类的单继承
-class Circle(Point):
-    redius=0.0
-
-    def __init__(self,x,y,redius):
-        Point.__init__(self,x,y)
-        self.redius=redius
-        print("Circle constructor")
-
-    def ToString(self):
-        return Point.ToString(self)+ ",{RADIUS="+str(self.redius)+"}"+"\n"
 
 class Size():
     width=0.0
@@ -39,6 +28,19 @@ class Size():
 
     def ToString(self):
         return "{WIDTH="+str(self.width)+",HEIGHT="+str(self.height)+"}"+"\n"
+
+
+#类的单继承
+class Circle(Point):
+    redius=0.0
+
+    def __init__(self,x,y,redius):
+        Point.__init__(self,x,y)
+        self.redius=redius
+        print("Circle constructor")
+
+    def ToString(self):
+        return Point.ToString(self)+ ",{RADIUS="+str(self.redius)+"}"+"\n"
 
 #类的多继承
 class Rectangle(Point,Size):
