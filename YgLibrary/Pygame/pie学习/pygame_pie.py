@@ -20,12 +20,15 @@ myfont = pygame.font.Font(None, 60)
 x=300
 y=250
 radius=200
+
 position=x-radius,y-radius,radius*2,radius*2
 
 piece1=False
 piece2=False
 piece3=False
 piece4=False
+
+number=random.randint(0,1)
 
 while True:
     # 循环获取事件，监听事件
@@ -60,16 +63,19 @@ while True:
     rand3=(x - radius / 2, y + radius / 2)
     rand4=(x + radius / 2-20, y + radius/ 2)
 
-    textimage = myfont.render("Press Enter to start again", True, (255,0,0))
-    screen.blit(textimage,(50,0))
-    textimage01 = myfont.render("1", True, white)
-    screen.blit(textimage01, rand1)
-    textimage02 = myfont.render("2", True, white)
-    screen.blit(textimage02, rand2)
-    textimage03 = myfont.render("3", True, white)
-    screen.blit(textimage03, rand3)
-    textimage04 = myfont.render("4", True, white)
-    screen.blit(textimage04, rand4)
+    # textimage = myfont.render("Press Enter to start again", True, (255,0,0))
+    # screen.blit(textimage,(50,0))
+    if number==0:
+        textimage01 = myfont.render("1", True, white)
+        screen.blit(textimage01, rand1)
+        textimage02 = myfont.render("2", True, white)
+        screen.blit(textimage02, rand2)
+        textimage03 = myfont.render("3", True, white)
+        screen.blit(textimage03, rand3)
+        textimage04 = myfont.render("4", True, white)
+        screen.blit(textimage04, rand4)
+    else:
+        pass
 
 
 
@@ -80,6 +86,12 @@ while True:
 
         pygame.draw.line(screen, color, (x,y), (x,y-radius), width)
         pygame.draw.line(screen, color, (x,y), (x+radius,y), width)
+
+        if number==1:
+            textimage01 = myfont.render("1", True, white)
+            screen.blit(textimage01, rand1)
+        else:
+            pass
     if piece2 == True:
         start_angle = math.radians(90)  # 圆弧的起点角度
         eng_angle = math.radians(180)  # 圆弧的终点角度
@@ -88,6 +100,12 @@ while True:
 
         pygame.draw.line(screen, color, (x,y), (x,y-radius), width)
         pygame.draw.line(screen, color, (x,y), (x-radius,y), width)
+
+        if number==1:
+            textimage02 = myfont.render("2", True, white)
+            screen.blit(textimage02, rand2)
+        else:
+            pass
     if piece3 == True:
         start_angle = math.radians(180)  # 圆弧的起点角度
         eng_angle = math.radians(270)  # 圆弧的终点角度
@@ -96,6 +114,12 @@ while True:
 
         pygame.draw.line(screen, color, (x, y), (x, y + radius), width)
         pygame.draw.line(screen, color, (x, y), (x - radius, y), width)
+
+        if number==1:
+            textimage03 = myfont.render("3", True, white)
+            screen.blit(textimage03, rand3)
+        else:
+            pass
     if piece4 == True:
         start_angle = math.radians(270)  # 圆弧的起点角度
         eng_angle = math.radians(360)  # 圆弧的终点角度
@@ -104,6 +128,12 @@ while True:
 
         pygame.draw.line(screen, color, (x, y), (x, y + radius), width)
         pygame.draw.line(screen, color, (x, y), (x+ radius, y), width)
+
+        if number==1:
+            textimage04 = myfont.render("4", True, white)
+            screen.blit(textimage04, rand4)
+        else:
+            pass
 
     if piece1 == True and piece2 == True and piece3 == True and piece4 == True:
         color = 0, 255, 0  # 圆弧的颜色
