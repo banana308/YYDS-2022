@@ -75,7 +75,7 @@ while True:
         textimage04 = myfont.render("4", True, white)
         screen.blit(textimage04, rand4)
     else:
-        pass
+        pass0
 
 
 
