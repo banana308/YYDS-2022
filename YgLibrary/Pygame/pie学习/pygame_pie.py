@@ -21,6 +21,8 @@ x=300
 y=250
 radius=200
 
+
+
 position=x-radius,y-radius,radius*2,radius*2
 
 piece1=False
