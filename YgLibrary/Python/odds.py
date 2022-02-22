@@ -184,8 +184,8 @@ def get_today_odds():
                     max = b
                 else:
                     pass
-            print("盘口最大值："+INPLAY_num_list.index(max))
-            print("盘口最大值取的比赛ID："+INPLAY_matchid_list[int(INPLAY_num_list.index(max))])
+            print("盘口最大值："+str(INPLAY_num_list.index(max)))
+            print("盘口最大值取的比赛ID："+str(INPLAY_matchid_list[int(INPLAY_num_list.index(max))]))
             matchId=INPLAY_matchid_list[int(INPLAY_num_list.index(max))]
         else:
             print("共计赛事：" + str(len(INPLAY_matchid_list)))
@@ -210,8 +210,8 @@ def get_today_odds():
                     max = b
                 else:
                     pass
-            print("盘口最大值："+TODAY_num_list.index(max))
-            print("盘口最大值取的比赛ID："+TODAY_matchid_list[int(TODAY_num_list.index(max))])
+            print("盘口最大值："+str(TODAY_num_list.index(max)))
+            print("盘口最大值取的比赛ID："+str(TODAY_matchid_list[int(TODAY_num_list.index(max))]))
             matchId=TODAY_matchid_list[int(TODAY_num_list.index(max))]
 
         else:
@@ -393,6 +393,37 @@ def get_submitbet():
         cc_list.clear()
         dd_list.clear()
         ee_list.clear()
+        INPLAY_matchid_list.clear()
+        TODAY_matchid_list.clear()
+        EARLY_matchid_list.clear()
+
+        INPLAY_num_list.clear()
+        TODAY_num_list.clear()
+        EARLY_num_list.clear()
+
+
+
+
+def sprot_yyds():
+    global sport,marketGroupId
+    if j==11:
+        sport = "sr:sport:1"
+        marketGroupId = "100"
+    if j==12:
+        sport = "sr:sport:2"
+        marketGroupId = "200"
+    if j==13:
+        sport = "sr:sport:23"
+        marketGroupId = "400"
+    if j==14:
+        sport = "sr:sport:31"
+        marketGroupId = "500"
+    if j==15:
+        sport = "sr:sport:20"
+        marketGroupId = "600"
+    if j==16:
+        sport = "sr:sport:4"
+        marketGroupId = "900"
 
 
 
@@ -413,24 +444,25 @@ if __name__=='__main__':
     nub==3 代表:早盘
     '''
     # 球类参数
-    sport="sr:sport:1"
-    marketGroupId="100"
+    # sport="sr:sport:4"
+    # marketGroupId="900"
     #下注盘参数
-    nub=3
-    for j in range(1,2):
+    nub=2
+    for j in range(11,17):
         get_toten(j)
+        sprot_yyds()
         get_today_odds()
         get_odds()
         #num_outcomeId
         for i in range(0,int(num_outcomeId)):
             get_submitbet()
-        if j==1:
+        if j==16:
             # 写入比赛ID
             path01 = "C:\\test\\get_test\\matchid.txt"
             f = open(path01, 'a')
             f.write("---------------------------------------------------------分割线------------------------------------------------------------------"+"\n")
             print("已下注比赛ID：" + str(matchId))
-            print("共计下注比赛：" + str(len(matchId))+"场")
+            print("共计下注比赛盘口：" + str(len(orderNo_list))+"场")
             print("共计下注盘："+str(outcomeId_lsit))
 
 
