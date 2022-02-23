@@ -20,6 +20,13 @@ EARLY_matchid_list = []
 INPLAY_num_list = []
 TODAY_num_list = []
 EARLY_num_list = []
+#最后打印列表
+matchid_yyds=[]
+sprot_yyds=[]
+LAY_yyds=[]
+orderNo_yyds=[]
+
+
 # 下注相关列表
 outcomeId_lsit = []
 odds_list = []
@@ -245,6 +252,8 @@ def get_today_odds():
         else:
             print("共计赛事：" + str(len(EARLY_matchid_list)))
 
+    matchid_yyds.append(matchId)
+    LAY_yyds.append(yy)
 
 
 
@@ -299,6 +308,7 @@ def get_odds():
         #print(oddsType_list)
         print("下注赛事：" + aa+"VS"+bb)
         print("-------------------------------------------------------分割线--------------------------------------------------")
+
     return outcomeId_lsit,odds_list,oddsType_list,isLive,num_outcomeId,matchId
 
 
@@ -339,6 +349,7 @@ def get_submitbet():
     code = results['code']
     orderNo = results['data']['orderNo']
     orderNo_list.append(orderNo)
+    orderNo_yyds.append(orderNo)
     if code == 0:
         # print(str(name)+"投注成功")
         print(str(i) + "投注成功:")
@@ -354,6 +365,7 @@ def get_submitbet():
     now01=datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
 
     # 写入订单号
+
     path01 = "C:\\test\\get_test\\order_no\\" + name+ ".txt"
     f = open(path01, 'a')
     f.write(orderNo+ "\n")
@@ -405,23 +417,23 @@ def get_submitbet():
 
 
 def sprot_yyds():
-    global sport,marketGroupId
-    if j==11:
+    global sport,marketGroupId,a
+    if j==a:
         sport = "sr:sport:1"
         marketGroupId = "100"
-    if j==12:
+    if j==(a+1):
         sport = "sr:sport:2"
         marketGroupId = "200"
-    if j==13:
+    if j==(a+2):
         sport = "sr:sport:23"
         marketGroupId = "400"
-    if j==14:
+    if j==(a+3):
         sport = "sr:sport:31"
         marketGroupId = "500"
-    if j==15:
+    if j==(a+4):
         sport = "sr:sport:20"
         marketGroupId = "600"
-    if j==16:
+    if j==(a+5):
         sport = "sr:sport:4"
         marketGroupId = "900"
 
@@ -448,7 +460,10 @@ if __name__=='__main__':
     # marketGroupId="900"
     #下注盘参数
     nub=2
-    for j in range(11,17):
+    #取值范围：
+    a=21
+    b=27
+    for j in range(a,b):
         get_toten(j)
         sprot_yyds()
         get_today_odds()
@@ -456,14 +471,14 @@ if __name__=='__main__':
         #num_outcomeId
         for i in range(0,int(num_outcomeId)):
             get_submitbet()
-        if j==16:
+        if j==(b-1):
             # 写入比赛ID
             path01 = "C:\\test\\get_test\\matchid.txt"
             f = open(path01, 'a')
             f.write("---------------------------------------------------------分割线------------------------------------------------------------------"+"\n")
-            print("已下注比赛ID：" + str(matchId))
-            print("共计下注比赛盘口：" + str(len(orderNo_list))+"场")
-            print("共计下注盘："+str(outcomeId_lsit))
+            print("已下注所有比赛ID：" + str(matchid_yyds))
+            print("共所有计下注盘："+str(LAY_yyds))
+            print("共计所有下注订单:"+str(orderNo_yyds))
 
 
 

@@ -208,7 +208,8 @@ class BetController(object):
                     void_factor_list=[0,0,0.5,0.5,1,1]
                     if i==5:
                         void_reason=['3','5','7','9','10','11','12','13']
-                        nub = random.randint(0, 0)
+                        # nub = random.randint(0, 0)
+                        nub=0
                         # print(f"已取到值：{result_list[i]},{void_factor_list[i]},{void_reason[nub]}")
                         output += '<market id="%s" void_reason="%s">' % (market["_id"], void_reason[nub])
                     else:
@@ -613,7 +614,7 @@ if __name__ == "__main__":
     # print(match_list)
 
 
-    match_list =['31411243', '27885118', '27885106', '27885108', '27885112', '27885120']
+    match_list =['27885198', '31655291', '31655293', '31350947', '31350975', '31350951']
     # match_list = ['31164883', '27575098', '27575090', '27575100', '27575094', '27575092']
     # match_list =['28892786', '28892780', '28892776', '27958254', '27958268', '27958262']
 
@@ -638,7 +639,6 @@ if __name__ == "__main__":
     # for matchId in match_list:
     #     settled_message = bc.generate_settlement_str(match_id=matchId, certainty='1', producer='3')  # 生成单注结算指令
     #     print(settled_message)
-
 
 
 
