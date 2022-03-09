@@ -459,10 +459,10 @@ if __name__=='__main__':
     # sport="sr:sport:4"
     # marketGroupId="900"
     #下注盘参数
-    nub=2
+    nub=3
     #取值范围：
-    a=21
-    b=27
+    a=22
+    b=23
     for j in range(a,b):
         get_toten(j)
         sprot_yyds()

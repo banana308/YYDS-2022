@@ -5,22 +5,21 @@ import time
 
 list_A=['8','7','101','10','9','11','100']
 
-# list=[]
-# list01=[]
-# #写入text
-# path = "C:\\test\\michid.txt"
-# f = open(path, mode="r")
-# lines=f.readlines()
-# for lines in lines:
-#     list.append(lines.strip('\n'))
-#     for k in range(0,len(list)):
-#         if  list[k] in list01:
-#             pass
-#         else:
-#             list01.append(list[k])
-# print(len(list))
-# print(len(list01))
-# print(list01)
+list=[]
+list01=[]
+#写入text
+path = "C:\\test\\michid.txt"
+f = open(path, mode="r")
+lines=f.readlines()
+for lines in lines:
+    list.append(lines.strip('\n'))
+    for k in range(0,len(list)):
+        if  list[k] in list01:
+            pass
+        else:
+            list01.append(list[k])
+print(len(list))
+print(list01)
 
 
 # for i in range(0,len(order_no02)):
