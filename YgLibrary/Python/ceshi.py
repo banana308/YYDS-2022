@@ -3,23 +3,23 @@ import time
 
 
 
-list_A=['8','7','101','10','9','11','100']
-
-list=[]
-list01=[]
-#写入text
-path = "C:\\test\\michid.txt"
-f = open(path, mode="r")
-lines=f.readlines()
-for lines in lines:
-    list.append(lines.strip('\n'))
-    for k in range(0,len(list)):
-        if  list[k] in list01:
-            pass
-        else:
-            list01.append(list[k])
-print(len(list))
-print(list01)
+# list_A=['8','7','101','10','9','11','100']
+#
+# list=[]
+# list01=[]
+# #写入text
+# path = "C:\\test\\michid.txt"
+# f = open(path, mode="r")
+# lines=f.readlines()
+# for lines in lines:
+#     list.append(lines.strip('\n'))
+#     for k in range(0,len(list)):
+#         if  list[k] in list01:
+#             pass
+#         else:
+#             list01.append(list[k])
+# print(len(list))
+# print(list01)
 
 
 # for i in range(0,len(order_no02)):
@@ -33,6 +33,20 @@ print(list01)
 
 
 
+list=[]
+for i in range(1,1001):
+    # name = "FCeshi0" + str(i)
+    # name="sr:match:27885276"
+    name="6210"
+    # path01 = "C:\\test\\test_jmeter\\matchId.txt"
+    path01 = "C:\\test\\test_jmeter\\yyds\\port.txt"
+    f = open(path01, 'a')
+    f.write( name+ "\n")
+    list.append(name)
+    if i==1000:
+        print(len(list))
+    else:
+        pass
 
 
 
