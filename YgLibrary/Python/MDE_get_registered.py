@@ -4,11 +4,10 @@ import requests
 import json
 import random
 import datetime
-import random
 from concurrent.futures import ThreadPoolExecutor
 
 
-token="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjE0ODEyMjM4OTg5MDgzODUyODEiLCJleHAiOjE2NDg0NzQ2OTEsInVzZXJuYW1lIjoiRHV4aW4wNSJ9.rPqZ1lFbD6MnspIgXz5FcIj0XNTFUv6WKy9Fg6XRpDY"
+token="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjE1MTI2NzE4ODg4NDM3MzkxMzciLCJleHAiOjE2NDk0OTEyOTYsInVzZXJuYW1lIjoiYjFiMmIzYjQifQ.fTGwrVv5XmapMz3k_n3wy6AQhFNnBpKsZTKEyTdGlPw"
 
 list=[]
 account_list=[]
@@ -21,21 +20,19 @@ z_m_i=["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","
 z_m_num01=["0","1","2","3","4","5","6","7","8","9"]
 
 #120测试环境
-URL="http://192.168.10.120:8093"
+URL="https://mdesearch.betf.best"
 #58测试环境
 # URL="http://192.168.10.237:8093"
 
 def rambbq(j,i):
     global zm,handicapType,account,retreatProportion,profitLossPercentage,name,b,z_m_j,z_m_i,z_m_list
     #随机盘口
-
-
     b=j
     if i==0:
-        print("j的数字：" + str(j) + "\n"+ "i的数字：" + str(i))
-
-    zm = "Duxin05"+str(z_m_j[j])
-    # zm = "Duxin05" + str(z_m_num01[j])
+        # print("j的数字：" + str(j) +"   j取值为："+str(z_m_j[j])+ "\n"+ "i的数字：" + str(i)+"   i取值为："+str(z_m_num01[i]))
+        print("j的数字：" + str(j) + "   j取值为：" + str(z_m_num01[j]) + "\n" + "i的数字：" + str(i) + "   i取值为：" + str(z_m_j[i]))
+    # zm = "testagent00010203"+str(z_m_j[j])
+    zm = "b1b2b3b4" + str(z_m_num01[j])
     water= random.randint(1,4)
     if water==1:
         handicapType="A"
@@ -57,13 +54,13 @@ def rambbq(j,i):
         retreatProportion = '7'
 
     #拼接account
-    account=zm+str(z_m_i[i])
+    # account=zm+str(z_m_i[i])
     # account = zm + str(z_m_num01[i])
-    # account_list.append(account)
+    account = zm + str(z_m_j[i])
 
 
     #拼接name
-    name="杜鑫测试账号"+str(z_m_j[j])+str(z_m_i[i])
+    name="王者test账号"+str(z_m_j[j])+str(z_m_i[i])
     # name_list.append(name)
 
     #随机占成数
@@ -86,90 +83,30 @@ def registered(money):
     "status":"",
     "currency":"CNY",
     "exchangeRate":"",
-    "handicapType":handicapType,
+    "handicapType":"A",
     "name":name,
     "password":"Bfty123456",
+    "profitLossPercentage":0,
     "quotaMode":"",
     "userConfigurationParams":[
-
-    {"handicapCategoryId":"1",
-    "retreatProportion":retreatProportion,
-    "singleBetLimit":20000,
-    "singleGameBetLimit":20000,
-    "sportCategoryId":"1"},
-
-    {"handicapCategoryId":"2",
-    "retreatProportion":retreatProportion,
-    "singleBetLimit":20000,
-    "singleGameBetLimit":20000,
-    "sportCategoryId":"1"},
-
-    {"handicapCategoryId":"3",
-    "retreatProportion":"",
-    "singleBetLimit":20000,
-    "singleGameBetLimit":20000,
-    "sportCategoryId":"1"},
-
-    {"handicapCategoryId":"100",
-    "retreatProportion":"",
-    "singleBetLimit":20000,
-    "singleGameBetLimit":20000,
-    "sportCategoryId":"1"},
-
-    {"handicapCategoryId":"1",
-    "retreatProportion":retreatProportion,
-    "singleBetLimit":20000,
-    "singleGameBetLimit":20000,
-    "sportCategoryId":"2"},
-
-    {"handicapCategoryId":"2",
-    "retreatProportion":retreatProportion,
-    "singleBetLimit":20000,
-    "singleGameBetLimit":20000,
-    "sportCategoryId":"2"},
-
-    {"handicapCategoryId":"3",
-    "retreatProportion":"",
-    "singleBetLimit":20000,
-    "singleGameBetLimit":20000,
-    "sportCategoryId":"2"},
-
-    {"handicapCategoryId":"100",
-    "retreatProportion":"",
-    "singleBetLimit":20000,
-    "singleGameBetLimit":20000,
-    "sportCategoryId":"2"},
-
-    {"handicapCategoryId":"1",
-    "retreatProportion":retreatProportion,
-    "singleBetLimit":20000,
-    "singleGameBetLimit":20000,
-    "sportCategoryId":"100"},
-
-    {"handicapCategoryId":"2",
-    "retreatProportion":retreatProportion,
-    "singleBetLimit":20000,
-    "singleGameBetLimit":20000,
-    "sportCategoryId":"100"},
-
-    {"handicapCategoryId":"3",
-    "retreatProportion":"",
-    "singleBetLimit":20000,
-    "singleGameBetLimit":20000,
-    "sportCategoryId":"100"},
-
-    {"handicapCategoryId":"100",
-    "retreatProportion":"",
-    "singleBetLimit":20000,
-    "singleGameBetLimit":20000,
-    "sportCategoryId":"100"}]
-    }
+    {"handicapCategoryId":"1","retreatProportion":18,"singleBetLimit":3000,"singleGameBetLimit":100000,"sportCategoryId":"1"},
+    {"handicapCategoryId":"2","retreatProportion":18,"singleBetLimit":3000,"singleGameBetLimit":100000,"sportCategoryId":"1"},
+    {"handicapCategoryId":"3","retreatProportion":"","singleBetLimit":3000,"singleGameBetLimit":100000,"sportCategoryId":"1"},
+    {"handicapCategoryId":"100","retreatProportion":"","singleBetLimit":3000,"singleGameBetLimit":100000,"sportCategoryId":"1"},
+    {"handicapCategoryId":"1","retreatProportion":18,"singleBetLimit":3000,"singleGameBetLimit":100000,"sportCategoryId":"2"},
+    {"handicapCategoryId":"2","retreatProportion":18,"singleBetLimit":3000,"singleGameBetLimit":100000,"sportCategoryId":"2"},
+    {"handicapCategoryId":"3","retreatProportion":"","singleBetLimit":3000,"singleGameBetLimit":100000,"sportCategoryId":"2"},
+    {"handicapCategoryId":"100","retreatProportion":"","singleBetLimit":3000,"singleGameBetLimit":100000,"sportCategoryId":"2"},
+    {"handicapCategoryId":"1","retreatProportion":18,"singleBetLimit":3000,"singleGameBetLimit":100000,"sportCategoryId":"100"},
+    {"handicapCategoryId":"2","retreatProportion":18,"singleBetLimit":3000,"singleGameBetLimit":100000,"sportCategoryId":"100"},
+    {"handicapCategoryId":"3","retreatProportion":"","singleBetLimit":3000,"singleGameBetLimit":100000,"sportCategoryId":"100"},
+    {"handicapCategoryId":"100","retreatProportion":"","singleBetLimit":3000,"singleGameBetLimit":100000,"sportCategoryId":"100"}]}
     response = requests.post(url=url, headers=headers01, json=data)
     # 返回结果json转化
     results = json.loads(response.text)
     #print(results)
-    code=results['code']
-    message=results['message']
+    code=results['data']['code']
+    message=results['data']['message']
     #print(code,message)
     #判断是否新增会员成功:
     if code==0 and message=="OK":
@@ -182,7 +119,7 @@ def registered(money):
         time.sleep(0.5)
     else:
         print("新增账号："+str(account)+"   错误原因："+"code:"+str(code)+ "    massage:" + str(message))
-        print("j的数字：" + str(j) + "\n" + "i的数字：" + str(i))
+        print("j的数字：" + str(j) +"   j取值为："+str(z_m_j[j])+ "\n"+ "i的数字：" + str(i)+"   i取值为："+str(z_m_num01[i]))
         exit()
 
 def upadte_001(ppyur):
@@ -231,16 +168,16 @@ def upadte_001(ppyur):
 
 
 
-if __name__=='__main__':
-    for j in range(0, 26):
-        for i in range(0,26):
-            rambbq(j,i)
-            registered(5000)
-        if j == (26-1):
-            print(len(list))
-            print(list)
-        else:
-            pass
+# if __name__=='__main__':
+#     for j in range(0, 26):
+#         for i in range(0,26):
+#             rambbq(j,i)
+#             registered(5000)
+#         if j == (26-1):
+#             print(len(list))
+#             print(list)
+#         else:
+#             pass
 
 # if __name__=='__main__':
 #     for j in range(0, 26):
@@ -252,3 +189,14 @@ if __name__=='__main__':
 #             print(list)
 #         else:
 #             pass
+
+if __name__=='__main__':
+    for j in range(0, 10):
+        for i in range(0,26):
+            rambbq(j,i)
+            registered(10000)
+        if j == (10-1):
+            print(len(list))
+            print(list)
+        else:
+            pass

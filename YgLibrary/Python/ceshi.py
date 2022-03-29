@@ -8,7 +8,7 @@ list_A=['8','7','101','10','9','11','100']
 list=[]
 list01=[]
 #写入text
-path = "C:\\test\\user.txt"
+path = "C:\\test\\michid.txt"
 f = open(path, mode="r")
 lines=f.readlines()
 for lines in lines:
@@ -35,11 +35,11 @@ print(list01)
 
 # list=[]
 # for i in range(1,1001):
-#     # name = "FCeshi0" + str(i)
+#     name = "fceshi0" + str(i)
 #     # name="sr:match:27885276"
-#     name="6210"
+#     # name="6210"
 #     # path01 = "C:\\test\\test_jmeter\\matchId.txt"
-#     path01 = "C:\\test\\test_jmeter\\yyds\\port.txt"
+#     path01 = "C:\\test\正式版\\user.txt"
 #     f = open(path01, 'a')
 #     f.write( name+ "\n")
 #     list.append(name)
