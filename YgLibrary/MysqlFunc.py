@@ -38,7 +38,7 @@ class MysqlFunc(object):
         :param db_name:
         :return:
         """
-        print(sql)
+        # print(sql)
         try:
             self.change_db(db_name)
             self.cursor.execute(sql)
