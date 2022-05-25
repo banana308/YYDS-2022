@@ -4,6 +4,7 @@ import re
 import time
 import xmltodict
 import random
+import datetime
 # try:
 #     from .MongoFunc import DbQuery
 #     from .MyExceptions import *
@@ -149,8 +150,8 @@ class BetController(object):
     def data_post(self, data):
         try:
             if "<bet_settlement" in data:
-                print("指令内容为：")
-                print(data)
+                print("发送指令内容为："+str(data))
+                # print(data)
                 output = ""
                 # all_match = re.findall('(<market.+?</market>)', data)
                 # start = re.search('(<bet_settlement.+?<outcomes>)', data)
@@ -228,6 +229,66 @@ class BetController(object):
         output += '</outcomes></bet_settlement>'
         return output
 
+    def generate_settlement_str_by_count_orderNo(self, order_no=""):
+        global sort_num
+        """
+        通过订单号，获取注单的数量，用以sort传参使用
+        ：param order_no:
+        :param sort: 默认是0   串关中可根据sort指定某个投注项
+        """
+        #获取串关order_no的子注单数量
+        sql=f"SELECT match_id FROM `bfty_credit`.o_account_order_match_update  WHERE order_no='{order_no}' AND sub_order_status='1' "
+        sort_num = self.my.query_data(sql, db_name='bfty_credit')
+        return sort_num
+
+    def generate_settlement_str_by_match_count(self, order_no=""):
+
+        """
+        通过订单号，获取注单的数量，用以sort传参使用
+        ：param order_no:
+        :param sort: 默认是0   串关中可根据sort指定某个投注项
+        """
+        #获取串关order_no的子注单数量
+        sql=f"SELECT match_id FROM `bfty_credit`.o_account_order_match_update  WHERE order_no='{order_no}'"
+        match_count = self.my.query_data(sql, db_name='bfty_credit')
+        return match_count
+
+    def generate_settlement_str_by_match_time(self, order_no):
+
+        """
+        通过订单号，获取注单的比赛时间，用以match_time传参使用
+        ：param order_no:
+        :param match_time: 默认是0   串关中可根据sort指定某个投注项
+        """
+        #获取串关order_no的子注单数量
+        sql=f"SELECT match_time FROM `bfty_credit`.o_account_order_match  WHERE order_no='{order_no}'"
+        match_time = self.my.query_data(sql, db_name='bfty_credit')
+        return match_time
+
+
+
+
+    @staticmethod
+    def split_outcome_id(outcome_info):
+        '''
+        网球波胆盘口增加判断        sr:match:33574697_199_variant=sr:correct_score:bestof:3_sr:correct_score:bestof:3:4
+        :param outcome_info:
+        :return:
+        '''
+        outcome_list = outcome_info.split('_')
+        if len(outcome_list) > 4:  # 部分波胆数据加的判断
+            specifiers = outcome_list[2] + '_' + outcome_list[3]
+            outcome_id = outcome_list[4] + '_' + outcome_list[5]
+
+        else:
+            specifiers = outcome_list[2]
+            outcome_id = outcome_list[3]
+        match_id = outcome_list[0]
+        mark_id = outcome_list[1]
+        return match_id, mark_id, specifiers, outcome_id
+
+
+
     def generate_settlement_str_by_orderNo(self, order_no, sort=0, certainty='2', producer='', result=None):
         """
         通过注单号生成对应盘口或Specifier级别的结算报文
@@ -239,17 +300,21 @@ class BetController(object):
         :param result: 输|赢|赢一半|输一半|走盘
         :return:
         """
-        sql = f"SELECT spliced_outcome_id FROM `bfty_credit`.`o_account_order_match` WHERE `order_no` = '{order_no}'"
-        query_data = self.my.query_data(sql, db_name='bfty_credit')
-        outcomeId = query_data[sort][0]
-        outcome_list = outcomeId.split('_')
-        match_id = outcome_list[0]
-        match_num = len(query_data)
+        # 获取order_no的注单类型
+        sql = f"SELECT bet_type FROM `bfty_credit`.o_account_order  WHERE order_no='{order_no}' AND status='1' "
+        match_num = self.my.query_data(sql, db_name='bfty_credit')
+        match_num = int(match_num[0][0])
+        # print(match_num)
 
-        if match_num == 1:
-            print('查询的注单为【单注】')
-        else:
-            print(f'查询的注单为【串关】,比赛数量为：{match_num}, 当前比赛为：{match_id}')
+        sql_str = f"SELECT DISTINCTROW(a.spliced_outcome_id) FROM `bfty_credit`.`o_account_order_match` as a " \
+                  f"LEFT JOIN o_account_order_match_update as b   ON (a.order_no=b.order_no AND a.match_id=b.match_id) WHERE a.`order_no` = '{order_no}' AND b.sub_order_status='1'"
+        query_data = list(self.my.query_data(sql=sql_str, db_name='bfty_credit'))
+        outcomeId = query_data[sort][0]
+        match_id, mark_id, specifiers, outcome_id = self.split_outcome_id(outcomeId)
+        outcome_list=[]
+        outcome_list.extend([match_id, mark_id, specifiers, outcome_id])
+        # print(outcome_list)
+
 
         producer = self.dbq.get_match_data(match_id, "producer") if not producer else producer
         if result == None:
@@ -258,14 +323,22 @@ class BetController(object):
         # print(result)
         if result == "输":
             result_str = 'result=\"0\"'
+            result=("\033[31m输\033[0m")
         elif result == "赢":
             result_str = 'result=\"1\"'
+            result = ("\033[32m赢\033[0m")
         elif result == "赢一半":
             result_str = 'result=\"1\" void_factor=\"0.5\"'
+            result =("\033[32m赢一半\033[0m")
         elif result == "输一半":
             result_str = 'result=\"0\" void_factor=\"0.5\"'
+            result = ("\033[34m输一半\033[0m")
         elif result == "走盘" or result == '取消':
             result_str = 'result=\"0\" void_factor=\"1\"'
+            if result == "走盘":
+                result = ("\033[33m走盘\033[0m")
+            if result == "取消":
+                result = ("\033[35m取消\033[0m")
         else:
             raise AssertionError("Result 输入的值错误。")
         data = self.dbq.get_match_data(match_id)
@@ -274,6 +347,14 @@ class BetController(object):
         output = '<bet_settlement certainty=\"%s\" ' \
                  'product=\"%s\" event_id=\"%s\" timestamp=\"%s\"><outcomes>' % (certainty, producer, data["_id"],
                                                                                  self.get_current_timestamp())
+
+        #查询注单的类型和预结算盘口结果
+        if match_num == 1:
+            print('查询的注单类型为：【单注】,当前正在结算比赛ID为：{match_id},当前正在结算的盘口赛果为：{result}')
+        if match_num == 2:
+            print(f'查询的注单类型为：【串关】,剩余未结算比赛数量为：{len(query_data)-sort-1}, 当前正在结算比赛ID为：{match_id},当前正在结算的盘口赛果为：{result}')
+        if match_num == 3:
+            print(f'查询的注单类型为：【复式串关】,剩余未结算比赛数量为：{len(query_data)-sort-1}, 当前正在结算比赛ID为：{match_id},当前正在结算的盘口赛果为：{result}')
 
         if outcomeId:
             grep = re.search(r"^.+?_(\d+?)_(.*)_(.+?)$", outcomeId)
@@ -301,7 +382,7 @@ class BetController(object):
                                     output += '<market id="%s" specifiers="%s">' % (
                                     market["_id"], specifier["specifier"])
                                 for outcome in specifier["outComes"]:
-                                    if int(outcome["_id"]) == int(outcome_id_simple):
+                                    if str(outcome["_id"]) == str(outcome_id_simple):
                                         output += '<outcome id=\"%s\" %s/>' % (outcome['_id'], result_str)
                                     else:
                                         output += '<outcome id=\"%s\" result=\"0\"/>' % outcome['_id']
@@ -338,6 +419,7 @@ class BetController(object):
                         output += '<outcome id=\"%s\" result=\"0\"/>' % outcome['_id']
                     output += '</market>'
             output += '</outcomes></bet_settlement>'
+
             return output
         raise AssertionError("ERR：在数据库中未找到投注项ID与注单中的投注项ID相同的项。")
 
@@ -633,6 +715,7 @@ class BetController(object):
         return output
 
     def send_message_to_datasourse(self, order_no="", sort=0, certainty='2', result=None):
+
         """
         注单结算
         :param order_no:
@@ -641,11 +724,50 @@ class BetController(object):
         :param result:  输|赢|赢一半|输一半|走盘
         :return:
         """
-        message = bc.generate_settlement_str_by_orderNo(order_no=order_no, sort=sort, certainty=certainty,result=result)
-        if not message:
-            raise AssertionError("Notice: 未找到对应的比赛。")
+        sort_num_old = bc.generate_settlement_str_by_count_orderNo(order_no=order_no)
+        sort_num=len(sort_num_old)
+        message=''
+        if int(sort_num)>1:
+            sort_num_list=[]
+            for num in range(0,int(sort_num)):
+                sort_num_list.append(num)
+            for sort in sort_num_list:
+                message = bc.generate_settlement_str_by_orderNo(order_no=order_no, sort=int(sort), certainty=certainty,result=result)
+                if not message:
+                    raise AssertionError("Notice: 未找到对应的比赛。")
+                print("接受返回结果为: %s" % self.data_post(data=message)+"\n")
+        else:
+            if (int(sort_num))==0:
+                #获取比赛ID
+                match_num=bc.generate_settlement_str_by_match_count( order_no=order_no)
+                # 获取比赛时间
+                match_time=bc.generate_settlement_str_by_match_time(order_no=order_no)
+                num_list = []
+                match_id_lsit=[]
+                match_id_time_list=[]
+                for time_num in range(0,int(len(match_num))):
+                    num_list.append(time_num)
+                for number in num_list:
+                    match_time_0=(match_time[number][0])
+                    now_time=datetime.datetime.now()
+                    new_time=match_time_0+datetime.timedelta(minutes=150)
+                    if now_time>new_time:
+                        match_id_lsit.append(match_num[number][0])
+                        match_id_time_list.append((match_time[number][0]).strftime('%Y-%m-%d %H:%M:%S'))
+                    else:
+                        pass
+                print("\033[31m该笔订单，包含已结束的比赛，无法结算比赛ID：\033[0m"+str(match_id_lsit)+"\n"+"\033[31m无法结算比赛时间：\033[0m"+str(match_id_time_list))
+            else:
+                if (int(sort_num))==1:
+                    sort=0
+                    message = bc.generate_settlement_str_by_orderNo(order_no=order_no, sort=sort, certainty=certainty, result=result)
+                    if not message:
+                        raise AssertionError("Notice: 未找到对应的比赛。")
+                    print("接受返回结果为: %s" % self.data_post(data=message)+"\n")
 
-        print("返回结果为: %s" % self.data_post(data=message))
+
+
+
 
 
 if __name__ == "__main__":
@@ -698,12 +820,26 @@ if __name__ == "__main__":
     # #     new_order_list.append(settled_message)
     # # print(new_order_list)
 
-    order_list = ['XBkL6sK3sYyr', 'XBmtHi9XG6Fc']
+
+    order_list=[]
     for order_no in order_list:
-        print(order_no)
+        print("共有 "+str(len(order_list))+" 笔结算注单,"+"正在结算第 "+str(order_list.index(order_no)+1)+" 笔注单："+str(order_no))
         message = bc.send_message_to_datasourse(order_no=str(order_no), sort=0, certainty="2",result="赢")  # 生成注单结算指令
+        print("已完成注单："+str(order_list.index(order_no)+1)+"  "+"未完成注单"+str(len(order_list)-(order_list.index(order_no)+1))+"\n"
+              +"----------------------------------------------------------------------------------------------------------------"+"\n"+"\n")
 
 
+
+    # data = bc.generate_settlement_str_by_orderNo(order_no='XB4Tpe96Ahas',sort=1)
+    # print(data)
+
+    # order_list = ['XB4TpiA5pMYZ']
+    # for order_no in order_list:
+    #     print("共有 " + str(len(order_list)) + " 笔结算注单," + "正在结算第 " + str(order_list.index(order_no) + 1) + " 笔注单：" + str(order_no))
+    #     message = bc.send_message_to_datasourse(order_no=str(order_no), sort=0, certainty="2", result="赢")  # 生成注单结算指令
+    #     print("已完成注单：" + str(order_list.index(order_no) + 1) + "  " + "未完成注单" + str(
+    #         len(order_list) - (order_list.index(order_no) + 1)) + "\n"
+    #           + "----------------------------------------------------------------------------------------------------------------" + "\n" + "\n")
 
 
 
