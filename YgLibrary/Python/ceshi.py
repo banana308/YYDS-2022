@@ -4,22 +4,22 @@ import time
 
 
 # list_A=['8','7','101','10','9','11','100']
-#
-# list=[]
-# list01=[]
-# #写入text
-# path = "C:\\test\\michid.txt"
-# f = open(path, mode="r")
-# lines=f.readlines()
-# for lines in lines:
-#     list.append(lines.strip('\n'))
-#     for k in range(0,len(list)):
-#         if  list[k] in list01:
-#             pass
-#         else:
-#             list01.append(list[k])
-# print(len(list))
-# print(list01)
+
+list_y=[]
+list01=[]
+#写入text
+path = "C:\\test\\michid.txt"
+f = open(path, mode="r")
+lines=f.readlines()
+for lines in lines:
+    list_y.append(lines.strip('\n'))
+    for k in range(0,len(list_y)):
+        if  list_y[k] in list01:
+            pass
+        else:
+            list01.append(list_y[k])
+print(len(list01))
+print(list01)
 
 
 # for i in range(0,len(order_no02)):
@@ -50,20 +50,22 @@ import time
 
 
 
+# lsit = [2, 3, 4, 5, 6, 7, 8, 9]
+# for i in range(0, len(lsit) - 1):
+#     a = sum(lsit[0:i])
+#     b = sum(lsit[0:(i + 1)])
+#
+#     print(a, b, " ", str(lsit[i]), "串1")
 
 
 
-date=2_1_0_10
-print(list(str(date)))
-print(list(str(date))[0]+"串"+list(str(date))[1])
-
-
-
-
-
-
-
-
+# def get_time(number):
+#     for number in range(number, 0, -1):
+#         time.sleep(1)
+#         print(number,"秒",end=" end")
+#
+#
+# get_time(15)
 
 
 
@@ -91,7 +93,7 @@ print(list(str(date))[0]+"串"+list(str(date))[1])
 
 
 
-list=["1","2","3","4","5","6",]
+# list=["1","2","3","4","5","6",]
 
 
 
@@ -119,3 +121,26 @@ import time
 #         print(f"task3: {task3.done()}")
 #         print(task1.result())  # 通过result来获取返回值
 
+# # num_lsit = ["复式3串4": [2_3, 3_4],"复式4串11": {[2_6, 3_4, 4_11]},"复式5串26": {[2_10, 3_10, 4_5, 5_26]},"复式6串57": {[2_15, 3_20, 4_15,5_6,6_57]}]
+num_lsit = [{"复式3串4":["2_3_0","3_4_1"]},{"复式4串11":["2_6_0","3_4_0","4_11_1"]},{"复式5串25": ["2_10_0", "3_10_0", "4_5_0", "5_26_1"]},{"复式6串57": ["2_15_0", "3_20_0", "4_15_0","5_6_0","6_57_1"]}]
+
+
+
+
+# # a=(num_lsit[0])['复式'][0]
+#
+# # print(list((num_lsit[0])['复式'][0]))
+# print(list(list((num_lsit[1]).values())[0][2])[2])
+# print(list(list((num_lsit[1]).values())[0][2])[3])
+# a=f"{(str((list(list((num_lsit[1]).values())[0][2])[2])))}{str((list(list((num_lsit[1]).values())[0][2])[3]))}"
+# print(str((list(list((num_lsit[1]).values())[0][2])[2]))+str((list(list((num_lsit[1]).values())[0][2])[3])))
+# print(a)
+
+
+
+# kk_lsit=[('sr:match:33294097_236_quarternr=1|total=51.5_12',), ('sr:match:33703537_757_quarternr=1|total=20.5_12',)]
+# outcomeId = kk_lsit[1][0]
+# print(outcomeId)
+
+
+# print(len(num_lsit))

@@ -552,7 +552,7 @@ if __name__=='__main__':
             print("已下注所有比赛ID：" + str(matchid_yyds))
             print("共所有计下注盘："+str(LAY_yyds))
             print("共计所有下注订单:"+str(orderNo_yyds))
-            print("共计所有下注订单数量:" + len(orderNo_yyds))
+            print("共计所有下注订单数量:" + str(len(orderNo_yyds)))
 
 
 
