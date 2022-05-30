@@ -23,9 +23,11 @@ EARLY_num_list = []
 
 sort_list_null=[]
 matchid_dict={}
-
-
 ttt_list=[]
+
+mixedNum_N_1_number_YYds_list_01=[]
+mixedNum_N_1_number_YYds_list_02 = []
+mixedNum_N_1_number_YYds_list_03 = []
 # 最后打印列表
 matchid_yyds = []
 sprot_yyds = []
@@ -76,7 +78,7 @@ count = 3
 def get_toten_00():
     global toten, name
     # 账号的拼接
-    name = "fceshi0" + str(1)
+    name = "fceshi0" + str(0)
     # name="CCeshi0"+str(j)
     url = str(URL) + "/creditUser/creditUserLogIn"
     headers01 = {'content-type': 'application/json'}
@@ -120,11 +122,39 @@ def get_toten_01(i):
     # print(f"toten:{toten}")
     return toten01
 
+def get_balance(toten01):
+    global balance
+    url = str(URL) + "/creditUser/getUserAmount"
+    headers01 = {
+        'content-type': 'application/json',
+        'lang': 'ZH',
+        'accessCode': toten01
+    }
+    date = {}
+    response = requests.get(url=url, headers=headers01, params=date)
+    # 返回结果json转化
+    results = json.loads(response.text)
+    # print(results)
+    balance = results['data']['balance']
+    winLoseAmount = results['data']['winLoseAmount']
+    print(str(name)+"   "+"余额："+str(balance)+"  输赢："+str(winLoseAmount)+"\n")
+    # 写入订单详情
+    path02 = "C:\\test\\balance-01.txt"
+    f = open(path02, 'a')
+    f.write(
+        str(name) + "   " + "余额：" + str(balance) + "  输赢：" + str(winLoseAmount) + "\n"
+    )
+    # print(f"已完成{number}")
+    return balance
+
+
+
+
 
 
 # 获取赛事信息
-def get_today_odds(nub):
-    global odds, ods, yy, matchId
+def get_today_odds(nub,oddsType):
+    global odds, ods, yy,matchId
     # if count01 % 3 > 0:
     #     # count01-=3
     #     nub = random.randint(2, 3)
@@ -134,6 +164,10 @@ def get_today_odds(nub):
     #     nub = 3
     #     # nub = random.randint(1, 3)
     #     print("随机早盘取值：" + str(nub))
+    if oddsType==1:
+        oddsType_name="欧洲盘"
+    else:
+        oddsType_name = "香港盘"
     if nub == 1:
         ods = "滚球盘"
         yy = "INPLAY"
@@ -143,7 +177,7 @@ def get_today_odds(nub):
     if nub == 3:
         ods = "早盘"
         yy = "EARLY"
-    print("下注盘：" + str(ods)+"  "+"正在遍历赛事,预计需求10~15秒")
+    print(f"下注盘：{str(ods)},赔率类型：{oddsType_name}，正在遍历赛事,预计需求10~15秒")
     # print(f"正在遍历赛事,预计需求10秒")
     ods_list.append(ods)
     url = str(URL) + "/creditMatchPC/matchList"
@@ -159,7 +193,8 @@ def get_today_odds(nub):
             "highlight": False,
             "marketGroupId": marketGroupId,
             "sportCategoryId": sport,
-            "oddsType": 1, "tournamentIds": [],
+            "oddsType": oddsType,
+            "tournamentIds": [],
             "matchIds": [],
             "page": 1,
             "limit": 500,
@@ -171,7 +206,8 @@ def get_today_odds(nub):
             "highlight": False,
             "marketGroupId": "100",
             "sportCategoryId": sport,
-            "oddsType": 1, "tournamentIds": [],
+            "oddsType": oddsType,
+            "tournamentIds": [],
             "matchIds": [],
             "page": 1,
             "limit": 1000,
@@ -234,6 +270,7 @@ def get_today_odds(nub):
             # print(results)
             odds = results['data']['data']
             # print(odds)
+            # print(odds)
             oddt_list.append(odds)
             for i in odds:
                 matchlist = i['matchList']
@@ -256,6 +293,7 @@ def get_today_odds(nub):
 
     # matchid_yyds.append(matchId)
     # LAY_yyds.append(yy)
+    # print(f"赛事列表赛事ID打印:{matchId}")
 
 
 # 根据赛事ID，遍历每一场赛事的盘口
@@ -270,7 +308,7 @@ def get_odds(g):
 
     data = {
         "matchId": matchId[g],
-        "oddsType": 1,
+        "oddsType": oddsType,
         "sportCategoryId": "sr:sport"
     }
     # "matchId": matchId,
@@ -301,6 +339,7 @@ def get_odds(g):
             # print((results['data']['marketList'][k]['outcomeList'][0]))
             k_list.append((results['data']['marketList'][k]['outcomeList'][0]))
         matchid_dict[matchId[g]]=k_list
+        mixedNum_N_1_number_YYds_list_01.append(len(k_list))
         aa_list.append(results['data']['awayTeamName'])
         bb_list.append(results['data']['homeTeamName'])
 
@@ -321,6 +360,13 @@ def get_submit_dict(mixedNum_N_1,a,b):
     # 方法1,遍历赛事取值
     for p in range(0, int(N_1_num)):
         get_match()
+    if N_1_num == 2:
+        pass
+    else:
+        num_01 = (sum(mixedNum_N_1_number_YYds_list_02))
+        num_02 = (sum(mixedNum_N_1_number_YYds_list_03))
+        print(f"比赛数量：{str(len(matchId))}")
+        print(f"\n测试盘口预校验{num_01}，与实际比较{num_02}")
 
 
 
@@ -346,12 +392,14 @@ def get_submit_dict(mixedNum_N_1,a,b):
         LAY_yyds.append(sub_list[yu]["marketName"])
 
     submit_dict[mixedNum_N_1] = submit_list
+    print(submit_dict[mixedNum_N_1])
     # print(mixedNum_N_1," ",sr_match_list)
     # print(submit_dict)
     #直接调用下注接口下注：
     i=get_i()
     # i=(len(submit_dict))
     get_toten_01(i)
+    get_balance(toten01)
     get_submitbet_N_1(i)
 
     submit_list.clear()
@@ -365,24 +413,32 @@ def get_submit_dict(mixedNum_N_1,a,b):
 
 
 def get_match():
-    sr = random.randint(0, len(matchId) - 1)
-    sr_new_match = matchId[sr]
+    # if len(matchId) < 10:
+    #     print(f"剩余赛事数量：{len(matchId)}，剩余赛事：{matchId}")
+    sr_new_match=random.choice(matchId)
+    # sr=random.randint(0,len(matchId)-1)
+    # sr_new_match=matchId[sr]
     if sr_new_match in sr_match_list:
         # print(f"\033[31m在列表中，准备重新随机取值\033[0m""")
         get_match()
     else:
         # print(f"\033[32m不在列表中，准备写入值\033[0m")
-        sr_match =sr_new_match
-        outcomeList = random.randint(0, len(matchid_dict[sr_match]) - 1)
-        marketId_num = random.randint(0, len(matchid_dict[sr_match][outcomeList]) - 1)
-        marketId = (matchid_dict[sr_match])[outcomeList][marketId_num]
+        sr_match=sr_new_match
+        if len(matchid_dict[sr_match]) == 0:
+            print(f"\033[32m此场比赛{sr_match}，盘口值为{len(matchid_dict[sr_match])}，即将重新取值\033[0m")
+            del matchId[matchId.index(sr_match)]
+            get_match()
+        else:
+            outcomeList = random.randint(0, len(matchid_dict[sr_match]) - 1)
+            marketId_num = random.randint(0, len(matchid_dict[sr_match][outcomeList]) - 1)
+            marketId = (matchid_dict[sr_match])[outcomeList][marketId_num]
 
-        del (matchid_dict[sr_match])[outcomeList]
-        sub_list.append(marketId)
-        matchid_yyds.append(sr_match)
-        ttt_list.append(sr_match)
-        sr_match_list.append(sr_match)
-
+            del (matchid_dict[sr_match])[outcomeList]
+            mixedNum_N_1_number_YYds_list_03.append(1)
+            sub_list.append(marketId)
+            matchid_yyds.append(sr_match)
+            ttt_list.append(sr_match)
+            sr_match_list.append(sr_match)
     return sr_new_match
 
 def get_i():
@@ -420,43 +476,49 @@ def get_N_1(mixedNum_betAmount,mixedNum_N_1_number,bet_type):
     num_NN_lsit = [{"复式3串4":["2_3_0","3_4_1"]},{"复式4串11":["2_6_0","3_4_0","4_11_1"]},{"复式5串25": ["2_10_0", "3_10_0", "4_5_0", "5_26_1"]},{"复式6串57": ["2_15_0", "3_20_0", "4_15_0","5_6_0","6_57_1"]}]
     num_NN_A=[]
     #2串1~N串1
-    for N_1_num in N_1_number_list:
-        if int(N_1_num)==2:
-            print(f"正在循环拼接:{str(N_1_num)}串1")
-            mixedNum_N_1 = str(N_1_num) + "_1_0_" + str(mixedNum_betAmount)
-            get_submit_dict(mixedNum_N_1=mixedNum_N_1, a=sum(N_1_number_list[0:N_1_number_list.index(N_1_num)]),b=sum(N_1_number_list[0:((N_1_number_list.index(N_1_num)) + 1)]))
-        else:
-            print(f"正在循环拼接:{str(N_1_num)}串1")
-            mixedNum_N_1 = str(N_1_num) + "_1_0_" + str(mixedNum_betAmount)
-            get_submit_dict(mixedNum_N_1=mixedNum_N_1, a=sum(N_1_number_list[0:N_1_number_list.index(N_1_num)]),b=sum(N_1_number_list[0:((N_1_number_list.index(N_1_num)) + 1)]))
-            for yydm in range(N_1_number_list[0],int(N_1_num)+1):
-                num_NN_A.append(yydm)
-                if int(N_1_num)>=7:
-                    break
-                #判断字典里的数据长度：
-                if len(list(list((num_NN_lsit[N_1_num-3]).values())[0][yydm-2]))==5:
-                    num_1=str(yydm)
-                    num_2=str(list(list((num_NN_lsit[N_1_num-3]).values())[0][yydm-2])[2])
-                    num_3=list(list((num_NN_lsit[N_1_num-3]).values())[0][yydm-2])[-1]
-                    num_4=mixedNum_betAmount
-                    if yydm==int(N_1_num):
-                        print(f"正在循环拼接:复式串关{num_1}串{num_2}")
+    if len(N_1_number_list) == 1:
+        N_1_num=N_1_number_list[0]
+        print(f"只有:{str(N_1_num)}串1")
+        mixedNum_N_1 = str(N_1_num) + "_1_0_" + str(mixedNum_betAmount)
+        get_submit_dict(mixedNum_N_1=mixedNum_N_1, a=sum(N_1_number_list[0:N_1_number_list.index(N_1_num)]),b=sum(N_1_number_list[0:((N_1_number_list.index(N_1_num)) + 1)]))
+    else:
+        for N_1_num in N_1_number_list:
+            if int(N_1_num)==2:
+                print(f"正在循环拼接:{str(N_1_num)}串1")
+                mixedNum_N_1 = str(N_1_num) + "_1_0_" + str(mixedNum_betAmount)
+                get_submit_dict(mixedNum_N_1=mixedNum_N_1, a=sum(N_1_number_list[0:N_1_number_list.index(N_1_num)]),b=sum(N_1_number_list[0:((N_1_number_list.index(N_1_num)) + 1)]))
+            else:
+                print(f"正在循环拼接:{str(N_1_num)}串1")
+                mixedNum_N_1 = str(N_1_num) + "_1_0_" + str(mixedNum_betAmount)
+                get_submit_dict(mixedNum_N_1=mixedNum_N_1, a=sum(N_1_number_list[0:N_1_number_list.index(N_1_num)]),b=sum(N_1_number_list[0:((N_1_number_list.index(N_1_num)) + 1)]))
+                for yydm in range(N_1_number_list[0],int(N_1_num)+1):
+                    num_NN_A.append(yydm)
+                    if int(N_1_num)>=7:
+                        break
+                    #判断字典里的数据长度：
+                    if len(list(list((num_NN_lsit[N_1_num-3]).values())[0][yydm-2]))==5:
+                        num_1=str(yydm)
+                        num_2=str(list(list((num_NN_lsit[N_1_num-3]).values())[0][yydm-2])[2])
+                        num_3=list(list((num_NN_lsit[N_1_num-3]).values())[0][yydm-2])[-1]
+                        num_4=mixedNum_betAmount
+                        if yydm==int(N_1_num):
+                            print(f"正在循环拼接:复式串关{num_1}串{num_2}")
+                        else:
+                            print(f"正在循环拼接:复式串关{num_1}串1*{num_2}")
                     else:
-                        print(f"正在循环拼接:复式串关{num_1}串1*{num_2}")
-                else:
-                    num_1=str(yydm)
-                    num_2 =f"{str(list(list((num_NN_lsit[N_1_num-3]).values())[0][yydm-2])[2])}{str(list(list((num_NN_lsit[N_1_num-3]).values())[0][yydm-2])[3])}"
-                    num_3 =list(list((num_NN_lsit[N_1_num-3]).values())[0][yydm-2])[-1]
-                    num_4 =mixedNum_betAmount
-                    if yydm == int(N_1_num):
-                        print(f"正在循环拼接:复式串关{num_1}串{num_2}")
-                    else:
-                        print(f"正在循环拼接:复式串关{num_1}串1*{num_2}")
+                        num_1=str(yydm)
+                        num_2 =f"{str(list(list((num_NN_lsit[N_1_num-3]).values())[0][yydm-2])[2])}{str(list(list((num_NN_lsit[N_1_num-3]).values())[0][yydm-2])[3])}"
+                        num_3 =list(list((num_NN_lsit[N_1_num-3]).values())[0][yydm-2])[-1]
+                        num_4 =mixedNum_betAmount
+                        if yydm == int(N_1_num):
+                            print(f"正在循环拼接:复式串关{num_1}串{num_2}")
+                        else:
+                            print(f"正在循环拼接:复式串关{num_1}串1*{num_2}")
 
-                mixedNum_N_1 = f"{num_1}_{num_2}_{num_3}_{num_4}"
-                a = sum(N_1_number_list) + sum(N_1_number_list[0:N_1_number_list.index(N_1_num)]) + sum(num_NN_A)
-                b=sum(N_1_number_list)+sum(N_1_number_list[0:((N_1_number_list.index(N_1_num)) + 1)])+sum(num_NN_A)
-                get_submit_dict(mixedNum_N_1=mixedNum_N_1, a=a,b=b)
+                    mixedNum_N_1 = f"{num_1}_{num_2}_{num_3}_{num_4}"
+                    a = sum(N_1_number_list) + sum(N_1_number_list[0:N_1_number_list.index(N_1_num)]) + sum(num_NN_A)
+                    b=sum(N_1_number_list)+sum(N_1_number_list[0:((N_1_number_list.index(N_1_num)) + 1)])+sum(num_NN_A)
+                    get_submit_dict(mixedNum_N_1=mixedNum_N_1, a=a,b=b)
 
 
 # 串关下注
@@ -468,7 +530,7 @@ def get_submitbet_N_1(i):
 
 
     #串关快捷列表
-    okk = [ "21","31","34","26","411","45","526","657","71", "81", "91", "101", "111", "121", "131", "141", "151", "161", "171","181", "191", "201"]
+    okk = [ "21","34","411","526","657","71", "81", "91", "101", "111", "121", "131", "141", "151", "161", "171","181", "191", "201"]
 
 
     url = str(URL) + "/creditBet/submit"
@@ -508,11 +570,13 @@ def get_submitbet_N_1(i):
     results = json.loads(response.text)
     # print(results)
     code = results['code']
-    if str(code)=="-100":
+    if str(code)!="0":
         print(data)
         print(f"\033[31m下注失败，重新调用接口下注,{time.sleep(3)}秒后再次下注\033[0m")
         i = get_i()
         get_submitbet_N_1(i)
+    else:
+        time.sleep(1)
     orderNo = results['data']['orderNo']
     # print(orderNo)
     orderNo_list.append(orderNo)
@@ -530,9 +594,14 @@ def get_submitbet_N_1(i):
                 N_N = (yyds + ":复式串关" + list(str(date))[0] + "串" + list(str(date))[2])
                 all_mixedNum_N_list.append(N_N)
         else:
-            N_B = (list(str(date))[0] + list(str(date))[2]+list(str(date))[3])
-            N_N = (yyds + ":复式串关" + list(str(date))[0] + "串" + list(str(date))[2]+list(str(date))[3])
-            all_mixedNum_N_list.append(N_N)
+            if list(str(date))[2] == "_":
+                N_B = str(N_1_num) + list(str(date))[3]
+                N_N = (yyds + ":复式串关" + (str(N_1_num)) + "串" + list(str(date))[3])
+                all_mixedNum_N_list.append(N_N)
+            else:
+                N_B = (list(str(date))[0] + list(str(date))[2]+list(str(date))[3])
+                N_N = (yyds + ":复式串关" + list(str(date))[0] + "串" + list(str(date))[2]+list(str(date))[3])
+                all_mixedNum_N_list.append(N_N)
 
         #已下注串关或复式串关写入：
         mixedNum_list.append(N_N)
@@ -540,9 +609,12 @@ def get_submitbet_N_1(i):
         #循环已下注的比赛名称和盘口
         for yg in range(0,len(sub_list)):
             dd=sub_list[yg]["marketName"]
-            # print(ttt_list[yg])
-            # print(matchId.index(ttt_list[yg]))
-            print(f"投注比赛：{aa_list[matchId.index(ttt_list[yg])]}VS{bb_list[matchId.index(ttt_list[yg])]},投注盘口：{dd}")
+            oddsType_name=submit_dict[mixedNum][yg]["oddsType"]
+            if oddsType_name == 1:
+                oddsType_name = "\033[32m欧洲盘\033[0m"
+            else:
+                oddsType_name = "\033[33m香港盘\033[0m"
+            print(f"投注比赛：{aa_list[matchId.index(ttt_list[yg])]}VS{bb_list[matchId.index(ttt_list[yg])]},投注盘口：{dd},赔率类型:{oddsType_name}")
         print("---------------------------------------------------------分割线------------------------------------------------------------------")
         # 写入订单详情
         path010 = "C:\\test\\get_test\\order_no.txt"
@@ -559,7 +631,7 @@ def get_submitbet_N_1(i):
     count02=0
     count02=count02+1
     print("{已下注成功用户：" + name, "已投注串关："+str(mixedNum_list)+"已成功投注注单：" + str(len(mixedNum_list)), " 正在投注比赛：" + "未开启多线程"," 未投投注比赛：" + str((len(matchId) - len(mixedNum_list) - 1)) + " 投注orderNo：" + str(orderNo) + "}" + "\n")
-    sport_lsit.append(yyds)
+
 
 
 
@@ -587,8 +659,8 @@ def get_submitbet_N_1(i):
                 print("已下注串关类型：" + str(mixedNum_list))
                 print("已下注比赛ID：" + str(sr_match_list))
                 print("已下注比赛订单号：" + str(orderNo_list))
-                print(
-                    "---------------------------------------------------------分割线------------------------------------------------------------------" + "\n")
+                print("---------------------------------------------------------分割线------------------------------------------------------------------" + "\n")
+                get_print()
                 # # 写入比赛ID：
                 # path01 = "C:\\test\\get_test\\matchid\\" + yyds + now01 + ".txt"
                 # f = open(path01, 'a')
@@ -623,149 +695,161 @@ def get_submitbet_N_1(i):
                 mixedNum_list.clear()
                 sr_match_list.clear()
                 submit_dict.clear()
+                sport_lsit.append(yyds)
                 print(time.sleep(5))
     else:
         pass
 
 
-def sprot_yyds():
+def sprot_yyds(j):
     global sport, marketGroupId,yyds
-    if j == a or j=="足球":
+    if j=="足球":
         sport = "sr:sport:1"
         marketGroupId = "100"
         yyds = "足球"
-        print("正在下注球类：" + "足球")
-    if j == (a + 1) or j=="篮球":
+    if j=="篮球":
         sport = "sr:sport:2"
         marketGroupId = "200"
         yyds = "篮球"
-        print("正在下注球类：" + "篮球")
 
-    if j == (a + 2) or j=="网球":
+    if j=="网球":
         sport = "sr:sport:5"
         marketGroupId = "300"
         yyds = "网球"
-        print("正在下注球类：" + "网球")
 
-    if j == (a + 3) or j=="排球":
+    if j=="排球":
         sport = "sr:sport:23"
         marketGroupId = "400"
         yyds = "排球"
-        print("正在下注球类：" + "排球")
 
-    if j == (a + 4) or j=="羽毛球":
+    if j=="羽毛球":
         sport = "sr:sport:31"
         marketGroupId = "500"
         yyds = "羽毛球"
-        print("正在下注球类：" + "羽毛球")
 
-    if j == (a + 5) or j=="乒乓球":
+    if j=="乒乓球":
         sport = "sr:sport:20"
         marketGroupId = "600"
         yyds = "乒乓球"
-        print("正在下注球类：" + "乒乓球")
 
-    if j == (a + 6) or j=="棒球":
+    if j=="棒球":
         sport = "sr:sport:3"
         marketGroupId = "700"
         yyds = "棒球"
-        print("正在下注球类：" + "棒球")
 
-    if j == (a + 7) or j=="冰球":
+    if j=="冰球":
         sport = "sr:sport:4"
         marketGroupId = "900"
         yyds = "冰球"
-        print("正在下注球类：" + "冰球")
+    print(f"\033[32m---------------------------------------------------------正在下注球类:{yyds}---------------------------------------------------------------------\033[0m")
+    mixedNum_N_1_number_YYds_list_01.clear()
+    mixedNum_N_1_number_YYds_list_02.clear()
+    mixedNum_N_1_number_YYds_list_03.clear()
 
+
+
+def get_print():
+    if j =="冰球":
+        # 写入比赛ID
+        path01 = "C:\\test\\get_test\\matchid.txt"
+        f = open(path01, 'a')
+        f.write(
+            "---------------------------------------------------------分割线------------------------------------------------------------------" + "\n")
+        print("已下注比赛球类：" + str(sport_lsit))
+        print("未下注比赛球类：" + str(sport_lsit_null))
+        print("已下注所有串关：" + str(all_mixedNum_list))
+        print("已下注所有复式串关：" + str(all_mixedNum_N_list))
+        print("已下注所有比赛ID：" + str(matchid_yyds))
+        print("共所有计下注盘：" + str(LAY_yyds))
+        print("共计所有下注订单:" + str(orderNo_yyds))
+        print("共计所有下注订单数量:" + str(len(orderNo_yyds)))
 
 
 if __name__ == '__main__':
     URL = "http://192.168.10.120:6210"
     '''
-    @足球："sr:sport:1"  "100"
-    @蓝球："sr:sport:2"  "200"
-    @网球： "sr:sport:5" "300"
-    @排球："sr:sport:23" "400"
-    @羽毛球："sr:sport:31"  "500"
-    @乒乓球："sr:sport:20"  "600"
-    @棒球： "sr:sport:3" "700"
-    @冰球： "sr:sport:4" "900"
-
-
-
-
-    nub==1 代表:滚球盘
-    nub==2 代表:今日盘
-    nub==3 代表:早盘
-    '''
-
-    # get_toten_00()
-    # sprot_yyds(a=0,j="篮球")
-    # get_today_odds(nub=3)
-    # for g in range(0, len(matchId)):
-    #     get_odds(g)
-    # # with ThreadPoolExecutor(max_workers=50) as t1:  # 创建一个最大容纳数量为5的线程池
-    # #         print(f"正在取得{len(matchId)}场每场比赛随机盘口值,预计需要等待{len(matchId)/25}秒")
-    # #         for g in range(0, len(matchId)):
-    # #             task2 = t1.submit(get_odds, g)
-    # #             # get_odds(g)
-
-
-
-
-    # 球类参数
-    # sport="sr:sport:4"
-    # marketGroupId="900"
+        @足球："sr:sport:1"  "100"
+        @篮球："sr:sport:2"  "200"
+        @网球： "sr:sport:5" "300"
+        @排球："sr:sport:23" "400"
+        @羽毛球："sr:sport:31"  "500"
+        @乒乓球："sr:sport:20"  "600"
+        @棒球： "sr:sport:3" "700"
+        @冰球： "sr:sport:4" "900"
+        nub==1 代表:滚球盘
+        nub==2 代表:今日盘
+        nub==3 代表:早盘
+        '''
 
     # 取值范围：
-    a = 0
-    b = 8
-    user_num = 0
-    j="篮球"
-    for j in range(a, b):
+
+    # user_num = 0
+    # j="篮球"
+    j_lsit=["足球","篮球","网球","排球","羽毛球","乒乓球","棒球","冰球"]
+    # j_lsit=["篮球","网球","排球","羽毛球","乒乓球","棒球","冰球"]
+    # j_lsit=["乒乓球",  "冰球"]
+    for j in j_lsit:
+        sprot_yyds(j)
         get_toten_00()
-        sprot_yyds()
-        # sprot_yyds(a=j,j="足球")
-        get_today_odds(nub=3)
+        #赔率类型随机：1代表：欧洲盘，2代表：香港盘
+        oddsType = random.randint(1, 2)
+        get_today_odds(nub=3,oddsType=oddsType)
         if (len(sort_list_null))==0:
             print(f"{yyds}没有赛事,无法下注,已跳过\n-------------------------------------------------------")
             sport_lsit_null.append(yyds)
-            # if j == (b - 1):
-            if j == "篮球":
-                # 写入比赛ID
-                path01 = "C:\\test\\get_test\\matchid.txt"
-                f = open(path01, 'a')
-                f.write(
-                    "---------------------------------------------------------分割线------------------------------------------------------------------" + "\n")
-                print("已下注比赛球类：" + str(sport_lsit))
-                print("未下注比赛球类：" + str(sport_lsit_null))
-                print("已下注所有串关：" + str(all_mixedNum_list))
-                print("已下注所有复式串关：" + str(all_mixedNum_N_list))
-                print("已下注所有比赛ID：" + str(matchid_yyds))
-                print("共所有计下注盘：" + str(LAY_yyds))
-                print("共计所有下注订单:" + str(orderNo_yyds))
-                print("共计所有下注订单数量:" + str(len(orderNo_yyds)))
-            # continue
+            get_print()
+            continue
         else:
-                with ThreadPoolExecutor(max_workers=50) as t1:  # 创建一个最大容纳数量为5的线程池
-                    # for g in range(0, 10):
-                    print(f"正在取得{len(matchId)}场每场比赛的盘口值,预计需要等待{len(matchId)/25}秒")
-                    for g in range(0, len(matchId)):
-                        task2 = t1.submit(get_odds, g)
-                        # get_odds(g)
-                # 下注串关
+            with ThreadPoolExecutor(max_workers=50) as t1:  # 创建一个最大容纳数量为5的线程池
+                # for g in range(0, 10):
+                print(f"正在取得{len(matchId)}场每场比赛的盘口值,预计需要等待{len(matchId)/25}秒")
+                for g in range(0, len(matchId)):
+                    task2 = t1.submit(get_odds, g)
+                    # get_odds(g)
+        # 下注串关
+        mixedNum_betAmount = 10
+        mixedNum_N_1_number =10
 
-                mixedNum_betAmount = 10
-                mixedNum_N_1_number = 6
-                if len(matchId)>=mixedNum_N_1_number:
-                    mixedNum_N_1_number=mixedNum_N_1_number
-                else:
-                    mixedNum_N_1_number=len(matchId)
+        # print(time.sleep(5),end='')
+        mixedNum_N_1_number_dict={"2":2,"3":9,"4":16,"5":25,"6":36,"7":7,"8":8,"9":9,"10":10,"11":11,"12":13,"13":13,"14":14,"15":15,"16":16,"17":17}
+        if len(matchId) > 1:
+            if len(matchId)<=3:
+                mixedNum_N_1_number = 2
                 get_N_1(mixedNum_betAmount=mixedNum_betAmount, mixedNum_N_1_number=mixedNum_N_1_number, bet_type=1)
-    # #下注串关
-    # mixedNum_betAmount=10
-    # mixedNum_N_1_number=6
-    # get_N_1(mixedNum_betAmount=mixedNum_betAmount,mixedNum_N_1_number=mixedNum_N_1_number,bet_type=1)
+            if len(matchId)>3:
+                for kHH in range(2,mixedNum_N_1_number+1):
+                    mixedNum_N_1_number_YYds_list_02.append(mixedNum_N_1_number_dict[str(kHH)])
+                    # print(mixedNum_N_1_number_YYds_list_02)
+                    if sum(mixedNum_N_1_number_YYds_list_01)-sum(mixedNum_N_1_number_YYds_list_02)<15:
+                        print(f"{sum(mixedNum_N_1_number_YYds_list_02)}<={sum(mixedNum_N_1_number_YYds_list_01)},kHH:{kHH}")
+                        mixedNum_N_1_number =kHH-1
+                        # print(f"取得mixedNum_N_1_number={mixedNum_N_1_number}")
+                        del mixedNum_N_1_number_YYds_list_02[-1]
+                        break
+                    if sum(mixedNum_N_1_number_YYds_list_01)-sum(mixedNum_N_1_number_YYds_list_02)<25:
+                        print(f"{sum(mixedNum_N_1_number_YYds_list_02)}<={sum(mixedNum_N_1_number_YYds_list_01)},kHH:{kHH}")
+                        mixedNum_N_1_number = kHH
+                        # print(f"取得mixedNum_N_1_number={mixedNum_N_1_number}")
+                        break
+                    else:
+                        pass
+                print(f"取得mixedNum_N_1_number={mixedNum_N_1_number}")
+                get_N_1(mixedNum_betAmount=mixedNum_betAmount, mixedNum_N_1_number=mixedNum_N_1_number, bet_type=1)
+        else:
+            print(f"{yyds}赛事低于2场,无法下注串关,已跳过\n-------------------------------------------------------")
+            sport_lsit_null.append(yyds)
+            get_print()
+            continue
+
+        if int(mixedNum_N_1_number)<2:
+            print(f"{yyds}赛事程序计算,无法下注串关,已跳过\n-------------------------------------------------------")
+            sport_lsit_null.append(yyds)
+            get_print()
+            continue
+
+
+
+
 
 
 

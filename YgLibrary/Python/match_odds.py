@@ -109,14 +109,14 @@ def get_balance(number):
     # print(results)
     balance = results['data']['balance']
     winLoseAmount = results['data']['winLoseAmount']
-    # print(str(number)+"   "+"余额："+str(balance)+"  输赢："+str(winLoseAmount)+"\n")
+    print(str(number)+"   "+"余额："+str(balance)+"  输赢："+str(winLoseAmount)+"\n")
     # 写入订单详情
     path02 = "C:\\test\\balance-01.txt"
     f = open(path02, 'a')
     f.write(
         str(number) + "   " + "余额：" + str(balance) + "  输赢：" + str(winLoseAmount) + "\n"
     )
-    print(f"已完成{number}")
+    # print(f"已完成{number}")
 
 
 def get_time(number):

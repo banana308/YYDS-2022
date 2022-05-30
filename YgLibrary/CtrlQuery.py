@@ -229,6 +229,17 @@ class BetController(object):
     #     output += '</outcomes></bet_settlement>'
     #     return output
 
+
+    def generate_settlement_str_by_orderNo_number(self):
+        # 获取串关order_no的订单
+        sql = f"SELECT order_no FROM `bfty_credit`.o_account_order  WHERE `status`=1 AND login_account LIKE 'fceshi%'"
+        sort_num= self.my.query_data(sql, db_name='bfty_credit')
+        order_no=list(sort_num)
+        return order_no
+
+
+
+
     def generate_settlement_str_by_count_orderNo(self, order_no=""):
         global sort_num
         """
@@ -321,9 +332,11 @@ class BetController(object):
         query_data = list(self.my.query_data(sql=sql_str, db_name='bfty_credit'))
         if (len(query_data)-1)>=int(sort):
             sort=sort
+            print(f"\033[32m未做处理：{sort}\033[0m")
         else:
-            sort=int(sort)-1
-        print(query_data,sort)
+            sort=len(query_data)-1
+            print(f"\033[31m已做减一的处理：{sort}\033[0m")
+        # print(query_data,sort)
         outcomeId = query_data[sort][0]
         match_id, mark_id, specifiers, outcome_id = self.split_outcome_id(outcomeId)
         outcome_list=[]
@@ -336,8 +349,8 @@ class BetController(object):
 
         # 所有球类，大小盘，让球的market_id
         match_dict = {"sr:sport:1": ["16", "18", "66", "68"], "sr:sport:2": ["223", "225", "66", "68"],
-                      "sr:sport:5": ["188", "314"], "sr:sport:23": ["237", "238"], " sr:sport:31": ["237", "238"],
-                      "sr:sport:20": ["237", "238"], "sr:sport:3": ["256", "258"], " sr:sport:4": ["16", "18"]}
+                      "sr:sport:5": ["188", "314"], "sr:sport:23": ["237", "238"], "sr:sport:31": ["237", "238"],
+                      "sr:sport:20": ["237", "238"], "sr:sport:3": ["256", "258"], "sr:sport:4": ["16", "18"]}
         """
                 @通过订单号，查sport_id和market_id的值，判断是否在字典里，来判定是否让球和大小盘
                 ：sport_id：球类ID
@@ -346,58 +359,61 @@ class BetController(object):
         # 获取订单order_no的sport_id和market_id
         sql = f"SELECT sport_id,market_id FROM `bfty_credit`.o_account_order_match  WHERE  spliced_outcome_id='{outcomeId}'"
         sort_num = self.my.query_data(sql, db_name='bfty_credit')
+        # print(sort_num)
+        # print(list(sort_num)[0][1],list(sort_num)[0][0])
+        # name_sport=list(sort_num)[0][0]
+        # print(name_sport)
+        # print(match_dict[str(name_sport)])
 
         producer = self.dbq.get_match_data(match_id, "producer") if not producer else producer
-        if list(sort_num)[0][1] in match_dict[list(sort_num)[0][0]]:
+        if list(sort_num)[0][1] in match_dict[str(list(sort_num)[0][0])]:
             print("\033[31m在让球、大小球中\033[0m")
             if result_handicap == None:
                 result_handicap_list = ["输", "赢", "赢一半", "输一半", "走盘", '取消']
-                result = random.choice(result_handicap_list)
+                result_handicap = random.choice(result_handicap_list)
                 print(outcomeId)
+            if result_handicap == "输":
+                result_str = 'result=\"0\"'
+                result = ("\033[31m输\033[0m")
+            elif result_handicap == "赢":
+                result = ("\033[32m赢\033[0m")
+                result_str = 'result=\"1\"'
+            elif result_handicap == "赢一半":
+                result_str = 'result=\"1\" void_factor=\"0.5\"'
+                result = ("\033[32m赢一半\033[0m")
+            elif result_handicap == "输一半":
+                result_str = 'result=\"0\" void_factor=\"0.5\"'
+                result = ("\033[34m输一半\033[0m")
+            elif result_handicap == "走盘" or result_handicap == "取消":
+                result_str = 'result=\"0\" void_factor=\"1\"'
+                if result_handicap == "走盘":
+                    result = ("\033[33m走盘\033[0m")
             else:
-                if result_handicap == "输":
-                    result_str = 'result=\"0\"'
-                    result = ("\033[31m输\033[0m")
-                elif result_handicap == "赢":
-                    result = ("\033[32m赢\033[0m")
-                    result_str = 'result=\"1\"'
-                elif result_handicap == "赢一半":
-                    result_str = 'result=\"1\" void_factor=\"0.5\"'
-                    result = ("\033[32m赢一半\033[0m")
-                elif result_handicap == "输一半":
-                    result_str = 'result=\"0\" void_factor=\"0.5\"'
-                    result = ("\033[34m输一半\033[0m")
-                elif result_handicap == "走盘" or result_handicap == "取消":
-                    result_str = 'result=\"0\" void_factor=\"1\"'
-                    if result_handicap == "走盘":
-                        result = ("\033[33m走盘\033[0m")
-                else:
-                    raise AssertionError("Result_handicap 输入的值错误。")
+                raise AssertionError("Result_handicap 输入的值错误。")
 
         else:
             print("\033[32m不在让球、大小球中\033[0m")
             if result == None:
                 result_list = ["输", "赢", "赢一半", "输一半", '取消']
                 result = random.choice(result_list)
+            if result == "走盘":
+                raise AssertionError(f"Result 不能输入走盘,只能输入[输, 赢, 赢一半, 输一半, 取消]")
+            if result == "输" or result_handicap == "输":
+                result_str = 'result=\"0\"'
+                result = ("\033[31m输\033[0m")
+            elif result == "赢" or result_handicap == "赢":
+                result = ("\033[32m赢\033[0m")
+                result_str = 'result=\"1\"'
+            elif result == "赢一半" or result_handicap == "赢一半":
+                result_str = 'result=\"1\" void_factor=\"0.5\"'
+                result = ("\033[32m赢一半\033[0m")
+            elif result == "输一半" or result_handicap == "输一半":
+                result_str = 'result=\"0\" void_factor=\"0.5\"'
+                result = ("\033[34m输一半\033[0m")
+            elif result_handicap == "走盘" or result == '取消' or result_handicap == "取消":
+                result_str = 'result=\"0\" void_factor=\"1\"'
             else:
-                if result == "走盘":
-                    raise AssertionError(f"Result 不能输入走盘,只能输入[输, 赢, 赢一半, 输一半, 取消]")
-                if result == "输" or result_handicap == "输":
-                    result_str = 'result=\"0\"'
-                    result = ("\033[31m输\033[0m")
-                elif result == "赢" or result_handicap == "赢":
-                    result = ("\033[32m赢\033[0m")
-                    result_str = 'result=\"1\"'
-                elif result == "赢一半" or result_handicap == "赢一半":
-                    result_str = 'result=\"1\" void_factor=\"0.5\"'
-                    result = ("\033[32m赢一半\033[0m")
-                elif result == "输一半" or result_handicap == "输一半":
-                    result_str = 'result=\"0\" void_factor=\"0.5\"'
-                    result = ("\033[34m输一半\033[0m")
-                elif result_handicap == "走盘" or result == '取消' or result_handicap == "取消":
-                    result_str = 'result=\"0\" void_factor=\"1\"'
-                else:
-                    raise AssertionError("Result或Result_handicap 输入的值错误。")
+                raise AssertionError("Result或Result_handicap 输入的值错误。")
 
         data = self.dbq.get_match_data(match_id)
         if not data:
@@ -453,7 +469,7 @@ class BetController(object):
                                                  '赛事废弃': '10', '赛事推迟': '11'}
                                 cancle_key = ['无法核实结果', '取消赛事', '弃权或者取消资格取消', '对手未露面或者退场', '赛事废弃', '赛事推迟']
                                 key = random.choice(cancle_key)
-                                print(key)
+                                print(f"取消类型：{key}")
                                 output += '<market id="%s" void_reason="%s">' % (market["_id"], cancle_reason[key])
                             else:
                                 output += '<market id="%s">' % (market["_id"])
@@ -886,22 +902,10 @@ if __name__ == "__main__":
     # #     new_order_list.append(settled_message)
     # # print(new_order_list)
 
-
-
-
-
-
-
-
-
-
-
-
-
-    order_list=['XCM5vxTC6iBn','XCMjsFzS8FXv']
+    order_list=['XChTqgUMpDyp', 'XCkMJLaem29r', 'XCkMLZMYyht8', 'XCkMMxnxNbBK', 'XCkMMLKjzvg8', 'XCkMN9g3Hx6V', 'XCkMNrDG59VS', 'XCkMNFexdiak', 'XCkMUaeErMuP', 'XCkMXhfms2tv', 'XCM5vxTC6iBn', 'XCM5BY8rMUKc', 'XCMyYmpgJwkj', 'XCPiWXLfmiwS', 'XCPiXWvMDf6d', 'XCPiYTkCasqZ', 'XCPiZN2cdkQ5', 'XCPj2VNTDLiR', 'XCPj3VBbNVxA', 'XCPj4URsGi3r', 'XCPj5XbTWx34', 'XCPj6VcgGi8w', 'XCPj7W8iPfM3', 'XCPj8VxgmDNf', 'XCPja5yKwZiY', 'XCPjbPTRW75j', 'XCPjcLs8PhbG', 'XCPjdMADFDfs', 'XCPjf4qmTdzr', 'XCPjhiEE2xGs', 'XCPjm5DYR3qU', 'XCPjn5DPiPKV', 'XCPjrNrn2aZA', 'XCPmgEWbTeiX', 'XCPmiF9UT5Xu', 'XCPmkyijYZdF', 'XCPmpmvEBuqx', 'XCPmqk9sHUWX', 'XCPmrixUVkdQ', 'XCPmsm24Le9g', 'XCPmuS45u97m', 'XCPmvY9qz6Ri', 'XCPmwXD3hyXK', 'XCPmy4UHNrmD', 'XCPmzqXzRCEn', 'XCPmAB3BUvTS', 'XCPmBBTmQGQF', 'XCPmD3DtfHBr', 'XCPmDZHZfquh', 'XCPmEXDPu6mp', 'XCPpcaWtsnx4', 'XCPpdsUq2FB9', 'XCPpexuBsS2b', 'XCPpfwhVufer', 'XCPphnT7LqFY', 'XCPpimjTUvZs', 'XCPpkdSAjTT8', 'XCPpm9GH9nvD', 'XCPpn7zAzznE', 'XCPpp8bbRjBm', 'XCPpq5hV9NhZ', 'XCPpr4Fbf6YC', 'XCPprZ94pRcn', 'XCPpsV38YJpJ', 'XCPptRzzjinS', 'XCPpvNQYCgQ6', 'XCPpwQ5SN5SH', 'XCPpxR4bNn3m', 'XD5qGMcyV5em', 'XD5rQHMK3Cpa', 'XD5t3quxQSQz', 'XD5tnabj6gZK', 'XD5tWkSkfEvE', 'XD5ujWB5sug8', 'XD5uHXNfYTtW', 'XD5uMgrr5fV6', 'XD5uNg9dT26h', 'XD5uPtynrFFp', 'XD5uQyFSvMCa', 'XD5uRBNQ7bXE', 'XD5uTgKsRrig', 'XD5uUwTfSDWq', 'XD5uVCk4bTQC', 'XD5uXcA5kF25', 'XD5uYgkHcepV', 'XD5uZjCT6NVX', 'XD5v2nLqaStg', 'XD5v3rJ5tCka', 'XD5v4CGuKvWg', 'XD5v5MKAv55Z', 'XD5v6QntPxWR', 'XD5v7Vn45Dij', 'XD5v8Z9ruetp', 'XD5va98NnYvj', 'XD5vc87YBwzB', 'XD5vdfLfGPBa', 'XD5veAdzSFeK', 'XD5vi6d9y6wt', 'XD5vj3vFWZjb', 'XD5vk8n3J6Ca', 'XD5vmwYqcweF', 'XD5vrAtnaQEe', 'XD5vsJE7ZFtq', 'XD5vtPqxDdPG', 'XD5vuHhcFjqY', 'XD5vy5judnYw', 'XD5vN736wqZn', 'XD5ygbr5bpgw', 'XD5yhqugnTtk', 'XD5yip72N4dV', 'XD5yjjtDRbPi', 'XD5ykfzAVbEg', 'XD5ymcut2pPP', 'XD5yn9xdgxeX', 'XD5yp7nzyBFW', 'XD5yqcAeGJKR', 'XD5yr9qabuaa', 'XD5ys6KtbPCk', 'XD5yt3ER8Uww', 'XD5ytZGdtAeL', 'XD5yw8rvMsAs', 'XD5yx5GpESuD', 'XD5yy3tABRVn', 'XD5yz7arRryp', 'XD5yA8HrRbuS', 'XD5yBazdTh5z', 'XD5yC8aLrwYK', 'XD5yD8ZsXpiE', 'XD5yEdCiWJMT', 'XD5yHJTsWGks', 'XD5yJJur5hWe', 'XD5yKEMLp3JA', 'XD5yLzUHWbmS', 'XD5yQSRmLxWG', 'XD5yRQ5U2vzF', 'XD5ySNVsUHDU', 'XD5yTH7nK6DM', 'XD5yWK22aThP', 'XD5BG4ZGR5MQ', 'XD5C7LitXPgW', 'XD5C8Pzv6vXx', 'XD5C9KA4PWfx', 'XD5CaHf3iyYk', 'XD5CbGBkzUpx', 'XD5CcDPPyBPM', 'XD5CdyUaSvkh', 'XD5CeuQPdjp9', 'XD5CfrPmbdJp', 'XD5CgtMxWA4X', 'XD5ChMMxXrBu', 'XD5CjbuxhtRF', 'XD5CYRx5zdkK', 'XD5CZQgMKjid', 'XD5D2KMdUwFJ', 'XD5D3Gnh696P', 'XD5D4Ccgiy7x', 'XD5D5ykvr3Mw', 'XD5D6uDL5i4F', 'XD5D7pVzGwWa', 'XD5D8kFgzpjc', 'XD5D9i7cMkiX', 'XD5DafkJCJcM', 'XD5DbdrfEiXE', 'XD5Dc8wLTitq', 'XD5Dei5iqrFw', 'XD5DfnmtprG2', 'XD5DgkZg2AZV', 'XD5Dhi8UpLNM', 'XD5DijYLDimh', 'XD5DjipV9PpN', 'XD5DktZPWBqb', 'XD5Dmt5z9RBb', 'XD5DprhYCPwy', 'XD5DsPS8v8qt', 'XD5DwU4NnVft', 'XD5FHBK2pFs4', 'XD5FJG7Y3ba4', 'XD5FKCTDprUv', 'XD5FLzqmPJ7S', 'XD5FMx7k2K6T', 'XD5FNtJD5Cs8', 'XD5FPpGjJZuw', 'XD5FQjhX4BvN', 'XD5FRg2u7jLR', 'XD5FSdHhCSux', 'XD5FT9RB5uza', 'XD5FU5Fiabpr', 'XD5FV2EgSPbW', 'XD5FVYSGAV4t', 'XD5FWVESFtJ8', 'XD5FXSz2Lmkc', 'XD5FYQfcqr8e', 'XD5FZNqKsZ8F', 'XD5G2NkNYGdw', 'XD5G3NvkBsSM', 'XD5G4Lw25z8w', 'XD5G6LZ4sJAR', 'XD5G9Stny9pi', 'XD5GdWnG6era', 'XD5GUWy9g2MZ', 'XD5GVXRG4nqQ', 'XD5GWUzdhEZG', 'XD5GXSn84SKx', 'XD5GYMfFif4H', 'XD5GZGv6scLE', 'XD5H2BMkGWi5', 'XD5H3xCePqQS', 'XD5H4yJfAP4Y', 'XD5H5vrsQXDE', 'XD5H6tiZd5FM', 'XD5H7pjX9wqe', 'XD5H8kWa2DTC', 'XD5H9j6B8mkH', 'XD5HafYLN3Hy', 'XD5HbdvjPhiy', 'XD5HcdtNpEzQ', 'XD5HdbUb4UkV', 'XD5He9xf3tf4', 'XD5Hf9LmYvH9', 'XD5Hge6pE7KM', 'XD5HhbK5eJJZ', 'XD5HmmXtGEbQ', 'XD5HrsA85nhv', 'XD5JBEAmADEG', 'XD5JCDDSzYMs', 'XD5JDEtSk4zX', 'XD5JEA7Dh5kX', 'XD5JFvAWWLdG', 'XD5JGqFB6PqH', 'XD5JHkcsDsU5', 'XD5JJfvWfS2H', 'XD5JKbPHCxCA', 'XD5JL83N9tQv', 'XD5JM538K5De', 'XD5JMZDzaYMV', 'XD5JNY339FYR', 'XD5JPVwGN9kk', 'XD5JQU5w32YY', 'XD5JRRFqQSAG', 'XD5JSPxxzkBM', 'XD5JTMAgYwia', 'XD5JUJXJVuJH', 'XD5JVMeUCYQE', 'XD5JXGRwxRQe', 'XD5K3ZEAXn6G', 'XD5K82MW5p5E', 'XD5SqcHST2zy', 'XD5SsVhKpHcJ', 'XD5StSGga3R2', 'XD5SuPdpFgH4', 'XD5SvLsJsXeT', 'XD5SwKR4TUse', 'XD5SxJGdNv7f', 'XD5SyKdUrMyN', 'XD5SzGuauWKi', 'XD5SADuS4tm7', 'XD5SBzK453qD', 'XD5SCwnPDTMu', 'XD5SDtSjQTxr', 'XD5SEuAY2sEJ', 'XD5SFrNdhzKY', 'XD5SGpGBt9mX', 'XD5SHn3uSKaG', 'XD5SJkVvEdXa', 'XD5SKj2aHsax', 'XD5SLjT9S3V4', 'XD5SMiuqgUfS', 'XD5STVGDXnVL', 'XD5SY4Zzjqnc', 'XD5TchG8CzKE', 'XD5Tfi9bpqmY', 'XD5TgdJBmfAA', 'XD5ThdDYc5Tt', 'XD5Ti9bYDzLm', 'XD5Tj6PdQUF5', 'XD5Tk32ccaLU', 'XD5TkXEvFKuQ', 'XD5TmUjtVFRW', 'XD5TnRAPYmP7', 'XD5TpNsnM6CQ', 'XD5TqKgXb22m', 'XD5TrH9Dmwg9', 'XD5TsF4Marsv', 'XD5TtBN58czU', 'XD5TuBhmSkwn', 'XD5TvzJhJcps', 'XD5Twy5qeeph', 'XD5TxtSUCeCq', 'XD5TyvNushQK', 'XD5TzvhdAcQy', 'XD5TAuLAUhMg', 'XD5TBxhSq2fg', 'XD5TECivJKGn', 'XD5TJBAeSB6X']
     for order_no in order_list:
         print(f"共有 ",str(len(order_list))+" 笔结算注单,"+"正在结算第 "+str(order_list.index(order_no)+1)+" 笔注单："+str(order_no))
-        message = bc.send_message_to_datasourse(order_no=str(order_no), sort=0, certainty="2",result="取消",result_handicap="走盘")  # 生成注单结算指令
+        message = bc.send_message_to_datasourse(order_no=str(order_no), sort=0, certainty="2",result=None,result_handicap=None)  # 生成注单结算指令
         print("已完成注单："+str(order_list.index(order_no)+1)+"  "+"未完成注单"+str(len(order_list)-(order_list.index(order_no)+1))+"\n"+"----------------------------------------------------------------------------------------------------------------"+"\n"+"\n")
 
     # data = bc.generate_settlement_str_by_orderNo(order_no='XCrZUaMY8ht8',sort=0,result="取消")
