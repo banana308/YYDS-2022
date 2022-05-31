@@ -306,7 +306,7 @@ def get_odds():
 #下注
 def get_submitbet(pkk):
     global betAmount
-    betAmount="10"
+    betAmount="50"
     url = str(URL)+"/creditBet/submit"
     headers01 = {
         'content-type': 'application/json',
@@ -315,23 +315,11 @@ def get_submitbet(pkk):
     }
     data={
         "oddsChangeType": 1,
-        "mixedNum": ["6_57_1_10"],
-        # "mixedNum": ["1_1_0_100"],
+        # "mixedNum": ["6_57_1_10"],
+        "mixedNum": ["1_1_0_50"],
         # "mixedNum": ["6_1_0_10"],
         "betId": 1642830114658,
-        "selections": [
-            {"isLive": False, "originalOdds": 2.01, "creditOdds": 1.96,
-             "outcomeId": "sr:match:30675429_18_total=2.25_12", "oddsType": 1},
-            {"isLive": False, "originalOdds": 1.98, "creditOdds": 1.93,
-             "outcomeId": "sr:match:30675433_18_total=2.25_13", "oddsType": 1},
-            {"isLive": False, "originalOdds": 1.86, "creditOdds": 1.81,
-             "outcomeId": "sr:match:30675435_18_total=2.75_12", "oddsType": 1},
-            {"isLive": False, "originalOdds": 1.85, "creditOdds": 1.8,
-             "outcomeId": "sr:match:30675437_18_total=2.75_13", "oddsType": 1},
-            {"isLive": False, "originalOdds": 1.73, "creditOdds": 1.68,
-             "outcomeId": "sr:match:27977204_18_total=2.75_12", "oddsType": 1},
-            {"isLive": False, "originalOdds": 1.63, "creditOdds": 1.58,
-             "outcomeId": "sr:match:28748058_18_total=2_12","oddsType": 1}
+        "selections": [{"isLive":False,"originalOdds":27,"creditOdds":26.94,"outcomeId":"sr:match:33584277_30__784","oddsType":1}
         ],
         "browserFingerprintId": "5ec55c2d078b1b2f30986bb78a518511",
         "terminal": "pc",
@@ -418,20 +406,28 @@ if __name__=='__main__':
     '''
     # 120测试环境
     URL = "http://192.168.10.120:6210"
-    with ThreadPoolExecutor(max_workers=10) as t:  # 创建一个最大容纳数量为5的线程池
-        for j in range(0, 1001):
-            task1 = t.submit(get_toten,j)
-        get_time(60)
-        print(len(toten_list))
-        print(toten_list)
-        get_time(10)
-        with ThreadPoolExecutor(max_workers=3) as t1:  # 创建一个最大容纳数量为5的线程池
-            for i in range(0, len(toten_list)):
-                task2 = t1.submit(get_submitbet,i)
-                # task2 = t1.submit(get_balance,i
-            get_time(180)
-            print(orderNo_list)
-            print(len(orderNo_list))
+    for j in range(500, 521):
+        get_toten(j)
+        # get_balance(j)
+        get_submitbet(j-500)
+
+
+
+
+    # with ThreadPoolExecutor(max_workers=10) as t:  # 创建一个最大容纳数量为5的线程池
+    #     for j in range(520, 521):
+    #         task1 = t.submit(get_toten,j)
+    #     time.sleep(30)
+    #     print(len(toten_list))
+    #     print(toten_list)
+    #     get_time(10)
+    #     with ThreadPoolExecutor(max_workers=3) as t1:  # 创建一个最大容纳数量为5的线程池
+    #         for i in range(0, len(toten_list)):
+    #             task2 = t1.submit(get_submitbet,i)
+    #             # task2 = t1.submit(get_balance,i
+    #         get_time(180)
+    #         print(orderNo_list)
+    #         print(len(orderNo_list))
 
 
 
@@ -465,10 +461,7 @@ if __name__=='__main__':
             print("共计下注盘："+str(ods_list))
             
             
-   # for j in range(704, 1001):
-    #     get_toten(j)
-    #     # get_balance(j)
-    #     get_submitbet()
+  
 
     # print(orderNo_list)
     # print(len(orderNo_list))

@@ -8,7 +8,7 @@ from concurrent.futures import ThreadPoolExecutor
 #!/usr/bin/python
 #-*-coding:UTF-8-*-
 
-token="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjE1MDg2ODc2MjU1NjYzNjc3NDYiLCJleHAiOjE2NDkxNjg1MTMsInVzZXJuYW1lIjoidGVzdGFnZW50MDAwMTAyMDMifQ.-VCg16R_95xk7ypGZZrzpmzy51RRNDnpCLxuaQrpew8"
+token="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjE1MzE1MTc3NjAzMDAxNjMwNzQiLCJleHAiOjE2NTM5ODQ3ODUsInVzZXJuYW1lIjoiZDBkMWQyZDMifQ.HCXj7bktmvtxvuEPwa9i4nFCGccPjEYFQwOvWqGH_KI"
 
 list=[]
 account_list=[]
@@ -26,9 +26,9 @@ z_m_num01=["0","1","2","3","4","5","6","7","8","9"]
 
 #120测试环境
 # URL="http://192.168.10.120:8093"
+# URL="http://192.168.10.120:8093"
+#MDE环境
 URL="https://mdesearch.betf.best"
-#58测试环境
-# URL="http://192.168.10.237:8093"
 
 def rambbq(j,i):
     global zm,handicapType,account,retreatProportion,profitLossPercentage,name,b,z_m_j,z_m_i,z_m_list
@@ -38,26 +38,19 @@ def rambbq(j,i):
         # print("j的数字：" + str(j) +"   j取值为："+str(z_m_j[j])+ "\n"+ "i的数字：" + str(i)+"   i取值为："+str(z_m_num01[i]))
         print("j的数字：" + str(j) + "   j取值为：" + str(z_m_j[j]) + "\n" + "i的数字：" + str(i) + "   i取值为：" + str(z_m_i[i]))
     # zm = "testagent00010203"+str(z_m_j[j])
-    zm = "a1dx0203" + str(z_m_j[j])
+    zm = "d0d1d2d3" + str(z_m_j[j])
     water= random.randint(1,4)
+    pp = random.randint(0, 4)
+    pp_num = ['1', '2', '3', '4', '5','6', '7', '8', '9', '10']
+    retreatProportion = pp_num[pp]
     if water==1:
         handicapType="A"
-        pp=random.randint(0,7)
-        pp_num=['18','17','16','14','13','12','10','7']
-        retreatProportion=pp_num[pp]
     if water==2:
         handicapType="B"
-        pp = random.randint(0, 5)
-        pp_num = [ '16', '14', '13', '12', '10', '7']
-        retreatProportion = pp_num[pp]
     if water==3:
         handicapType = "C"
-        pp = random.randint(0, 1)
-        pp_num = ['10', '7']
-        retreatProportion = pp_num[pp]
     if water == 4:
         handicapType = "D"
-        retreatProportion = '7'
 
     #拼接account
     # account=zm+str(z_m_i[i])
@@ -70,8 +63,8 @@ def rambbq(j,i):
     # name_list.append(name)
 
     #随机占成数
-    num=random.randint(0,14)
-    kkk_nmu=['0','1','2','3','4','5','6','7','8','9','10','11','12','13','14']
+    num=random.randint(0,4)
+    kkk_nmu=['1','2','3','4','5']
     profitLossPercentage=kkk_nmu[0]
 
 
@@ -84,32 +77,104 @@ def registered(money):
     }
 
     data = {
-    "account":account,
-    "creditsAmount":money,
-    "status":"",
-    "currency":"CNY",
-    "exchangeRate":"",
-    "handicapType":"A",
-    "name":name,
-    "password":"Bfty123456",
-    "profitLossPercentage":0,
-    "quotaMode":"",
-    "userConfigurationParams":[
-    {"handicapCategoryId":"1","retreatProportion":18,"singleBetLimit":3000,"singleGameBetLimit":100000,"sportCategoryId":"1"},
-    {"handicapCategoryId":"2","retreatProportion":18,"singleBetLimit":3000,"singleGameBetLimit":100000,"sportCategoryId":"1"},
-    {"handicapCategoryId":"3","retreatProportion":"","singleBetLimit":3000,"singleGameBetLimit":100000,"sportCategoryId":"1"},
-    {"handicapCategoryId":"100","retreatProportion":"","singleBetLimit":3000,"singleGameBetLimit":100000,"sportCategoryId":"1"},
-    {"handicapCategoryId":"1","retreatProportion":18,"singleBetLimit":3000,"singleGameBetLimit":100000,"sportCategoryId":"2"},
-    {"handicapCategoryId":"2","retreatProportion":18,"singleBetLimit":3000,"singleGameBetLimit":100000,"sportCategoryId":"2"},
-    {"handicapCategoryId":"3","retreatProportion":"","singleBetLimit":3000,"singleGameBetLimit":100000,"sportCategoryId":"2"},
-    {"handicapCategoryId":"100","retreatProportion":"","singleBetLimit":3000,"singleGameBetLimit":100000,"sportCategoryId":"2"},
-    {"handicapCategoryId":"1","retreatProportion":18,"singleBetLimit":3000,"singleGameBetLimit":100000,"sportCategoryId":"100"},
-    {"handicapCategoryId":"2","retreatProportion":18,"singleBetLimit":3000,"singleGameBetLimit":100000,"sportCategoryId":"100"},
-    {"handicapCategoryId":"3","retreatProportion":"","singleBetLimit":3000,"singleGameBetLimit":100000,"sportCategoryId":"100"},
-    {"handicapCategoryId":"100","retreatProportion":"","singleBetLimit":3000,"singleGameBetLimit":100000,"sportCategoryId":"100"}]}
+        "account": account,
+        "creditsAmount": money,
+        "handicapType": handicapType,
+        "name": name,
+        "password": "Bfty123456",
+        "parentProfitLossPercentage": 20,
+        "userConfigurationParams": [
+            {
+                "handicapCategoryId": "1",
+                "retreatProportion": retreatProportion,
+                "singleBetLimit": 5000,
+                "singleGameBetLimit": 30000,
+                "sportCategoryId": "1"
+            },
+            {
+                "handicapCategoryId": "2",
+                "retreatProportion": retreatProportion,
+                "singleBetLimit": 5000,
+                "singleGameBetLimit": 30000,
+                "sportCategoryId": "1"
+            },
+            {
+                "handicapCategoryId": "3",
+                "retreatProportion": "",
+                "singleBetLimit": 5000,
+                "singleGameBetLimit": 30000,
+                "sportCategoryId": "1"
+            },
+            {
+                "handicapCategoryId": "100",
+                "retreatProportion": "",
+                "singleBetLimit": 5000,
+                "singleGameBetLimit": 30000,
+                "sportCategoryId": "1"
+            },
+            {
+                "handicapCategoryId": "1",
+                "retreatProportion": retreatProportion,
+                "singleBetLimit": 5000,
+                "singleGameBetLimit": 30000,
+                "sportCategoryId": "2"
+            },
+            {
+                "handicapCategoryId": "2",
+                "retreatProportion": retreatProportion,
+                "singleBetLimit": 5000,
+                "singleGameBetLimit": 30000,
+                "sportCategoryId": "2"
+            },
+            {
+                "handicapCategoryId": "3",
+                "retreatProportion": "",
+                "singleBetLimit": 5000,
+                "singleGameBetLimit": 30000,
+                "sportCategoryId": "2"
+            },
+            {
+                "handicapCategoryId": "100",
+                "retreatProportion": "",
+                "singleBetLimit": 5000,
+                "singleGameBetLimit": 30000,
+                "sportCategoryId": "2"
+            },
+            {
+                "handicapCategoryId": "1",
+                "retreatProportion": retreatProportion,
+                "singleBetLimit": 5000,
+                "singleGameBetLimit": 30000,
+                "sportCategoryId": "100"
+            },
+            {
+                "handicapCategoryId": "2",
+                "retreatProportion": retreatProportion,
+                "singleBetLimit": 5000,
+                "singleGameBetLimit": 30000,
+                "sportCategoryId": "100"
+            },
+            {
+                "handicapCategoryId": "3",
+                "retreatProportion": "",
+                "singleBetLimit": 5000,
+                "singleGameBetLimit": 30000,
+                "sportCategoryId": "100"
+            },
+            {
+                "handicapCategoryId": "100",
+                "retreatProportion": "",
+                "singleBetLimit": 5000,
+                "singleGameBetLimit": 30000,
+                "sportCategoryId": "100"
+            }
+        ]
+    }
+
     response = requests.post(url=url, headers=headers01, json=data)
     # 返回结果json转化
     results = json.loads(response.text)
+    print(response,"\n",results)
     #print(results)
     code=results['data']['code']
     message=results['data']['message']
@@ -159,7 +224,7 @@ def upadte_001(ppyur):
         exit()
 
 def updateUserInfo(j):
-    url = str(URL) + "/uuser/updateUserInfo"
+    url = str(URL) + "/uuser/addUser"
     name="杜鑫test0"+str(j+1)
     headers01 = {
         'Content-Type': 'application/json;charset=UTF-8',
@@ -212,26 +277,27 @@ def updateUserInfo(j):
 
 
 
+# list=['d0d1d2d3aa', 'd0d1d2d3ab', 'd0d1d2d3ac', 'd0d1d2d3ad', 'd0d1d2d3ae', 'd0d1d2d3af', 'd0d1d2d3ag', 'd0d1d2d3ah', 'd0d1d2d3ai', 'd0d1d2d3aj', 'd0d1d2d3ba', 'd0d1d2d3bb', 'd0d1d2d3bc', 'd0d1d2d3bd', 'd0d1d2d3be', 'd0d1d2d3bf', 'd0d1d2d3bg', 'd0d1d2d3bh', 'd0d1d2d3bi', 'd0d1d2d3bj', 'd0d1d2d3ca', 'd0d1d2d3cb', 'd0d1d2d3cc', 'd0d1d2d3cd', 'd0d1d2d3ce', 'd0d1d2d3cf', 'd0d1d2d3cg', 'd0d1d2d3ch', 'd0d1d2d3ci', 'd0d1d2d3cj', 'd0d1d2d3da', 'd0d1d2d3db', 'd0d1d2d3dc', 'd0d1d2d3dd', 'd0d1d2d3de', 'd0d1d2d3df', 'd0d1d2d3dg', 'd0d1d2d3dh', 'd0d1d2d3di', 'd0d1d2d3dj', 'd0d1d2d3ea', 'd0d1d2d3eb', 'd0d1d2d3ec', 'd0d1d2d3ed', 'd0d1d2d3ee', 'd0d1d2d3ef', 'd0d1d2d3eg', 'd0d1d2d3eh', 'd0d1d2d3ei', 'd0d1d2d3ej', 'd0d1d2d3fa', 'd0d1d2d3fb', 'd0d1d2d3fc', 'd0d1d2d3fd', 'd0d1d2d3fe', 'd0d1d2d3ff', 'd0d1d2d3fg', 'd0d1d2d3fh', 'd0d1d2d3fi', 'd0d1d2d3fj', 'd0d1d2d3ga', 'd0d1d2d3gb', 'd0d1d2d3gc', 'd0d1d2d3gd', 'd0d1d2d3ge', 'd0d1d2d3gf', 'd0d1d2d3gg', 'd0d1d2d3gh', 'd0d1d2d3gi', 'd0d1d2d3gj', 'd0d1d2d3ha', 'd0d1d2d3hb', 'd0d1d2d3hc', 'd0d1d2d3hd', 'd0d1d2d3he', 'd0d1d2d3hf', 'd0d1d2d3hg', 'd0d1d2d3hh', 'd0d1d2d3hi', 'd0d1d2d3hj', 'd0d1d2d3ia', 'd0d1d2d3ib', 'd0d1d2d3ic', 'd0d1d2d3id', 'd0d1d2d3ie', 'd0d1d2d3if', 'd0d1d2d3ig', 'd0d1d2d3ih', 'd0d1d2d3ii', 'd0d1d2d3ij', 'd0d1d2d3ja', 'd0d1d2d3jb', 'd0d1d2d3jc', 'd0d1d2d3jd', 'd0d1d2d3je', 'd0d1d2d3jf', 'd0d1d2d3jg', 'd0d1d2d3jh', 'd0d1d2d3ji', 'd0d1d2d3jj', 'd0d1d2d3ka', 'd0d1d2d3kb', 'd0d1d2d3kc', 'd0d1d2d3kd', 'd0d1d2d3ke', 'd0d1d2d3kf', 'd0d1d2d3kg', 'd0d1d2d3kh', 'd0d1d2d3ki', 'd0d1d2d3kj', 'd0d1d2d3la', 'd0d1d2d3lb', 'd0d1d2d3lc', 'd0d1d2d3ld', 'd0d1d2d3le', 'd0d1d2d3lf', 'd0d1d2d3lg', 'd0d1d2d3lh', 'd0d1d2d3li', 'd0d1d2d3lj', 'd0d1d2d3ma', 'd0d1d2d3mb', 'd0d1d2d3mc', 'd0d1d2d3md', 'd0d1d2d3me', 'd0d1d2d3mf', 'd0d1d2d3mg', 'd0d1d2d3mh', 'd0d1d2d3mi', 'd0d1d2d3mj', 'd0d1d2d3na', 'd0d1d2d3nb', 'd0d1d2d3nc', 'd0d1d2d3nd', 'd0d1d2d3ne', 'd0d1d2d3nf', 'd0d1d2d3ng', 'd0d1d2d3nh', 'd0d1d2d3ni', 'd0d1d2d3nj', 'd0d1d2d3oa', 'd0d1d2d3ob', 'd0d1d2d3oc', 'd0d1d2d3od', 'd0d1d2d3oe', 'd0d1d2d3of', 'd0d1d2d3og', 'd0d1d2d3oh', 'd0d1d2d3oi', 'd0d1d2d3oj', 'd0d1d2d3pa', 'd0d1d2d3pb', 'd0d1d2d3pc', 'd0d1d2d3pd', 'd0d1d2d3pe', 'd0d1d2d3pf', 'd0d1d2d3pg', 'd0d1d2d3ph', 'd0d1d2d3pi', 'd0d1d2d3pj', 'd0d1d2d3qa', 'd0d1d2d3qb', 'd0d1d2d3qc', 'd0d1d2d3qd', 'd0d1d2d3qe', 'd0d1d2d3qf', 'd0d1d2d3qg', 'd0d1d2d3qh', 'd0d1d2d3qi', 'd0d1d2d3qj', 'd0d1d2d3ra', 'd0d1d2d3rb', 'd0d1d2d3rc', 'd0d1d2d3rd', 'd0d1d2d3re', 'd0d1d2d3rf', 'd0d1d2d3rg', 'd0d1d2d3rh', 'd0d1d2d3ri', 'd0d1d2d3rj', 'd0d1d2d3sa', 'd0d1d2d3sb', 'd0d1d2d3sc', 'd0d1d2d3sd', 'd0d1d2d3se', 'd0d1d2d3sf', 'd0d1d2d3sg', 'd0d1d2d3sh', 'd0d1d2d3si', 'd0d1d2d3sj', 'd0d1d2d3ta', 'd0d1d2d3tb', 'd0d1d2d3tc', 'd0d1d2d3td', 'd0d1d2d3te', 'd0d1d2d3tf', 'd0d1d2d3tg', 'd0d1d2d3th', 'd0d1d2d3ti', 'd0d1d2d3tj', 'd0d1d2d3ua', 'd0d1d2d3ub', 'd0d1d2d3uc', 'd0d1d2d3ud', 'd0d1d2d3ue', 'd0d1d2d3uf', 'd0d1d2d3ug', 'd0d1d2d3uh', 'd0d1d2d3ui', 'd0d1d2d3uj', 'd0d1d2d3va', 'd0d1d2d3vb', 'd0d1d2d3vc', 'd0d1d2d3vd', 'd0d1d2d3ve', 'd0d1d2d3vf', 'd0d1d2d3vg', 'd0d1d2d3vh', 'd0d1d2d3vi', 'd0d1d2d3vj', 'd0d1d2d3wa', 'd0d1d2d3wb', 'd0d1d2d3wc', 'd0d1d2d3wd', 'd0d1d2d3we', 'd0d1d2d3wf', 'd0d1d2d3wg', 'd0d1d2d3wh', 'd0d1d2d3wi', 'd0d1d2d3wj', 'd0d1d2d3xa', 'd0d1d2d3xb', 'd0d1d2d3xc', 'd0d1d2d3xd', 'd0d1d2d3xe', 'd0d1d2d3xf', 'd0d1d2d3xg', 'd0d1d2d3xh', 'd0d1d2d3xi', 'd0d1d2d3xj', 'd0d1d2d3ya', 'd0d1d2d3yb', 'd0d1d2d3yc', 'd0d1d2d3yd', 'd0d1d2d3ye', 'd0d1d2d3yf', 'd0d1d2d3yg', 'd0d1d2d3yh', 'd0d1d2d3yi', 'd0d1d2d3yj', 'd0d1d2d3za', 'd0d1d2d3zb', 'd0d1d2d3zc', 'd0d1d2d3zd', 'd0d1d2d3ze', 'd0d1d2d3zf', 'd0d1d2d3zg', 'd0d1d2d3zh', 'd0d1d2d3zi', 'd0d1d2d3zj']
 
-
-
-
-if __name__=='__main__':
-    for j in range(218, 1100):
-        updateUserInfo(j)
 
 
 
 # if __name__=='__main__':
-#     for j in range(0, 26):
-#         for i in range(0,10):
-#             rambbq(j,i)
-#             registered(5000)
-#         if j == (26-1):
-#             print(len(list))
-#             print(list)
-#         else:
-#             pass
+#     for j in range(218, 1100):
+#         updateUserInfo(j)
+
+
+
+if __name__=='__main__':
+    for j in range(0,26):
+        for i in range(0,26):
+            rambbq(j,i)
+            registered(random.randint(5000,20001))
+        if j == (26-1):
+            print(len(list))
+            print(list)
+        else:
+            pass
 
 # if __name__=='__main__':
 #     for j in range(0, 26):
