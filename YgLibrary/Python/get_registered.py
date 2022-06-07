@@ -8,7 +8,7 @@ from concurrent.futures import ThreadPoolExecutor
 #!/usr/bin/python
 #-*-coding:UTF-8-*-
 
-token="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjE1MzE1MTc3NjAzMDAxNjMwNzQiLCJleHAiOjE2NTM5ODQ3ODUsInVzZXJuYW1lIjoiZDBkMWQyZDMifQ.HCXj7bktmvtxvuEPwa9i4nFCGccPjEYFQwOvWqGH_KI"
+token="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjE1MzMwMDM3MDk5NTM3NzM1NjkiLCJleHAiOjE2NTQzMzg4MjksInVzZXJuYW1lIjoiYTFiMGMxZDEifQ.E7G4Zp1oXVpgG7k7dyUfCV6vNZ3lm6dxqX-1vUnMvhA"
 
 list=[]
 account_list=[]
@@ -38,7 +38,8 @@ def rambbq(j,i):
         # print("j的数字：" + str(j) +"   j取值为："+str(z_m_j[j])+ "\n"+ "i的数字：" + str(i)+"   i取值为："+str(z_m_num01[i]))
         print("j的数字：" + str(j) + "   j取值为：" + str(z_m_j[j]) + "\n" + "i的数字：" + str(i) + "   i取值为：" + str(z_m_i[i]))
     # zm = "testagent00010203"+str(z_m_j[j])
-    zm = "d0d1d2d3" + str(z_m_j[j])
+    # zm = "d0d1d2d3" + str(z_m_num01[j])
+    zm = "a1b0c1d1" + str(z_m_j[j])
     water= random.randint(1,4)
     pp = random.randint(0, 4)
     pp_num = ['1', '2', '3', '4', '5','6', '7', '8', '9', '10']
@@ -59,7 +60,8 @@ def rambbq(j,i):
 
 
     #拼接name
-    name="杜鑫test账号"+str(z_m_j[j])+str(z_m_i[i])
+    # name="杜鑫test账号"+str(z_m_j[j])+str(z_m_i[i])
+    name="test账号"+str(z_m_j[j])+str(z_m_i[i])
     # name_list.append(name)
 
     #随机占成数
@@ -174,8 +176,8 @@ def registered(money):
     response = requests.post(url=url, headers=headers01, json=data)
     # 返回结果json转化
     results = json.loads(response.text)
-    print(response,"\n",results)
-    #print(results)
+    # print(response,"\n",results)
+    # print(results)
     code=results['data']['code']
     message=results['data']['message']
     #print(code,message)
@@ -289,7 +291,7 @@ def updateUserInfo(j):
 
 
 if __name__=='__main__':
-    for j in range(0,26):
+    for j in range(2,26):
         for i in range(0,26):
             rambbq(j,i)
             registered(random.randint(5000,20001))

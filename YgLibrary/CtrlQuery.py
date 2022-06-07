@@ -1,4 +1,5 @@
 import requests
+from concurrent.futures import ThreadPoolExecutor
 import json
 import re
 import time
@@ -139,7 +140,8 @@ class BetController(object):
         """
         模拟ctrl给我司推送数据
         """
-        self.bc_host = "http://192.168.10.10:8808/mock/message"
+        # self.bc_host = "http://192.168.10.10:8808/mock/message"
+        self.bc_host = "http://35.234.4.41:31101/mock/message"
         self.session = requests.session()
         self.dbq = DbQuery(mongo_info)
         # self.ctrl_docs = CtrlIoDocs(mysql_info, mongo_info)
@@ -230,6 +232,31 @@ class BetController(object):
     #     return output
 
 
+
+    def generate_settlement_str_by_orderNo_number_type(self,proxy3_id="",bet_type=""):
+        """
+        通过注单状态，类型、登3的ID，获取注单的比赛ID
+        ：param order_no:
+        :param bet_type: 传0获取该代理的所有未结算这段注单，传1获取单注，传2获取N串1，传3获取复式串关，传4获取串关和复式串关的注单
+        """
+        # 获取串关order_no的订单
+        if bet_type=="0":
+            sql = f"SELECT order_no FROM `bfty_credit`.o_account_order  WHERE `status`=1 AND proxy3_id={proxy3_id}"
+            sort_num= self.my.query_data(sql, db_name='bfty_credit')
+        elif bet_type=="4":
+            sql = f"SELECT order_no FROM `bfty_credit`.o_account_order  WHERE `status`=1 AND proxy3_id={proxy3_id} AND bet_type>1"
+            sort_num= self.my.query_data(sql, db_name='bfty_credit')
+        else:
+            sql = f"SELECT order_no FROM `bfty_credit`.o_account_order  WHERE `status`=1 AND proxy3_id={proxy3_id} AND bet_type={bet_type}"
+            sort_num= self.my.query_data(sql, db_name='bfty_credit')
+        list_order_no=[]
+        for jj in range(0,len(sort_num)):
+            list_order_no.append(sort_num[jj][0])
+        order_no=list_order_no
+        print(order_no)
+        print("注单数量："+str(len(order_no)))
+        return order_no
+
     def generate_settlement_str_by_orderNo_number(self):
         # 获取串关order_no的订单
         sql = f"SELECT order_no FROM `bfty_credit`.o_account_order  WHERE `status`=1 AND login_account LIKE 'fceshi%'"
@@ -313,8 +340,8 @@ class BetController(object):
         """
         # 获取order_no的注单类型
         sql = f"SELECT bet_type FROM `bfty_credit`.o_account_order  WHERE order_no='{order_no}' AND status='1' "
-        match_num = self.my.query_data(sql, db_name='bfty_credit')
-        # match_num = int(match_num[0][0])
+        match_num_01 = self.my.query_data(sql, db_name='bfty_credit')
+        match_num = int(match_num_01[0][0])
 
         #获取order_no的主队比赛名称
         sql = f"SELECT home_team_name FROM `bfty_credit`.o_account_order_match  WHERE order_no='{order_no}' "
@@ -389,31 +416,36 @@ class BetController(object):
                 if result_handicap == "走盘":
                     result = ("\033[33m走盘\033[0m")
             else:
-                raise AssertionError("Result_handicap 输入的值错误。")
+                raise AssertionError(f"Result_handicap:{result_handicap}")
+            print(f"结算结果：{result}")
+
 
         else:
             print("\033[32m不在让球、大小球中\033[0m")
             if result == None:
-                result_list = ["输", "赢", "赢一半", "输一半", '取消']
+                result_list = ["输", "赢",'取消']
                 result = random.choice(result_list)
-            if result == "走盘":
-                raise AssertionError(f"Result 不能输入走盘,只能输入[输, 赢, 赢一半, 输一半, 取消]")
             if result == "输" or result_handicap == "输":
                 result_str = 'result=\"0\"'
                 result = ("\033[31m输\033[0m")
             elif result == "赢" or result_handicap == "赢":
                 result = ("\033[32m赢\033[0m")
                 result_str = 'result=\"1\"'
-            elif result == "赢一半" or result_handicap == "赢一半":
-                result_str = 'result=\"1\" void_factor=\"0.5\"'
-                result = ("\033[32m赢一半\033[0m")
-            elif result == "输一半" or result_handicap == "输一半":
-                result_str = 'result=\"0\" void_factor=\"0.5\"'
-                result = ("\033[34m输一半\033[0m")
             elif result_handicap == "走盘" or result == '取消' or result_handicap == "取消":
                 result_str = 'result=\"0\" void_factor=\"1\"'
             else:
-                raise AssertionError("Result或Result_handicap 输入的值错误。")
+                raise AssertionError(f"Result输入的值错误:{result}，不能输入[走盘, 赢一半,输一半]")
+            print(f"结算结果：{result}")
+        # 查询注单的类型和预结算盘口结果
+        if match_num == 1:
+            print(
+                f'查询的注单类型为：【单注】,当前正在结算比赛ID为：{match_id},当前正在结算比赛为：\033[32m{home_match_num}VS{away_match_num}\033[0m,当前正在结算的盘口赛果为：{result}')
+        if match_num == 2:
+            print(
+                f'查询的注单类型为：【串关】,剩余未结算比赛数量为：{len(query_data) - sort - 1}, 当前正在结算比赛ID为：{match_id},当前正在结算比赛为：\033[32m{home_match_num}VS{away_match_num}\033[0m,当前正在结算的盘口赛果为：{result}')
+        if match_num == 3:
+            print(
+                f'查询的注单类型为：【复式串关】,剩余未结算比赛数量为：{len(query_data) - sort - 1}, 当前正在结算比赛ID为：{match_id},当前正在结算比赛为：\033[32m{home_match_num}VS{away_match_num}\033[0m,当前正在结算的盘口赛果为：{result}')
 
         data = self.dbq.get_match_data(match_id)
         if not data:
@@ -422,13 +454,7 @@ class BetController(object):
                  'product=\"%s\" event_id=\"%s\" timestamp=\"%s\"><outcomes>' % (certainty, producer, data["_id"],
                                                                                  self.get_current_timestamp())
 
-        # 查询注单的类型和预结算盘口结果
-        if match_num == 1:
-            print(f'查询的注单类型为：【单注】,当前正在结算比赛ID为：{match_id},当前正在结算比赛为：\033[32m{home_match_num}VS{away_match_num}\033[0m,当前正在结算的盘口赛果为：{result}')
-        if match_num == 2:
-            print(f'查询的注单类型为：【串关】,剩余未结算比赛数量为：{len(query_data) - sort - 1}, 当前正在结算比赛ID为：{match_id},当前正在结算比赛为：\033[32m{home_match_num}VS{away_match_num}\033[0m,当前正在结算的盘口赛果为：{result}')
-        if match_num == 3:
-            print(f'查询的注单类型为：【复式串关】,剩余未结算比赛数量为：{len(query_data) - sort - 1}, 当前正在结算比赛ID为：{match_id},当前正在结算比赛为：\033[32m{home_match_num}VS{away_match_num}\033[0m,当前正在结算的盘口赛果为：{result}')
+
 
         if outcomeId:
             grep = re.search(r"^.+?_(\d+?)_(.*)_(.+?)$", outcomeId)
@@ -854,11 +880,11 @@ class BetController(object):
 
 if __name__ == "__main__":
     #120环境
-    mongo_inf = ['app', '123456', '192.168.10.120', '27017']
-    mysql_inf = ['192.168.10.121', 'root', 's3CDfgfbFZcFEaczstX1VQrdfRFEaXTc', '3306']
+    # mongo_inf = ['app', '123456', '192.168.10.120', '27017']
+    # mysql_inf = ['192.168.10.121', 'root', 's3CDfgfbFZcFEaczstX1VQrdfRFEaXTc', '3306']
     #MDE环境
-    # mongo_inf = ['sport_test', 'BB#gCmqf3gTO5777', '35.194.233.30', '27017']
-    # mysql_inf = ['35.194.233.30', 'root', 'BB#gCmqf3gTO5b*', '3306']
+    mongo_inf = ['sport_test', 'BB#gCmqf3gTO5777', '35.194.233.30', '27017']
+    mysql_inf = ['35.194.233.30', 'root', 'BB#gCmqf3gTO5b*', '3306']
 
 
     # mf = MongoFunc(mongo_inf)
@@ -902,13 +928,25 @@ if __name__ == "__main__":
     # #     new_order_list.append(settled_message)
     # # print(new_order_list)
 
-    order_list=['XD8MRW99h76E', 'XD8MT9gEwRgu', 'XD8MU5sFE3yk', 'XD8MV2hTYHkU', 'XD8MVWwDGaNh', 'XD8MWVHSLnuB', 'XD8MXSx8LGzx', 'XD8MYUqYrMds', 'XD8MZRgb6wPu', 'XD8N2MigWTwK', 'XD8N3X5BATKF', 'XD8N4XJzGkSq',  'XD8N73MNMv8X', 'XD8N7ZtErXbC', 'XD8N8XzZw2yz', 'XD8N9ZXJGHRA', 'XD8Nb5tMUytX', 'XD8Nc5ZQTi5P', 'XD8Nd7sfJwte', 'XD8NeeeWZ4mv', 'XD8Nfw6StQZv', 'XD8NgxMXcAhJ', 'XD8NkaXhLTjt', 'XD8NmriHA23n', 'XD8NnqhATV8Y', 'XD8NpiQkP6KL', 'XD8NqdV9aEmi', 'XD8Nr9pUdiFx', 'XD8Ns7yjWVqy', 'XD8Nt5GRaF5W', 'XD8NtZYfv9yu', 'XD8NuWuxh2vH', 'XD8NvS2nJkJf', 'XD8NwUhhTxYj', 'XD8NxRmsFJPL']
+    # order_list=['XDp6bJJqFRkU', 'XDp6cS2Hr4pr', 'XDp6dZCs6yEV', 'XDp6fseqnM6z', 'XDp6gzsk4f2Z', 'XDp6hGcgRhNF', 'XDp6jmdZKixZ', 'XDp6ktNq8tKY', 'XDp6mAw75FbD', 'XDp6nH2nuyhJ', 'XDp6pPNkyJdt', 'XDp6r3bL5A7c', 'XDp6sbg8LCHa', 'XDp6thPkhcvt', 'XDp6v9t5caNE', 'XDp6wsPm8cqQ', 'XDp6xVxN2uVA', 'XDp6AkPXyx6B', 'XDp6BudD8xth', 'XDp6CB4aJZPe', 'XDp6DHVpCGEi', 'XDp6EQPLtZqv', 'XDp6FXpU6R4H', 'XDp6HfNsnzKF', 'XDp6JwqsHdd5', 'XDp6KHztLFbz', 'XDp6M29JkZdy', 'XDp6NkU8reJT', 'XDp6PB9iegbp', 'XDp6QTVrYYD3', 'XDp6SdDh3Me2', 'XDp6TwTUNHbT', 'XDp6UHbQnN5a', 'XDpenZRqsptC', 'XDpeqds4tJ4g', 'XDperCXCbTyg', 'XDpet57MSsH3', 'XDpeuBnLuC3u', 'XDpevK4Tphqq', 'XDpex8UrcMPf', 'XDpeymqRQvhv', 'XDpezySJQLef', 'XDpeAQnDPag8', 'XDpeC2sM2EMF', 'XDpeDaHyKs4M', 'XDpeEjFjn494', 'XDpeFugcJJfA', 'XDpeGBN4jiw5', 'XDpeHRnZk55T', 'XDpeK2CTzrn7', 'XDpeLa3H7CEg', 'XDpeMkBipFB3', 'XDpeNuS7nwiz', 'XDpePBAQ3Mvv', 'XDpeQKzxTE8z', 'XDpeRVRYUkqi', 'XDpeT5KcMfzN', 'XDpeUcaxnagV', 'XDpeVhYwcUV3', 'XDpeWruaQ3RU', 'XDpeXB7izami', 'XDpeYNzfgZdT', 'XDpeZYGfDUw3', 'XDpf39DRuwZm', 'XDpf4vchvgqx', 'XDpf5DewcQKx', 'XDpf6SgaLfkS', 'XDpf84vjvtcd', 'XDpf9sdzVfd2', 'XDpfaFbmhakh', 'XDpfbS3rtDxC', 'XDpfdd6A3tkc', 'XDpfekraLeZ6', 'XDpfftWEijrF', 'XDpfgBe7yyNS', 'XDpfhKWUAzx6', 'XDpfiTGrMLJQ', 'XDpfk4QZpxiX', 'XDpfmcgbVe38', 'XDpfnia5dsFt', 'XDpfprY6Zhbr', 'XDpfqyrgp77R', 'XDpfrExTWFHQ', 'XDpfsMeXcnhH', 'XDpfu4E6Xw4D', 'XDpfvfQpGppb', 'XDpfwnV5tj46', 'XDpfxyWstuBw', 'XDpfz2UGNKvi', 'XDpfAdFW255E', 'XDpfBpPXFCHz', 'XDpfCxh2AaMT', 'XDpfDGtyet2U', 'XDpfERi3LWXu', 'XDpfG2iM6XZL', 'XDpfHeYhh5Y8', 'XDpfJuuj85tM', 'XDpfKLazzAci', 'XDpfLWMRvfBF', 'XDpfN7s9vTnq', 'XDpfPfj88P22', 'XDpfQrVqKkxw', 'XDpfRCSj2nvF', 'XDpfSM6vTtzi', 'XDpfU2vkyUWg', 'XDpfVihzhm8w', 'XDpfWtGqWe3G', 'XDpfXCVtRBDJ', 'XDpfYMb8Qxft', 'XDpfZUMmPFx9', 'XDpg3849vSGs', 'XDpg4hg9seWB', 'XDpg5r5ngjb2', 'XDpg6zeJQe7d', 'XDpg7NYfhmtQ', 'XDpg8Z9V2par', 'XDpgaaNWbLYT', 'XDpgbqv9kTwu', 'XDpgcAVDciG4', 'XDpgdP8YtE2J', 'XDpgf297Jptk', 'XDpgg9EZUWu6', 'XDpghriWYvCh', 'XDpgiBa3eyu6', 'XDpgjMaFLy3K', 'XDpgkUnxqM79', 'XDpgn5XxPpMs', 'XDpgpirq5nas', 'XDpgqxpPj7xA', 'XDpgrHFZQPcb', 'XDpgsY8b8MhE', 'XDpgudmDxSx2', 'XDpgvswNCfNf', 'XDpgwHGBArv9', 'XDpgxU7CGYiz', 'XDpgzjL7AakU', 'XDpgAMACdePa', 'XDpgBUWcKaeG', 'XDpgD5uN98ZT', 'XDpgEfZEL2M5', 'XDpgFqYq4TrD', 'XDpgGxuagxzi', 'XDpgHEJktq89', 'XDpgKf8jNdY8', 'XDpgLMCxAbHy', 'XDpgN6RzMC9k', 'XDpgPuTKZHjR', 'XDpgQWpYN7DA', 'XDpgSnKeQ764', 'XDpgTxhRKRCV', 'XDpgUKdegFwL', 'XDpgVTuv3fsT', 'XDpgX5EyRgGR', 'XDpgYdgg3ehh', 'XDpgZmrUiZBn', 'XDph2wnXnGYC', 'XDph3CK8gncE', 'XDph4KzbdUgx', 'XDph5TCcDTYq', 'XDph72hGN6Af', 'XDph8bgm6mce', 'XDph9hAu3EGm', 'XDphapHMjyT2', 'XDphbKpxnmBn', 'XDphddxUaadL', 'XDphejMNPZYZ', 'XDphfs4FzSnV', 'XDphgGqQ4qvJ', 'XDphhVaREjRM', 'XDphjhexrG3C', 'XDphkwUyF3DA', 'XDphmGcZi5Sp', 'XDphnUDyhJW9', 'XDphq2u5sgHq', 'XDphr8HaVZSA', 'XDphsfsbm5Z4', 'XDphtpivPqxc', 'XDphuBtkkJiG', 'XDphvJdhqkBT', 'XDphwQRueLid', 'XDphxZF2Bx8C', 'XDphz83QNYE6', 'XDphAfMnq6sB', 'XDphBnmQxsyu', 'XDphCwKDpgmk', 'XDphDFVqjZTb', 'XDphENeFtwdw', 'XDphFVa5TPT5', 'XDphH4Z89nfn', 'XDphJaSusfKJ', 'XDphKx6tpm9U', 'XDphLDHCwb5a', 'XDphMKRvM3Yk', 'XDphNSd4VAMv', 'XDphPZaJcc3B', 'XDphR9wBHar7', 'XDrPLgEi2hvu', 'XDrPMrHpQbJV', 'XDrPNJSKnaix', 'XDrPQtUEzjFV', 'XDrPRBexLyz7', 'XDrPTpePN3Cp', 'XDrQuM2DYzmZ', 'XDrQw6a7ZLH9', 'XDrQxjR9ZRw2', 'XDrQyviLDrEp', 'XDrQzDSQ5Fjh', 'XDrQAYuzei76', 'XDrQC8WW8H5E', 'XDrQEdHZcfbM', 'XDrQFCMibnMR', 'XDrQGV2QxT8e', 'XDrQJ6Qtp9cX', 'XDrQKmT7gBku', 'XDrQLEDAq5Wt', 'XDrQNqpWvtM6', 'XDrQPYg8DGg6', 'XDrQRyCF2JYw', 'XDrQTqKXT7gj', 'XDrQUT3VCqvn', 'XDrQWucMMNVw', 'XDrQYinyWHQf', 'XDrQZLqf4gqw', 'XDrR3nugFwta', 'XDrR5ddaxniL', 'XDrR6HJE77ND', 'XDrR8LeWXqRr', 'XDrRamcRBjQT', 'XDrRc8TmxSQr', 'XDrRdBv5qpx7', 'XDrReYgsTJZT', 'XDrRgyCGw4je', 'XDrRi7D974Xs', 'XDrRjyXRPist', 'XDrRmHPs2iSF', 'XDrRp7wYzLQ2', 'XDrRqh4d2pde', 'XDrRrGrUR4iH', 'XDrRsVhUreUB', 'XDrRuhw59akQ', 'XDrRvBEP8gbs', 'XDrRwN3cjF6F', 'XDrRy2AZWQfK', 'XDrRzdzXmCyq', 'XDrRAqTD3tbz', 'XDrRBL82VnJ4', 'XDrRCWASZYQS', 'XDrRF5gV4ULi', 'XDrRGh3raYhv', 'XDrRHJcDuzid']
 
+    order_list=bc.generate_settlement_str_by_orderNo_number_type(proxy3_id="1531517760300163074", bet_type="0")
+    # time.sleep(30)
     for order_no in order_list:
         print(f"共有 ",str(len(order_list))+" 笔结算注单,"+"正在结算第 "+str(order_list.index(order_no)+1)+" 笔注单："+str(order_no))
         # message = bc.send_message_to_datasourse(order_no=str(order_no), sort=0, certainty="2",result=None,result_handicap=None)  # 生成注单结算指令
         message = bc.send_message_to_datasourse(order_no=str(order_no), sort=0, certainty="2", result=None,result_handicap=None)  # 生成注单结算指令
         print("已完成注单："+str(order_list.index(order_no)+1)+"  "+"未完成注单"+str(len(order_list)-(order_list.index(order_no)+1))+"\n"+"----------------------------------------------------------------------------------------------------------------"+"\n"+"\n")
+
+    # with ThreadPoolExecutor(max_workers=50) as t1:  # 创建一个最大容纳数量为5的线程池
+    #     for order_no in order_list:
+    #         print(f"共有 ",str(len(order_list))+" 笔结算注单,"+"正在结算第 "+str(order_list.index(order_no)+1)+" 笔注单："+str(order_no))
+    #         # message = bc.send_message_to_datasourse(order_no=str(order_no), sort=0, certainty="2",result=None,result_handicap=None)  # 生成注单结算指令
+    #         # message = bc.send_message_to_datasourse(order_no=str(order_no), sort=0, certainty="2", result=None,result_handicap=None)  # 生成注单结算指令
+    #         task2 = t1.submit(bc.send_message_to_datasourse(sort=0, certainty="2", result=None,result_handicap=None), order_no)
+    #         print("已完成注单："+str(order_list.index(order_no)+1)+"  "+"未完成注单"+str(len(order_list)-(order_list.index(order_no)+1))+"\n"+"----------------------------------------------------------------------------------------------------------------"+"\n"+"\n")
+
+
 
     # data = bc.generate_settlement_str_by_orderNo(order_no='XCrZUaMY8ht8',sort=0,result="取消")
     # print(data)

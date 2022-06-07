@@ -102,8 +102,9 @@ def get_toten_00():
 def get_toten_01(i):
     global toten01, name
     # 账号的拼接
+    # name = "fceshi0" + str(i)
     name = "fceshi0" + str(i)
-    # name="CCeshi0"+str(j)
+    # name="ht0"+str(i)
     url = str(URL) + "/creditUser/creditUserLogIn"
     headers01 = {'content-type': 'application/json'}
     data = {
@@ -766,7 +767,9 @@ def get_print():
 
 
 if __name__ == '__main__':
-    URL = "http://192.168.10.120:6210"
+    # URL = "http://192.168.10.120:6210"
+    # MDE环境
+    URL = "https://mdesearch.betf.io"
     '''
         @足球："sr:sport:1"  "100"
         @篮球："sr:sport:2"  "200"
@@ -813,22 +816,25 @@ if __name__ == '__main__':
         # print(time.sleep(5),end='')
         mixedNum_N_1_number_dict={"2":2,"3":9,"4":16,"5":25,"6":36,"7":7,"8":8,"9":9,"10":10,"11":11,"12":13,"13":13,"14":14,"15":15,"16":16,"17":17}
         if len(matchId) > 1:
-            if len(matchId)<=3:
+            if len(matchId)<=4:
                 mixedNum_N_1_number = 2
                 get_N_1(mixedNum_betAmount=mixedNum_betAmount, mixedNum_N_1_number=mixedNum_N_1_number, bet_type=1)
-            if len(matchId)>3:
+            if len(matchId)>4:
                 for kHH in range(2,mixedNum_N_1_number+1):
                     mixedNum_N_1_number_YYds_list_02.append(mixedNum_N_1_number_dict[str(kHH)])
                     # print(mixedNum_N_1_number_YYds_list_02)
-                    if sum(mixedNum_N_1_number_YYds_list_01)-sum(mixedNum_N_1_number_YYds_list_02)<15:
-                        print(f"{sum(mixedNum_N_1_number_YYds_list_02)}<={sum(mixedNum_N_1_number_YYds_list_01)},kHH:{kHH}")
-                        mixedNum_N_1_number =kHH-1
-                        # print(f"取得mixedNum_N_1_number={mixedNum_N_1_number}")
-                        del mixedNum_N_1_number_YYds_list_02[-1]
-                        break
                     if sum(mixedNum_N_1_number_YYds_list_01)-sum(mixedNum_N_1_number_YYds_list_02)<25:
                         print(f"{sum(mixedNum_N_1_number_YYds_list_02)}<={sum(mixedNum_N_1_number_YYds_list_01)},kHH:{kHH}")
-                        mixedNum_N_1_number = kHH
+                        mixedNum_N_1_number =kHH-2
+                        # print(f"取得mixedNum_N_1_number={mixedNum_N_1_number}")
+                        del mixedNum_N_1_number_YYds_list_02[-1]
+                        if len(mixedNum_N_1_number_YYds_list_02)>1:
+                            del mixedNum_N_1_number_YYds_list_02[-1]
+                        break
+                    if sum(mixedNum_N_1_number_YYds_list_01)-sum(mixedNum_N_1_number_YYds_list_02)<40:
+                        print(f"{sum(mixedNum_N_1_number_YYds_list_02)}<={sum(mixedNum_N_1_number_YYds_list_01)},kHH:{kHH}")
+                        mixedNum_N_1_number = kHH-1
+                        del mixedNum_N_1_number_YYds_list_02[-1]
                         # print(f"取得mixedNum_N_1_number={mixedNum_N_1_number}")
                         break
                     else:
