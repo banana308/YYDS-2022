@@ -118,7 +118,7 @@ def login(URL,userName_list,password_list,securityCode_list,all_user):
     response01 = session.get(url=url01, headers=headers01, params=data01)
     # 返回结果json转化
     results01 = json.loads(response01.text)
-    print(results01)
+    # print(results01)
 
 
 
