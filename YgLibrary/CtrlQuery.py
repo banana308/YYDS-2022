@@ -6,12 +6,6 @@ import time
 import xmltodict
 import random
 import datetime
-# try:
-#     from .MongoFunc import DbQuery
-#     from .MyExceptions import *
-#     from .CommonFunc import CommonFunc
-#     from .MysqlFunc import MysqlCommonQuery
-# except ImportError:
 from MongoFunc import DbQuery
 from MyExceptions import *
 from CommonFunc import CommonFunc

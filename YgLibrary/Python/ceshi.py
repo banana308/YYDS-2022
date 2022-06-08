@@ -5,21 +5,21 @@ import time
 
 # list_A=['8','7','101','10','9','11','100']
 
-# list_y=[]
-# list01=[]
-# #写入text
-# path = "C:\\test\\michid.txt"
-# f = open(path, mode="r")
-# lines=f.readlines()
-# for lines in lines:
-#     list_y.append(lines.strip('\n'))
-#     for k in range(0,len(list_y)):
-#         if  list_y[k] in list01:
-#             pass
-#         else:
-#             list01.append(list_y[k])
-# print(len(list01))
-# print(list01)
+list_y=[]
+list01=[]
+#写入text
+path = "C:\\test\\michid.txt"
+f = open(path, mode="r")
+lines=f.readlines()
+for lines in lines:
+    list_y.append(lines.strip('\n'))
+    for k in range(0,len(list_y)):
+        if  list_y[k] in list01:
+            pass
+        else:
+            list01.append(list_y[k])
+print(len(list01))
+print(list01)
 
 
 # for i in range(0,len(order_no02)):
@@ -68,17 +68,17 @@ import time
 # get_time(15)
 
 
-all_user_old=[{},{},{},{}]
-
-userName_list=['yy01','yy02','yy03','yy04',]
-psd_list=['yy01','yy02','yy03','yy04',]
-
-for i in range(0,4):
-    all_user_old[i][f'登{i}的账号']=userName_list[i]
-    all_user_old[i][f'登{i}的密码'] = psd_list[i]
-    print(all_user_old[i])
-
-print(all_user_old)
+# all_user_old=[{},{},{},{}]
+#
+# userName_list=['yy01','yy02','yy03','yy04',]
+# psd_list=['yy01','yy02','yy03','yy04',]
+#
+# for i in range(0,4):
+#     all_user_old[i][f'登{i}的账号']=userName_list[i]
+#     all_user_old[i][f'登{i}的密码'] = psd_list[i]
+#     print(all_user_old[i])
+#
+# print(all_user_old)
 
 
 
