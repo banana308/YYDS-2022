@@ -130,12 +130,11 @@ class CtrlIoDocs(object):
 class BetController(object):
     ROBOT_LIBRARY_SCOPE = 'GLOBAL'
 
-    def __init__(self, mysql_info, mongo_info, *args):
+    def __init__(self, mysql_info, mongo_info,bc_host, *args):
         """
         模拟ctrl给我司推送数据
         """
-        # self.bc_host = "http://192.168.10.10:8808/mock/message"
-        self.bc_host = "http://35.234.4.41:31101/mock/message"
+        self.bc_host = bc_host
         self.session = requests.session()
         self.dbq = DbQuery(mongo_info)
         # self.ctrl_docs = CtrlIoDocs(mysql_info, mongo_info)
@@ -876,22 +875,68 @@ if __name__ == "__main__":
     #120环境
     # mongo_inf = ['app', '123456', '192.168.10.120', '27017']
     # mysql_inf = ['192.168.10.121', 'root', 's3CDfgfbFZcFEaczstX1VQrdfRFEaXTc', '3306']
+    # bc_host = "http://192.168.10.10:8808/mock/message"
     #MDE环境
     mongo_inf = ['sport_test', 'BB#gCmqf3gTO5777', '35.194.233.30', '27017']
     mysql_inf = ['35.194.233.30', 'root', 'BB#gCmqf3gTO5b*', '3306']
+    bc_host = "http://35.234.4.41:31101/mock/message"
+    bc = BetController(mysql_inf, mongo_inf, bc_host)
+
+    # MDE:proxy3_id="1531517760300163074"
+    # 120:proxy3_id="1531193388241375234"
+    order_list=bc.generate_settlement_str_by_orderNo_number_type(proxy3_id="1531517760300163074", bet_type="0")
+
+    # time.sleep(30)
+    for order_no in order_list:
+        print(f"共有 ",str(len(order_list))+" 笔结算注单,"+"正在结算第 "+str(order_list.index(order_no)+1)+" 笔注单："+str(order_no))
+        # message = bc.send_message_to_datasourse(order_no=str(order_no), sort=0, certainty="2",result=None,result_handicap=None)  # 生成注单结算指令
+        message = bc.send_message_to_datasourse(order_no=str(order_no), sort=0, certainty="2", result=None,result_handicap=None)  # 生成注单结算指令
+        print("已完成注单："+str(order_list.index(order_no)+1)+"  "+"未完成注单"+str(len(order_list)-(order_list.index(order_no)+1))+"\n"+"----------------------------------------------------------------------------------------------------------------"+"\n"+"\n")
 
 
-    # mf = MongoFunc(mongo_inf)
-    bc = BetController(mysql_inf, mongo_inf)
-    # bc.generate_odds_change_str("25061200", )
 
-    # dataInfo = ['sr:match:27885068', {"market_id_simple": 16,"specifier":'hcp=0', "outcome_id_simple":1714, "odds": 2.000, "is_active": True, "is_favourite":True,
-    #                                   "specifier_status": 0, "probabilities": '0.46', "match_status": 'not_started'}]
-    # odds_change = bc.generate_odds_change_str(match_id='sr:match:27885068',outcome_info=dataInfo)         # 生成赔率更新指令
-    # print(odds_change)
 
-    # match_list = bc.mysql.get_unsettled_order_matchID()
-    # print(match_list)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    # with ThreadPoolExecutor(max_workers=50) as t1:  # 创建一个最大容纳数量为5的线程池
+    #     for order_no in order_list:
+    #         print(f"共有 ",str(len(order_list))+" 笔结算注单,"+"正在结算第 "+str(order_list.index(order_no)+1)+" 笔注单："+str(order_no))
+    #         # message = bc.send_message_to_datasourse(order_no=str(order_no), sort=0, certainty="2",result=None,result_handicap=None)  # 生成注单结算指令
+    #         # message = bc.send_message_to_datasourse(order_no=str(order_no), sort=0, certainty="2", result=None,result_handicap=None)  # 生成注单结算指令
+    #         task2 = t1.submit(bc.send_message_to_datasourse(sort=0, certainty="2", result=None,result_handicap=None), order_no)
+    #         print("已完成注单："+str(order_list.index(order_no)+1)+"  "+"未完成注单"+str(len(order_list)-(order_list.index(order_no)+1))+"\n"+"----------------------------------------------------------------------------------------------------------------"+"\n"+"\n")
+
+
+
+    # data = bc.generate_settlement_str_by_orderNo(order_no='XCrZUaMY8ht8',sort=0,result="取消")
+    # print(data)
+
+    # order_list = ['XB4TpiA5pMYZ']
+    # for order_no in order_list:
+    #     print("共有 " + str(len(order_list)) + " 笔结算注单," + "正在结算第 " + str(order_list.index(order_no) + 1) + " 笔注单：" + str(order_no))
+    #     message = bc.send_message_to_datasourse(order_no=str(order_no), sort=0, certainty="2", result="赢")  # 生成注单结算指令
+    #     print("已完成注单：" + str(order_list.index(order_no) + 1) + "  " + "未完成注单" + str(
+    #         len(order_list) - (order_list.index(order_no) + 1)) + "\n"
+    #           + "----------------------------------------------------------------------------------------------------------------" + "\n" + "\n")
 
     # match_list = ['33520247', '33703527', '29658234', '33570511', '33506455', '33493633']
     # for matchId in match_list:
@@ -921,37 +966,5 @@ if __name__ == "__main__":
     #
     # #     new_order_list.append(settled_message)
     # # print(new_order_list)
-
-    # order_list=['XDp6bJJqFRkU', 'XDp6cS2Hr4pr', 'XDp6dZCs6yEV', 'XDp6fseqnM6z', 'XDp6gzsk4f2Z', 'XDp6hGcgRhNF', 'XDp6jmdZKixZ', 'XDp6ktNq8tKY', 'XDp6mAw75FbD', 'XDp6nH2nuyhJ', 'XDp6pPNkyJdt', 'XDp6r3bL5A7c', 'XDp6sbg8LCHa', 'XDp6thPkhcvt', 'XDp6v9t5caNE', 'XDp6wsPm8cqQ', 'XDp6xVxN2uVA', 'XDp6AkPXyx6B', 'XDp6BudD8xth', 'XDp6CB4aJZPe', 'XDp6DHVpCGEi', 'XDp6EQPLtZqv', 'XDp6FXpU6R4H', 'XDp6HfNsnzKF', 'XDp6JwqsHdd5', 'XDp6KHztLFbz', 'XDp6M29JkZdy', 'XDp6NkU8reJT', 'XDp6PB9iegbp', 'XDp6QTVrYYD3', 'XDp6SdDh3Me2', 'XDp6TwTUNHbT', 'XDp6UHbQnN5a', 'XDpenZRqsptC', 'XDpeqds4tJ4g', 'XDperCXCbTyg', 'XDpet57MSsH3', 'XDpeuBnLuC3u', 'XDpevK4Tphqq', 'XDpex8UrcMPf', 'XDpeymqRQvhv', 'XDpezySJQLef', 'XDpeAQnDPag8', 'XDpeC2sM2EMF', 'XDpeDaHyKs4M', 'XDpeEjFjn494', 'XDpeFugcJJfA', 'XDpeGBN4jiw5', 'XDpeHRnZk55T', 'XDpeK2CTzrn7', 'XDpeLa3H7CEg', 'XDpeMkBipFB3', 'XDpeNuS7nwiz', 'XDpePBAQ3Mvv', 'XDpeQKzxTE8z', 'XDpeRVRYUkqi', 'XDpeT5KcMfzN', 'XDpeUcaxnagV', 'XDpeVhYwcUV3', 'XDpeWruaQ3RU', 'XDpeXB7izami', 'XDpeYNzfgZdT', 'XDpeZYGfDUw3', 'XDpf39DRuwZm', 'XDpf4vchvgqx', 'XDpf5DewcQKx', 'XDpf6SgaLfkS', 'XDpf84vjvtcd', 'XDpf9sdzVfd2', 'XDpfaFbmhakh', 'XDpfbS3rtDxC', 'XDpfdd6A3tkc', 'XDpfekraLeZ6', 'XDpfftWEijrF', 'XDpfgBe7yyNS', 'XDpfhKWUAzx6', 'XDpfiTGrMLJQ', 'XDpfk4QZpxiX', 'XDpfmcgbVe38', 'XDpfnia5dsFt', 'XDpfprY6Zhbr', 'XDpfqyrgp77R', 'XDpfrExTWFHQ', 'XDpfsMeXcnhH', 'XDpfu4E6Xw4D', 'XDpfvfQpGppb', 'XDpfwnV5tj46', 'XDpfxyWstuBw', 'XDpfz2UGNKvi', 'XDpfAdFW255E', 'XDpfBpPXFCHz', 'XDpfCxh2AaMT', 'XDpfDGtyet2U', 'XDpfERi3LWXu', 'XDpfG2iM6XZL', 'XDpfHeYhh5Y8', 'XDpfJuuj85tM', 'XDpfKLazzAci', 'XDpfLWMRvfBF', 'XDpfN7s9vTnq', 'XDpfPfj88P22', 'XDpfQrVqKkxw', 'XDpfRCSj2nvF', 'XDpfSM6vTtzi', 'XDpfU2vkyUWg', 'XDpfVihzhm8w', 'XDpfWtGqWe3G', 'XDpfXCVtRBDJ', 'XDpfYMb8Qxft', 'XDpfZUMmPFx9', 'XDpg3849vSGs', 'XDpg4hg9seWB', 'XDpg5r5ngjb2', 'XDpg6zeJQe7d', 'XDpg7NYfhmtQ', 'XDpg8Z9V2par', 'XDpgaaNWbLYT', 'XDpgbqv9kTwu', 'XDpgcAVDciG4', 'XDpgdP8YtE2J', 'XDpgf297Jptk', 'XDpgg9EZUWu6', 'XDpghriWYvCh', 'XDpgiBa3eyu6', 'XDpgjMaFLy3K', 'XDpgkUnxqM79', 'XDpgn5XxPpMs', 'XDpgpirq5nas', 'XDpgqxpPj7xA', 'XDpgrHFZQPcb', 'XDpgsY8b8MhE', 'XDpgudmDxSx2', 'XDpgvswNCfNf', 'XDpgwHGBArv9', 'XDpgxU7CGYiz', 'XDpgzjL7AakU', 'XDpgAMACdePa', 'XDpgBUWcKaeG', 'XDpgD5uN98ZT', 'XDpgEfZEL2M5', 'XDpgFqYq4TrD', 'XDpgGxuagxzi', 'XDpgHEJktq89', 'XDpgKf8jNdY8', 'XDpgLMCxAbHy', 'XDpgN6RzMC9k', 'XDpgPuTKZHjR', 'XDpgQWpYN7DA', 'XDpgSnKeQ764', 'XDpgTxhRKRCV', 'XDpgUKdegFwL', 'XDpgVTuv3fsT', 'XDpgX5EyRgGR', 'XDpgYdgg3ehh', 'XDpgZmrUiZBn', 'XDph2wnXnGYC', 'XDph3CK8gncE', 'XDph4KzbdUgx', 'XDph5TCcDTYq', 'XDph72hGN6Af', 'XDph8bgm6mce', 'XDph9hAu3EGm', 'XDphapHMjyT2', 'XDphbKpxnmBn', 'XDphddxUaadL', 'XDphejMNPZYZ', 'XDphfs4FzSnV', 'XDphgGqQ4qvJ', 'XDphhVaREjRM', 'XDphjhexrG3C', 'XDphkwUyF3DA', 'XDphmGcZi5Sp', 'XDphnUDyhJW9', 'XDphq2u5sgHq', 'XDphr8HaVZSA', 'XDphsfsbm5Z4', 'XDphtpivPqxc', 'XDphuBtkkJiG', 'XDphvJdhqkBT', 'XDphwQRueLid', 'XDphxZF2Bx8C', 'XDphz83QNYE6', 'XDphAfMnq6sB', 'XDphBnmQxsyu', 'XDphCwKDpgmk', 'XDphDFVqjZTb', 'XDphENeFtwdw', 'XDphFVa5TPT5', 'XDphH4Z89nfn', 'XDphJaSusfKJ', 'XDphKx6tpm9U', 'XDphLDHCwb5a', 'XDphMKRvM3Yk', 'XDphNSd4VAMv', 'XDphPZaJcc3B', 'XDphR9wBHar7', 'XDrPLgEi2hvu', 'XDrPMrHpQbJV', 'XDrPNJSKnaix', 'XDrPQtUEzjFV', 'XDrPRBexLyz7', 'XDrPTpePN3Cp', 'XDrQuM2DYzmZ', 'XDrQw6a7ZLH9', 'XDrQxjR9ZRw2', 'XDrQyviLDrEp', 'XDrQzDSQ5Fjh', 'XDrQAYuzei76', 'XDrQC8WW8H5E', 'XDrQEdHZcfbM', 'XDrQFCMibnMR', 'XDrQGV2QxT8e', 'XDrQJ6Qtp9cX', 'XDrQKmT7gBku', 'XDrQLEDAq5Wt', 'XDrQNqpWvtM6', 'XDrQPYg8DGg6', 'XDrQRyCF2JYw', 'XDrQTqKXT7gj', 'XDrQUT3VCqvn', 'XDrQWucMMNVw', 'XDrQYinyWHQf', 'XDrQZLqf4gqw', 'XDrR3nugFwta', 'XDrR5ddaxniL', 'XDrR6HJE77ND', 'XDrR8LeWXqRr', 'XDrRamcRBjQT', 'XDrRc8TmxSQr', 'XDrRdBv5qpx7', 'XDrReYgsTJZT', 'XDrRgyCGw4je', 'XDrRi7D974Xs', 'XDrRjyXRPist', 'XDrRmHPs2iSF', 'XDrRp7wYzLQ2', 'XDrRqh4d2pde', 'XDrRrGrUR4iH', 'XDrRsVhUreUB', 'XDrRuhw59akQ', 'XDrRvBEP8gbs', 'XDrRwN3cjF6F', 'XDrRy2AZWQfK', 'XDrRzdzXmCyq', 'XDrRAqTD3tbz', 'XDrRBL82VnJ4', 'XDrRCWASZYQS', 'XDrRF5gV4ULi', 'XDrRGh3raYhv', 'XDrRHJcDuzid']
-
-    order_list=bc.generate_settlement_str_by_orderNo_number_type(proxy3_id="1531517760300163074", bet_type="0")
-    # time.sleep(30)
-    for order_no in order_list:
-        print(f"共有 ",str(len(order_list))+" 笔结算注单,"+"正在结算第 "+str(order_list.index(order_no)+1)+" 笔注单："+str(order_no))
-        # message = bc.send_message_to_datasourse(order_no=str(order_no), sort=0, certainty="2",result=None,result_handicap=None)  # 生成注单结算指令
-        message = bc.send_message_to_datasourse(order_no=str(order_no), sort=0, certainty="2", result=None,result_handicap=None)  # 生成注单结算指令
-        print("已完成注单："+str(order_list.index(order_no)+1)+"  "+"未完成注单"+str(len(order_list)-(order_list.index(order_no)+1))+"\n"+"----------------------------------------------------------------------------------------------------------------"+"\n"+"\n")
-
-    # with ThreadPoolExecutor(max_workers=50) as t1:  # 创建一个最大容纳数量为5的线程池
-    #     for order_no in order_list:
-    #         print(f"共有 ",str(len(order_list))+" 笔结算注单,"+"正在结算第 "+str(order_list.index(order_no)+1)+" 笔注单："+str(order_no))
-    #         # message = bc.send_message_to_datasourse(order_no=str(order_no), sort=0, certainty="2",result=None,result_handicap=None)  # 生成注单结算指令
-    #         # message = bc.send_message_to_datasourse(order_no=str(order_no), sort=0, certainty="2", result=None,result_handicap=None)  # 生成注单结算指令
-    #         task2 = t1.submit(bc.send_message_to_datasourse(sort=0, certainty="2", result=None,result_handicap=None), order_no)
-    #         print("已完成注单："+str(order_list.index(order_no)+1)+"  "+"未完成注单"+str(len(order_list)-(order_list.index(order_no)+1))+"\n"+"----------------------------------------------------------------------------------------------------------------"+"\n"+"\n")
-
-
-
-    # data = bc.generate_settlement_str_by_orderNo(order_no='XCrZUaMY8ht8',sort=0,result="取消")
-    # print(data)
-
-    # order_list = ['XB4TpiA5pMYZ']
-    # for order_no in order_list:
-    #     print("共有 " + str(len(order_list)) + " 笔结算注单," + "正在结算第 " + str(order_list.index(order_no) + 1) + " 笔注单：" + str(order_no))
-    #     message = bc.send_message_to_datasourse(order_no=str(order_no), sort=0, certainty="2", result="赢")  # 生成注单结算指令
-    #     print("已完成注单：" + str(order_list.index(order_no) + 1) + "  " + "未完成注单" + str(
-    #         len(order_list) - (order_list.index(order_no) + 1)) + "\n"
-    #           + "----------------------------------------------------------------------------------------------------------------" + "\n" + "\n")
-
 
 

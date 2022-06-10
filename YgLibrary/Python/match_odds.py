@@ -482,7 +482,13 @@ def sprot_yyds():
 
 
 if __name__ == '__main__':
-    URL = "http://192.168.10.120:6210"
+    #120环境
+    # URL = "http://192.168.10.120:6210"
+
+    # MDE环境
+    URL = "https://mdesearch.betf.io"
+    print(URL)
+
     '''
     @足球："sr:sport:1"  "100"
     @蓝球："sr:sport:2"  "200"

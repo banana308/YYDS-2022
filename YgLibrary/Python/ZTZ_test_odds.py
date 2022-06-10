@@ -676,6 +676,7 @@ def get_print():
 
 
 if __name__ == '__main__':
+    # 120环境
     # URL = "http://192.168.10.120:6210"
     # MDE环境
     URL = "https://mdesearch.betf.io"
