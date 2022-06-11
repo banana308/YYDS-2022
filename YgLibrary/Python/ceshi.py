@@ -240,14 +240,17 @@ num_lsit = [{"复式3串4":["2_3_0","3_4_1"]},{"复式4串11":["2_6_0","3_4_0","
 # workbook.save(filename="C:\\test\\test_ball.xlsx")
 # workbook.close()
 
-list_yy=['1.990', '1.830', '3.600', '3.350', '6.350', '13.950']
-AB_list=["A","B","C","D","E","F",]
-AB_dict={'A':[],'B':[],'C':[],'D':[],'E':[],'F':[]}
+# list_yy=['1.990', '1.830', '3.600', '3.350', '6.350', '13.950']
+# AB_list=["A","B","C","D","E","F",]
+# AB_dict={'A':[],'B':[],'C':[],'D':[],'E':[],'F':[]}
+#
+# for i in range(0, len(list_yy)):
+#     AB_dict[AB_list[i]] = list_yy[i]
+# print(AB_dict)
 
-for i in range(0, len(list_yy)):
-    AB_dict[AB_list[i]] = list_yy[i]
-print(AB_dict)
-
+list_yy=['2_3_0','3_10_0']
+# print(type(list[0]))
+print(list((list_yy[1]))[2:4])
 
 
 
