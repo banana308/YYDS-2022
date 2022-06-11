@@ -38,7 +38,7 @@ def rsa_encrypt(data):
 
 
 
-def login(URL):
+def login(URL,begin,end):
     #登0~登3登录获取token
     url = str(URL) + "/system/accountLogin"
     headers = {
@@ -80,13 +80,13 @@ def login(URL):
     results01 = json.loads(response01.text)
     # print(results01)
 
-    sport_report(URL, token, list=sport_report_list)
+    sport_report(URL, token, list=sport_report_list,begin=begin,end=end)
     for i in sportId_list:
         sport_market_report(URL, token, list=sport_market_report_list, sportId=i)
     yyds_excel(ball_list=sport_market_report_title, list=sport_market_report_list, report=2, name='球类报表-详细')
 
-    tournament_report(URL, token, list=tournament_report_list)
-    match_report(URL, token, list=match_report_list)
+    tournament_report(URL, token, list=tournament_report_list,begin=begin,end=end)
+    match_report(URL, token, list=match_report_list,begin=begin,end=end)
 
     count=1
     for j in matchId_list:
@@ -94,10 +94,10 @@ def login(URL):
         match_market_report(URL, token, list=match_market_report_list, matchId=j)
         count=count+1
     yyds_excel(ball_list=match_market_report_title, list=match_market_report_list, report=5, name='赛事报表-详细')
-    multiterm_report(URL, token, list=multiterm_report_list)
+    multiterm_report(URL, token, list=multiterm_report_list,begin=begin,end=end)
 
 
-def sport_report(URL, token,list):
+def sport_report(URL, token,list,begin,end):
     global sportId_list
     url = str(URL) + "/winOrLost/sport"
     headers = {
@@ -109,8 +109,8 @@ def sport_report(URL, token,list):
     data = {"matchId":"",
             "sportId":"",
             "queryDateType":3,
-            "begin":"2022-06-02",
-            "end":"2022-06-08",
+            "begin":begin,
+            "end":end,
             "searchAccount":"",
             "page":1,"limit":50}
     session = requests.session()
@@ -266,7 +266,7 @@ def sport_market_report(URL, token, list,sportId):
 
 
 
-def tournament_report(URL, token, list):
+def tournament_report(URL, token, list,begin,end):
     url = str(URL) + "/winOrLost/tournament"
     headers = {
         'Content-Type': 'application/json;charset=UTF-8',
@@ -276,8 +276,8 @@ def tournament_report(URL, token, list):
 
     data = {"matchId":"",
             "sportId":"","queryDateType":3,
-            "begin":"2022-06-02",
-            "end":"2022-06-08",
+            "begin":begin,
+            "end":end,
             "searchAccount":"",
             "page":1,"limit":50}
     session = requests.session()
@@ -349,7 +349,7 @@ def tournament_report(URL, token, list):
 
 
 
-def match_report(URL, token, list):
+def match_report(URL, token, list,begin,end):
     global matchId_list
     url = str(URL) + "/winOrLost/match"
     headers = {
@@ -361,8 +361,8 @@ def match_report(URL, token, list):
     data = {"matchId":"",
             "sportId":"",
             "queryDateType":3,
-            "begin":"2022-06-02",
-            "end":"2022-06-08",
+            "begin":begin,
+            "end":end,
             "searchAccount":"",
             "page":1,"limit":50}
     session = requests.session()
@@ -516,7 +516,7 @@ def match_market_report(URL, token, list,matchId):
 
 
 
-def multiterm_report(URL,token,list):
+def multiterm_report(URL,token,list,begin,end):
 
     url = str(URL) + "/winOrLost/multiterm"
     headers = {
@@ -528,8 +528,8 @@ def multiterm_report(URL,token,list):
     data = {"matchId":"",
             "sportId":"",
             "queryDateType":3,
-            "begin":"2022-06-02",
-            "end":"2022-06-08",
+            "begin":begin,
+            "end":end,
             "searchAccount":"",
             "page":1,
             "limit":50}
@@ -731,7 +731,7 @@ if __name__=='__main__':
         Dl_list=["d0","d10","d2","d3"]
         excel=[r"C:\test\登0_report.xlsx",r"C:\test\登1_report.xlsx",r"C:\test\登2_report.xlsx",r"C:\test\登3_report.xlsx"]
         save_excel = ["C:\\test\\登0_report.xlsx", "C:\\test\\登1_report.xlsx", "C:\\test\\登2_report.xlsx","C:\\test\\登3_report.xlsx"]
-        login(URL)
+        login(URL=URL,begin="2022-06-04",end="2022-06-10")
 
         # excel_clear()
 

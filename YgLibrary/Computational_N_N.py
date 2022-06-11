@@ -34,9 +34,6 @@ class betting_odds(object):
         self.dict=dict
 
 
-
-
-
     def single_bet(self, credit_odds_list,order_no):
         odds = credit_odds_list
         win_amount = (int(odds[0]) * (bet_amount)) - bet_amount
@@ -424,8 +421,8 @@ class BetController(object):
 
     def Calculate_odds(self, credit_odds_list,bet_type,AB_list,dict,order_no):
         """
-        @根据注单类型判断其为真，还是为假，1为真，2为假
-        @根据赔率进行计算
+        @根据注单类型判断其类型，1为单注，2为串关，3为复式串关
+        @根据其类型赔率进行计算
         """
         bet_type_dict={'单注':[1,1_1_0],'串关':[2,2_1_0],
                        '复式串关':[3,{"3串4":[3_1_0,2_3_0]},{"4串11":[4_1_0,3_4_0,2_6_0]},{"5串26":[5_1_0,4_5_0,3_10_0,2_10_0]},{"6串57":[6_1_0,5_6_0,4_15_0,3_20_0,2_15_0]}]}
@@ -435,26 +432,6 @@ class BetController(object):
             self.ce.stray_bet(credit_odds_list=credit_odds_list,order_no=order_no)
         else:
             self.ce.Duplex_bet(credit_odds_list=credit_odds_list,AB_list=AB_list, dict=dict,order_no=order_no)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -471,7 +448,6 @@ if __name__ == "__main__":
     # mf = MongoFunc(mongo_inf)
     bc = BetController(mysql_inf, mongo_inf,AB_list,dict)
 
-
     # yyds=bc.Type_odd()
     # yyds=bc.bet_type(order_no="XEP93LkShTT3",AB_list=AB_list,dict=dict)
-    yydt=bc.order_no(bet_type=3, status=2, AB_list=AB_list,dict=dict,proxy3_id=1531517760300163074)
+    yydt=bc.order_no(bet_type=0, status=2, AB_list=AB_list,dict=dict,proxy3_id=1531517760300163074)
