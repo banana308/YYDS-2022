@@ -248,23 +248,27 @@ num_lsit = [{"复式3串4":["2_3_0","3_4_1"]},{"复式4串11":["2_6_0","3_4_0","
 #     AB_dict[AB_list[i]] = list_yy[i]
 # print(AB_dict)
 
-list_yy=['2_3_0','3_10_0']
+# list_yy=['2_3_0','3_10_0']
 # print(type(list[0]))
-print(list((list_yy[1]))[2:4])
-
-
-
-
-
-
-
-
-
+# print(list((list_yy[1]))[2:4])
 # workbook.close()
 # workbook.save(filename='C:\\test\\test_ball.xlsx')
 
 
 
+
+
+
+str_num="sportName,sportMarketName"
+
+str_num2="sportName"
+
+
+yyds01=str_num.split(",")
+yyds02=str_num2.split(",")
+
+print(len(yyds01),yyds01)
+print(len(yyds02),yyds02)
 
 
 

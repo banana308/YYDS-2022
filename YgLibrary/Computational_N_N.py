@@ -354,14 +354,13 @@ class BetController(object):
         self.my = MysqlFunc(mysql_info)
         self.ce = betting_odds(mysql_info, mongo_info,AB_list,dict)
 
-
+class SQL_report_ods(BetController):
 
     def order_no(self,bet_type,status,AB_list,dict,proxy3_id):
         """
         @根据条件：bet_type查询其注单：0全部、1单注、2串关、3串关、4串关和复式串关
         @根据条件：STATUS：0待确认、1待结算、2已结算、3已取消
         """
-
         if bet_type==0:
             sql = f"SELECT order_no FROM o_account_order WHERE STATUS='{status}' AND proxy3_id='{proxy3_id}'"
             sum = self.my.query_data(sql, db_name='bfty_credit')
@@ -446,8 +445,10 @@ if __name__ == "__main__":
     AB_list = ["A", "B", "C", "D", "E", "F", ]
     dict = {'A': [], 'B': [], 'C': [], 'D': [], 'E': [], 'F': []}
     # mf = MongoFunc(mongo_inf)
-    bc = BetController(mysql_inf, mongo_inf,AB_list,dict)
+    # bc = BetController(mysql_inf, mongo_inf,AB_list,dict)
 
+
+    bc=SQL_report_ods(mysql_inf, mongo_inf, AB_list,dict)
     # yyds=bc.Type_odd()
     # yyds=bc.bet_type(order_no="XEP93LkShTT3",AB_list=AB_list,dict=dict)
     yydt=bc.order_no(bet_type=0, status=2, AB_list=AB_list,dict=dict,proxy3_id=1531517760300163074)
