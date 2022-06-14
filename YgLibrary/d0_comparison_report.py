@@ -44,11 +44,6 @@ class report_data(object):
         模拟ctrl给我司推送数据
         """
         self.session = requests.session()
-        self.dbq = DbQuery(mongo_info)
-        # self.ctrl_docs = CtrlIoDocs(mysql_info, mongo_info)
-        self.cf = CommonFunc()
-        self.mysql = MysqlCommonQuery(mysql_info)
-        self.my = MysqlFunc(mysql_info)
         self.tt=BetController(mysql_info, mongo_info)
 
     # rsa加密账号、密码
@@ -411,8 +406,8 @@ class BetController(object):
                     sort_num02 = self.my.query_data(sql02, db_name='bfty_credit')
                     sort_num_list.append(sort_num01)
                     sort_num_list.append(sort_num02)
-                    print(sql01)
-                    print(sql02)
+                    # print(sql01)
+                    # print(sql02)
                     # print(sort_num01,sort_num02)
                     num_list.append(sort_num_list)
             sort_num=num_list
@@ -430,8 +425,6 @@ class BetController(object):
         # print(excel_report[3])
         str_num=Compared
         yyds01=str_num.split(",")
-        print(len(yyds01),yyds01)
-        print(type(len(yyds01)))
         if excel_report[3] == 1:
             for i in range(0, len(sort_num)):
                 sql_dict = {}
@@ -461,7 +454,6 @@ class BetController(object):
                                 yy_num = float(sort_num[i][j][l][g])
                             sql_dict[sql_name_list[g]] = yy_num
                         sql_list.append(sql_dict)
-
             if len(yyds01)==1:
                 self.report_list_Compared01(sport_list=sport_list, sql_list=sql_list, Compared=Compared)
             elif len(yyds01)==2:
