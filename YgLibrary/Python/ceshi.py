@@ -259,24 +259,38 @@ num_lsit = [{"复式3串4":["2_3_0","3_4_1"]},{"复式4串11":["2_6_0","3_4_0","
 
 
 
-str_num="sportName,sportMarketName"
+# str_num="sportName,sportMarketName"
+#
+# str_num2="sportName"
+#
+#
+# yyds01=str_num.split(",")
+# yyds02=str_num2.split(",")
+#
+# print(len(yyds01),yyds01)
+# print(len(yyds02),yyds02)
 
-str_num2="sportName"
+# sport_list=["接口数据为空"]
+# sql_list=[]
+#
+#
+#
+# if sport_list!=[] and sql_list!=[]:
+#         pass
+# else:
+#      if sport_list == []:
+#         print("接口数据为空")
+#      if sql_list == []:
+#         print("SQL数据为空")
 
+# time01 = datetime.datetime.strptime(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),'%Y-%m-%d %H:%M:%S')
+# time02=datetime.datetime.strptime(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),'%Y-%m-%d %H:%M:%S')
+# date_time=time02-time01
+# print(nuw)
 
-yyds01=str_num.split(",")
-yyds02=str_num2.split(",")
+mow="0:00:25"
 
-print(len(yyds01),yyds01)
-print(len(yyds02),yyds02)
-
-
-
-
-
-
-
-
+print(mow)
 
 
 

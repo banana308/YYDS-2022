@@ -71,18 +71,28 @@ class report_data(object):
         shenames = workbook.sheetnames
         print("整个表格所有表名:", shenames)  # ['各省市', '测试表']
 
-        for gg in range(0,1):
-            gg=shenames[gg]
+        execute=0
+        Failed=0
+        time01 = datetime.datetime.strptime(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),'%Y-%m-%d %H:%M:%S')
+        for gg in range(1,2):
+            gg = shenames[gg]
         # for gg in shenames:
             # 获取该表相应的行数和列数
             worksheet= workbook[shenames[shenames.index(gg)]]
-            rows = worksheet.max_row
+            rows=0
+            for yy in range(1,1000):
+                if worksheet.cell(yy, 1).value!=None:
+                    rows=rows+1
+                else:
+                    break
+            # rows = worksheet.max_row
             columns = worksheet.max_column
-            print(f"所在\033[32m（{shenames[0]}）\033[0m组成有： {rows}行  {columns}列")
+            print(f"所在\033[32m（{gg}）\033[0m组成有： {rows}行  {columns}列")
             content_A2 = worksheet.cell(2, 1).value
             if content_A2!=None:
                 # for i in range(2, int(rows)+1):
-                for i in range(2, 4):
+                for i in range(2, int(rows)+1):
+                    # print(i)
                     excel_report = []
                     for j in range(2, int(columns)-2):
                         report=worksheet.cell(i,j).value
@@ -93,13 +103,20 @@ class report_data(object):
                     self.login(URL=URL, begin=begin, end=end, excel_report=excel_report)
                     now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                     if sport_all_error==[]:
+                        execute=execute+1
                         worksheet.cell(i,int(columns)-2,("测试通过"+"\n"+now))
+                        worksheet.cell(i, int(columns) - 1, "")
+                        worksheet.cell(i, int(columns), "")
                     else:
+                        Failed=Failed+1
                         worksheet.cell(i, int(columns)-2, ("测试不通过"+"\n"+now))
                         worksheet.cell(i, int(columns)-1, str(sport_error))
                         worksheet.cell(i, int(columns), str(sport_all_error))
             else:
                 continue
+        time02=datetime.datetime.strptime(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),'%Y-%m-%d %H:%M:%S')
+        date_time=time02-time01
+        print(f"\033[32m\n\n执行通过用例共计{execute}条,\033[0m未通过用例共计\033[31m{Failed}条\033[0m,共计消耗时间{date_time}")
         workbook.save(filename=save_excel[0])
         workbook.close()
 
@@ -222,7 +239,11 @@ class report_data(object):
                 results = json.loads(response.text)
                 yyds = results['data']['data']
                 for i in yyds:
-                    sportId_list.append(i[excel_report[6]])
+                    if i[excel_report[6]]=='串关':
+                        pass
+                        # print("我是串关")
+                    else:
+                        sportId_list.append(i[excel_report[6]])
                 # print(sportId_list)
             else:
                 url = str(URL) + url
@@ -290,67 +311,79 @@ class BetController(object):
         self.sr=SQL_report_ods(mysql_info, mongo_info,AB_list,dict)
         self.b0=betting_odds(mysql_info, mongo_info,AB_list,dict)
 
-    def report_list_Compared01(self,sport_list,sql_list,Compared):
-
-        for i in range(0, len(sport_list)):
-            for j in range(0, len(sql_list)):
-                # print(sql_list)
-                # print(sport_list)
-                if sport_list[i][Compared] == sql_list[j][Compared]:
-                    if sport_list[i] == sql_list[j]:
-                        print(sport_list[i][Compared],"数据对比正确：" + str(sport_list[i]) + "/" + str(sql_list[j]))
-                        break
-                    else:
-                        print(sport_list[i])
-                        print(sql_list[j])
-                        for report in range(0, len(sql_list[j])):
-                            yyds_list = list(sql_list[i].keys())
-                            if sport_list[i][yyds_list[report]] == sql_list[j][yyds_list[report]]:
-                                print(sport_list[i][Compared], str(yyds_list[report]),"数据对比正确：" + str(sport_list[i][yyds_list[report]]) + "/" + str(sql_list[j][yyds_list[report]]))
-                            else:
-                                if sport_list[i][yyds_list[report]] == float(sql_list[j][yyds_list[report]]):
-                                    print(sport_list[i][Compared], str(yyds_list[report]),"数据对比正确：" + str(sport_list[i][yyds_list[report]]) + "/" + str(sql_list[j][yyds_list[report]]))
+    def report_list_Compared01(self,sport_list,sql_list,Compared,excel_report):
+        if sport_list!= [] and sql_list!= []:
+            yyds_list = []
+            for key, value in sport_list[0].items():
+                yyds_list.append(key)
+            for i in range(0, len(sport_list)):
+                if sport_list[i] == []:
+                    sport_all_error.append("接口数据为空")
+                for j in range(0, len(sql_list)):
+                    if sql_list[j] == []:
+                        sport_all_error.append("SQL数据为空")
+                    if sport_list[i][Compared] == sql_list[j][Compared]:
+                        if sport_list[i] == sql_list[j]:
+                            correct_list.append(sql_list[j])
+                            print(sport_list[i][Compared],"数据对比正确：" + str(sport_list[i]) + "/" + str(sql_list[j]))
+                            break
+                        else:
+                            for report in range(0, len(sql_list[j])):
+                                if sport_list[i][yyds_list[report]] == sql_list[j][yyds_list[report]]:
+                                    pass
+                                    # print(sport_list[i][Compared], str(yyds_list[report]),"数据对比正确：" + str(sport_list[i][yyds_list[report]]) + "/" + str(sql_list[j][yyds_list[report]]))
                                 else:
-                                    sport_all_error.append(str(sport_list[i][Compared]) + "/" + str(yyds_list[report]) + "的数据对比错误,请检查SQL查询的字段与接口字段数据是否一致,数据对比：" + str({sport_list[i][Compared]}) + "/" + (str({sql_list[j][Compared]})))
-                                    print("\033[31m" + sport_list[i][Compared], str(yyds_list[report]),"数据对比错误：" + str(sport_list[i][yyds_list[report]]) + "/" + str(sql_list[j][yyds_list[report]]) + "\033[0m")
-                else:
-                    sport_error.append(str(sport_list[i][Compared])+"的数据对比错误,请检查SQL查询的字段与接口字段数据是否一致,数据对比："+str({sport_list[i][Compared]})+"/"+(str({sql_list[j][Compared]})))
+                                    sport_error.append(str(sport_list[i][Compared]) + "/" + str(yyds_list[report]) + "的数据对比错误,请检查SQL查询的字段与接口字段数据是否一致,数据对比：" + str({sport_list[i][Compared]}) + "/" + (str({sql_list[j][Compared]})))
+                                    # print("\033[31m" + sport_list[i][Compared], str(yyds_list[report]),"数据对比错误：" + str(sport_list[i][yyds_list[report]]) + "/" + str(sql_list[j][yyds_list[report]]) + "\033[0m")
+        else:
+            if sport_list== []:
+                sport_all_error.append("接口数据为空")
+            if sql_list== []:
+                sport_all_error.append("SQL数据为空")
 
-    def report_list_Compared02(self, sport_list,sql_list, Compared):
+    def report_list_Compared02(self, sport_list,sql_list, Compared,excel_report):
+        if sport_list!=[] and sql_list!=[] :
+            yyds_list = []
+            for key, value in sport_list[0].items():
+                yyds_list.append(key)
             for i in range(0, len(sport_list)):
                 for j in range(0, len(sql_list)):
                     ppxt_lsit =Compared.split(",")
                     if sport_list[i][ppxt_lsit[0]] == sql_list[j][ppxt_lsit[0]]:
                         if sport_list[i][ppxt_lsit[1]] == sql_list[j][ppxt_lsit[1]]:
                             if sport_list[i] == sql_list[j]:
+                                correct_list.append(sql_list[j])
                                 print(str(sport_list[i][ppxt_lsit[0]])+"-"+str(sport_list[i][ppxt_lsit[1]]),"数据对比正确：" + str(sport_list[i]) + "/" + str(sql_list[j]))
                                 break
                             else:
-                                print(f"sport_list:{sport_list[i]}")
-                                print(f"sql_list:{sql_list[j]}")
                                 for report in range(0, len(sql_list[j])):
-                                    yyds_list = list(sql_list[i].keys())
                                     if sport_list[i][yyds_list[report]] == sql_list[j][yyds_list[report]]:
                                         pass
-                                        print(str(sport_list[i][ppxt_lsit[0]])+"-"+str(sport_list[i][ppxt_lsit[1]]), str(yyds_list[report]),"数据对比正确：" + str(sport_list[i][yyds_list[report]]) + "/" + str(sql_list[j][yyds_list[report]]))
+                                        # print(str(sport_list[i][ppxt_lsit[0]])+"-"+str(sport_list[i][ppxt_lsit[1]]), str(yyds_list[report]),"数据对比正确：" + str(sport_list[i][yyds_list[report]]) + "/" + str(sql_list[j][yyds_list[report]]))
                                     else:
-                                        if sport_list[i][yyds_list[report]] == float(sql_list[j][yyds_list[report]]):
-                                            pass
-                                            print(str(sport_list[i][ppxt_lsit[0]])+"-"+str(sport_list[i][ppxt_lsit[1]]), str(yyds_list[report]), "数据对比正确：" + str(sport_list[i][yyds_list[report]]) + "/" + str(sql_list[j][yyds_list[report]]))
+                                        if excel_report[3] == 1:
+                                            sport_error.append(str(str(sport_list[i][ppxt_lsit[0]])+"-"+str(sport_list[i][ppxt_lsit[1]])) + "/" + str(yyds_list[report]) + "的数据对比错误,请检查SQL查询的字段与接口字段数据是否一致,数据对比：" +  str(sport_list[i][yyds_list[report]]) + "/" + str(sql_list[j][yyds_list[report]]))
+                                            # print("\033[31m" + str(sport_list[i][ppxt_lsit[0]])+"-"+str(sport_list[i][ppxt_lsit[1]]), str(yyds_list[report]),"数据对比错误：" + str(sport_list[i][yyds_list[report]]) + "/" + str( sql_list[j][yyds_list[report]]) + "\033[0m")
                                         else:
-                                            sport_all_error.append(str(str(sport_list[i][ppxt_lsit[0]])+"-"+str(sport_list[i][ppxt_lsit[1]])) + "/" + str(yyds_list[report]) + "的数据对比错误,请检查SQL查询的字段与接口字段数据是否一致,数据对比：" +  str(sport_list[i][yyds_list[report]]) + "/" + str(sql_list[j][yyds_list[report]]))
-                                            print("\033[31m" + str(sport_list[i][ppxt_lsit[0]])+"-"+str(sport_list[i][ppxt_lsit[1]]), str(yyds_list[report]),"数据对比错误：" + str(sport_list[i][yyds_list[report]]) + "/" + str( sql_list[j][yyds_list[report]]) + "\033[0m")
-                        else:
-                            sport_error.append(str(sport_list[i][ppxt_lsit[1]]) + "的数据对比错误,请检查SQL查询的字段与接口字段数据是否一致,数据对比：" + str({sport_list[i][ppxt_lsit[1]]}) + "/" + (str({sql_list[j][ppxt_lsit[1]]})))
-                    else:
-                        sport_error.append(str(sport_list[i][ppxt_lsit[0]]) + "的数据对比错误,请检查SQL查询的字段与接口字段数据是否一致,数据对比：" + str({sport_list[i][ppxt_lsit[0]]}) + "/" + (str({sql_list[j][ppxt_lsit[0]]})))
+                                            sport_error.append(str(str(sport_list[i][ppxt_lsit[0]])+"-"+str(sport_list[i][ppxt_lsit[1]])) + "/" +sportId_list[i] + "/"+str(yyds_list[report]) + "的数据对比错误,请检查SQL查询的字段与接口字段数据是否一致,数据对比：" +  str(sport_list[i][yyds_list[report]]) + "/" + str(sql_list[j][yyds_list[report]]))
+                                            # print("\033[31m" + str(sport_list[i][ppxt_lsit[0]])+"-"+str(sport_list[i][ppxt_lsit[1]]+"-"+sportId_list[i]), str(yyds_list[report]),"数据对比错误：" + str(sport_list[i][yyds_list[report]]) + "/" + str( sql_list[j][yyds_list[report]]) + "\033[0m")
+        else:
+            if sport_list== []:
+                sport_all_error.append("接口数据为空")
+            if sql_list== []:
+                sport_all_error.append("SQL数据为空")
 
-
-    def report_list_Compared03(self, sport_list,sql_list, Compared):
-            # print(sport_list)
-            # print(sql_list)
+    def report_list_Compared03(self, sport_list,sql_list, Compared,excel_report):
+        if sport_list!= [] and sql_list!= []:
+            yyds_list = []
+            for key, value in sport_list[0].items():
+                yyds_list.append(key)
             for i in range(0, len(sport_list)):
+                if sport_list[i] == []:
+                    sport_all_error.append("接口数据为空")
                 for j in range(0, len(sql_list)):
+                    if sql_list[j] == []:
+                        sport_all_error.append("SQL数据为空")
                     str_sum = Compared
                     ppxt_lsit = str_sum.split(",")
                     # print(ppxt_lsit)
@@ -358,50 +391,66 @@ class BetController(object):
                         if sport_list[i][ppxt_lsit[1]] == sql_list[j][ppxt_lsit[1]]:
                             if sport_list[i][ppxt_lsit[2]] == sql_list[j][ppxt_lsit[2]]:
                                 if sport_list[i] == sql_list[j]:
+                                    correct_list.append(sql_list[j])
                                     print(str(sport_list[i][ppxt_lsit[0]])+"-"+str(sport_list[i][ppxt_lsit[1]])+"-"+str(sport_list[i][ppxt_lsit[2]]),"数据对比正确：" + str(sport_list[i]) + "/" + str(sql_list[j]))
                                     break
                                 else:
-                                    print(f"sport_list:{sport_list[i]}")
-                                    print(f"sql_list:{sql_list[j]}")
                                     for report in range(0, len(sql_list[j])):
-                                        yyds_list = list(sql_list[i].keys())
                                         if sport_list[i][yyds_list[report]] == sql_list[j][yyds_list[report]]:
                                             pass
-                                            print(str(sport_list[i][ppxt_lsit[0]])+"-"+str(sport_list[i][ppxt_lsit[1]])+"-"+str(sport_list[i][ppxt_lsit[2]]), str(yyds_list[report]),"数据对比正确：" + str(sport_list[i][yyds_list[report]]) + "/" + str(sql_list[j][yyds_list[report]]))
+                                            # print(str(sport_list[i][ppxt_lsit[0]])+"-"+str(sport_list[i][ppxt_lsit[1]])+"-"+str(sport_list[i][ppxt_lsit[2]]), str(yyds_list[report]),"数据对比正确：" + str(sport_list[i][yyds_list[report]]) + "/" + str(sql_list[j][yyds_list[report]]))
                                         else:
-                                            if sport_list[i][yyds_list[report]] == float(sql_list[j][yyds_list[report]]):
-                                                pass
-                                                print(str(sport_list[i][ppxt_lsit[0]])+"-"+str(sport_list[i][ppxt_lsit[1]])+"-"+str(sport_list[i][ppxt_lsit[2]]), str(yyds_list[report]), "数据对比正确：" + str(sport_list[i][yyds_list[report]]) + "/" + str(sql_list[j][yyds_list[report]]))
-                                            else:
+                                            if excel_report[3] == 1:
                                                 sport_all_error.append(str(str(sport_list[i][ppxt_lsit[0]])+"-"+str(sport_list[i][ppxt_lsit[1]])) +"-"+str(sport_list[i][ppxt_lsit[2]])+ "/" + str(yyds_list[report]) + "的数据对比错误,请检查SQL查询的字段与接口字段数据是否一致,数据对比：" +  str(sport_list[i][yyds_list[report]]) + "/" + str(sql_list[j][yyds_list[report]]))
-                                                print("\033[31m" + str(sport_list[i][ppxt_lsit[0]])+"-"+str(sport_list[i][ppxt_lsit[1]]+"-"+str(sport_list[i][ppxt_lsit[2]]), str(yyds_list[report]),"数据对比错误：" + str(sport_list[i][yyds_list[report]]) + "/" + str( sql_list[j][yyds_list[report]]) + "\033[0m"))
-                            else:
-                                sport_error.append(str(sport_list[i][ppxt_lsit[2]]) + "的数据对比错误,请检查SQL查询的字段与接口字段数据是否一致,数据对比：" + str({sport_list[i][ppxt_lsit[2]]}) + "/" + (str({sql_list[j][ppxt_lsit[2]]})))
-                        else:
-                            sport_error.append(str(sport_list[i][ppxt_lsit[1]]) + "的数据对比错误,请检查SQL查询的字段与接口字段数据是否一致,数据对比：" + str({sport_list[i][ppxt_lsit[1]]}) + "/" + (str({sql_list[j][ppxt_lsit[1]]})))
-                    else:
-                        sport_error.append(str(sport_list[i][ppxt_lsit[0]]) + "的数据对比错误,请检查SQL查询的字段与接口字段数据是否一致,数据对比：" + str({sport_list[i][ppxt_lsit[0]]}) + "/" + (str({sql_list[j][ppxt_lsit[0]]})))
-
+                                                # print("\033[31m" + str(sport_list[i][ppxt_lsit[0]])+"-"+str(sport_list[i][ppxt_lsit[1]]+"-"+str(sport_list[i][ppxt_lsit[2]]), str(yyds_list[report]),"数据对比错误：" + str(sport_list[i][yyds_list[report]]) + "/" + str( sql_list[j][yyds_list[report]]) + "\033[0m"))
+                                            else:
+                                                sport_all_error.append(str(str(sport_list[i][ppxt_lsit[0]]) + "-" + str(sport_list[i][ppxt_lsit[1]])) + "-" + str(sport_list[i][ppxt_lsit[2]]) + "/" +sportId_list[i] + "/" +str(yyds_list[report]) + "的数据对比错误,请检查SQL查询的字段与接口字段数据是否一致,数据对比：" + str(sport_list[i][yyds_list[report]]) + "/" + str(sql_list[j][yyds_list[report]]))
+                                                # print("\033[31m" + str(sport_list[i][ppxt_lsit[0]]) + "-" + str(sport_list[i][ppxt_lsit[1]] + "-" + str(sport_list[i][ppxt_lsit[2]]+"-"+sportId_list[i]), str(yyds_list[report]),"数据对比错误：" + str(sport_list[i][yyds_list[report]]) + "/" + str(sql_list[j][yyds_list[report]]) + "\033[0m"))
+        else:
+            if sport_list == []:
+                sport_all_error.append("接口数据为空")
+            if sql_list== []:
+                sport_all_error.append("SQL数据为空")
 
     def sport_report_sql(self,begin,end,excel_report,sport_report_dict,sport_report_list):
-        if excel_report[3] == 1:
-            sql = eval(excel_report[8])
-            sort_num = self.my.query_data(sql, db_name='bfty_credit')
-            # print(sql)
 
+        num_list = []
+        sort_num_list = []
+        mix_number=[]
+        sum_yyds = excel_report[8]
+        yyds = sum_yyds.split("@")
+        if yyds[0]=='':
+            del yyds[0]
+        if excel_report[3] == 1:
+            if len(yyds) == 1:
+                sql = eval(yyds[0])
+                sort_num = self.my.query_data(sql, db_name='bfty_credit')
+                mix_number.append("1-1")
+            else:
+                sql01 = eval(yyds[0])
+                sql02 = eval(yyds[1])
+                sort_num01 = self.my.query_data(sql01, db_name='bfty_credit')
+                sort_num02 = self.my.query_data(sql02, db_name='bfty_credit')
+                sort_num_list.append(sort_num01)
+                sort_num_list.append(sort_num02)
+
+                num_list.append(sort_num_list)
+                sort_num = num_list
+                mix_number.append("2-2")
         else:
-            num_list=[]
-            sum_yyds=excel_report[8]
-            yyds=sum_yyds.split(",")
-            for sport_id in sportId_list:
+            for all in sportId_list:
                 sort_num_list = []
                 if len(yyds) == 1:
-                    sql = eval(excel_report[8])
+                    sql = eval(yyds[0])
                     sort_num = self.my.query_data(sql, db_name='bfty_credit')
-                    num_list.append(sort_num_list)
+                    num_list.append(sort_num)
+                    if num_list[0] ==():
+                        del num_list[0]
+                    # print(num_list[-1])
+                    mix_number.append("2-1")
                 else:
-                    sql01 = eval(excel_report[8])[0]
-                    sql02 = eval(excel_report[8])[1]
+                    sql01 = eval(yyds[0])
+                    sql02 = eval(yyds[1])
                     sort_num01 = self.my.query_data(sql01, db_name='bfty_credit')
                     sort_num02 = self.my.query_data(sql02, db_name='bfty_credit')
                     sort_num_list.append(sort_num01)
@@ -410,22 +459,27 @@ class BetController(object):
                     # print(sql02)
                     # print(sort_num01,sort_num02)
                     num_list.append(sort_num_list)
+            mix_number.append("2-2")
             sort_num=num_list
-            # print(sort_num)
+
 
         sport_sql_list = sport_report_dict
         sql_sport_list = []
-        self.Compared_report(sort_num=sort_num,sport_list=sport_report_list,sql_name_list=sport_sql_list,sql_list=sql_sport_list,Compared=excel_report[9],report_name=excel_report[0]+"  "+excel_report[1],excel_report=excel_report)
+        # print(sort_num)
+        # print(f"SQL数据：{sort_num}\n接口数据：{sport_report_list}\n-----------------------------------------------------------------------------")
+        print("-------------------------------------------------------------------------------------------------------")
+        self.Compared_report(sort_num=sort_num,sport_list=sport_report_list,sql_name_list=sport_sql_list,sql_list=sql_sport_list,Compared=excel_report[9],report_name=excel_report[0]+"  "+excel_report[1],excel_report=excel_report,mix=mix_number)
 
-    def Compared_report(self, sort_num, sport_list, sql_name_list, sql_list, Compared, report_name, excel_report):
-        global sport_error, sport_all_error,yyds01
-
+    def Compared_report(self, sort_num, sport_list, sql_name_list, sql_list, Compared, report_name, excel_report,mix):
+        global sport_error, sport_all_error,yyds01,correct_list
+        correct_list=[]
         sport_error = []
         sport_all_error = []
         # print(excel_report[3])
         str_num=Compared
         yyds01=str_num.split(",")
-        if excel_report[3] == 1:
+        print(sort_num)
+        if mix[0]==str('1-1'):
             for i in range(0, len(sort_num)):
                 sql_dict = {}
                 for j in range(0, len(sort_num[i])):
@@ -435,13 +489,22 @@ class BetController(object):
                         yy_num = float(sort_num[i][j])
                     sql_dict[sql_name_list[j]] = yy_num
                 sql_list.append(sql_dict)
-            if len(yyds01)==1:
-                self.report_list_Compared01(sport_list=sport_list, sql_list=sql_list, Compared=Compared)
-            elif len(yyds01)==2:
-                self.report_list_Compared02(sport_list=sport_list, sql_list=sql_list, Compared=Compared)
-            else:
-                self.report_list_Compared03(sport_list=sport_list, sql_list=sql_list, Compared=Compared)
-        else:
+        if mix[0]==str('2-1'):
+            for i in range(0, len(sort_num)):
+                for j in range(0,len(sort_num[i])):
+                    sql_dict = {}
+                    for g in range(0,len(sort_num[i][j])):
+                        if type(sort_num[i][j][g]) == type('str'):
+                            yy_num = sort_num[i][j][g]
+                        else:
+                            yy_num = float(sort_num[i][j][g])
+                        sql_dict[sql_name_list[g]] = yy_num
+                    sql_list.append(sql_dict)
+                    # print(sportId_list[j])
+                    # print(sql_list[-1])
+                    # print(sport_list[j])
+            # print(sql_list)
+        if mix[0]==str('2-2'):
             for i in range(0, len(sort_num)):
                 for j in range(0, len(sort_num[i])):
                     for l in range(0, len(sort_num[i][j])):
@@ -454,20 +517,26 @@ class BetController(object):
                                 yy_num = float(sort_num[i][j][l][g])
                             sql_dict[sql_name_list[g]] = yy_num
                         sql_list.append(sql_dict)
-            if len(yyds01)==1:
-                self.report_list_Compared01(sport_list=sport_list, sql_list=sql_list, Compared=Compared)
-            elif len(yyds01)==2:
-                self.report_list_Compared02(sport_list=sport_list, sql_list=sql_list, Compared=Compared)
-            else:
-                self.report_list_Compared03(sport_list=sport_list, sql_list=sql_list, Compared=Compared)
 
-        if sport_all_error == []:
+        if len(yyds01)==1:
+            self.report_list_Compared01(sport_list=sport_list, sql_list=sql_list, Compared=Compared,excel_report=excel_report)
+        elif len(yyds01)==2:
+            self.report_list_Compared02(sport_list=sport_list, sql_list=sql_list, Compared=Compared,excel_report=excel_report)
+        else:
+            self.report_list_Compared03(sport_list=sport_list, sql_list=sql_list, Compared=Compared,excel_report=excel_report)
+
+        if len(sport_list) == len(correct_list):
             print(f"\033[32m代理{Dl_list[pkk]}的{report_name}，接口数据比对全部正确\033[0m")
         else:
             print(f"\033[31m代理{Dl_list[pkk]}的{report_name}，数据错误，需要比对\033[0m")
-            sport_all_error.append(sport_list[0])
-            sport_all_error.append(sql_list[0])
-            print(f"\033[33m{sport_error}033[0m")
+            print(len(sport_list),len(correct_list))
+            for ff in range(0,len(correct_list)):
+                if correct_list[ff] in sql_list:
+                    del sql_list[sql_list.index(correct_list[ff])]
+            # print(sql_list)
+            sport_all_error.append(sql_list)
+            # print(f"\033[34m部分数据：{sport_error}\033[0m")
+            # print(f"\033[34m全部数据：{sport_all_error}\033[0m")
 
 
 
@@ -528,6 +597,4 @@ if __name__ == "__main__":
         # yyds=cc.login(URL=URL,begin="2022-06-04",end="2022-06-10")
         # ppds=bc.sport_report_sql(begin="2022-06-04 00:00:00",end="2022-06-10 23:59:59")
 
-        list=[]
-
-        ccds=cc.reading_Excel(excel=excel, save_excel=save_excel,begin="2022-06-04",end="2022-06-10", URL=URL)
+        ccds=cc.reading_Excel(excel=excel, save_excel=save_excel,begin="2022-06-04",end="2022-06-15", URL=URL)

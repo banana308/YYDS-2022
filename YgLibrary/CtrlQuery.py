@@ -884,7 +884,7 @@ if __name__ == "__main__":
 
     # MDE:proxy3_id="1531517760300163074"
     # 120:proxy3_id="1531193388241375234"
-    time.sleep(120)
+    time.sleep(180)
     order_list=bc.generate_settlement_str_by_orderNo_number_type(proxy3_id="1531517760300163074", bet_type="0")
 
     # time.sleep(30)
