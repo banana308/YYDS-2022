@@ -292,6 +292,10 @@ mow="0:00:25"
 
 print(mow)
 
+date_list=[datetime.datetime(2022, 6, 15, 2, 35, 42)]
+print(type(date_list[0]))
 
-
-
+print(type(date_list[0]))
+print(type('datetime.datetime(2022, 6, 15, 2, 35, 42)'))
+if type(date_list[0])==type(datetime.datetime(2022, 6, 15, 2, 35, 42)):
+    print("what")

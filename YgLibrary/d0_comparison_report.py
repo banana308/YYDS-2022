@@ -74,7 +74,7 @@ class report_data(object):
         execute=0
         Failed=0
         time01 = datetime.datetime.strptime(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),'%Y-%m-%d %H:%M:%S')
-        for gg in range(1,2):
+        for gg in range(2,3):
             gg = shenames[gg]
         # for gg in shenames:
             # 获取该表相应的行数和列数
@@ -91,7 +91,7 @@ class report_data(object):
             content_A2 = worksheet.cell(2, 1).value
             if content_A2!=None:
                 # for i in range(2, int(rows)+1):
-                for i in range(2, int(rows)+1):
+                for i in range(2, 3):
                     # print(i)
                     excel_report = []
                     for j in range(2, int(columns)-2):
@@ -191,7 +191,11 @@ class report_data(object):
         else:
             response = session.get(url=url, headers=headers, params=data)
         results = json.loads(response.text)
-        yyds = results['data']['data']
+        print(results)
+        if excel_report[0]=="总投注-混合串关-主查询":
+            yyds = results['data']
+        else:
+            yyds = results['data']['data']
         sportId_list = []
         # print(yyds)
 
@@ -483,8 +487,11 @@ class BetController(object):
             for i in range(0, len(sort_num)):
                 sql_dict = {}
                 for j in range(0, len(sort_num[i])):
-                    if type(sort_num[i][j]) == type('str'):
-                        yy_num = sort_num[i][j]
+                    if type(sort_num[i][j]) == type('str') or type(sort_num[i][j])==type(datetime.datetime(2022, 6, 15, 2, 35, 42)):
+                        if sort_num[i][j]=="odds":
+                            yy_num =self.sr.credit_odds(order_no=sort_num[i][j+1],bet_type="",AB_list=AB_list,dict=dict)
+                        else:
+                            yy_num=sort_num[i][j]
                     else:
                         yy_num = float(sort_num[i][j])
                     sql_dict[sql_name_list[j]] = yy_num
