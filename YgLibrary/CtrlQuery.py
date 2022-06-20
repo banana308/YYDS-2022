@@ -412,11 +412,10 @@ class BetController(object):
                 raise AssertionError(f"Result_handicap:{result_handicap}")
             print(f"结算结果：{result}")
 
-
         else:
             print("\033[32m不在让球、大小球中\033[0m")
             if result == None:
-                result_list = ["输", "赢",'取消']
+                result_list = ["输", "赢","取消"]
                 result = random.choice(result_list)
             if result == "输" or result_handicap == "输":
                 result_str = 'result=\"0\"'
@@ -424,7 +423,7 @@ class BetController(object):
             elif result == "赢" or result_handicap == "赢":
                 result = ("\033[32m赢\033[0m")
                 result_str = 'result=\"1\"'
-            elif result_handicap == "走盘" or result == '取消' or result_handicap == "取消":
+            elif result_handicap == "走盘" or result == "取消":
                 result_str = 'result=\"0\" void_factor=\"1\"'
             else:
                 raise AssertionError(f"Result输入的值错误:{result}，不能输入[走盘, 赢一半,输一半]")

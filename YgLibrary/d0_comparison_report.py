@@ -102,7 +102,7 @@ class report_data(object):
             if content_A2!=None:
                 # 循环行数
                 # for i in range(4, rows+1):
-                for i in range(2, rows+1):
+                for i in range(4, rows+1):
                     excel_report = []
                     # 循环列数
                     for j in range(2, int(columns)-2):
@@ -133,8 +133,8 @@ class report_data(object):
 
     def login(self,URL, begin, end,excel_report):
         """
-       @第一次获取token，并保持token连接中，便于后面其他接口访问
-       """
+        @第一次获取token，并保持token连接中，便于后面其他接口访问
+        """
         global token
         # 登0~登3登录获取token
         count = 0
@@ -185,8 +185,10 @@ class report_data(object):
 
         if excel_report[3]==1:
             self.sport_report01(URL=URL, token=token, excel_report=excel_report, begin=begin, end=end)
-        else:
+        elif  excel_report[3]==2:
             self.sport_report02(URL=URL, token=token, excel_report=excel_report, begin=begin, end=end)
+        else:
+            self.sport_report03(URL=URL, token=token, excel_report=excel_report, begin=begin, end=end)
 
 
 
@@ -195,7 +197,10 @@ class report_data(object):
 
         url = str(URL)+(excel_report[1])
         headers=eval(excel_report[4])
-        data=eval(excel_report[5])[0]
+        if excel_report[0] in sport_report02_list:
+            data = eval(excel_report[5])
+        else:
+            data = eval(excel_report[5])[0]
         session = requests.session()
         # print(headers)
         # print(data)
@@ -244,8 +249,7 @@ class report_data(object):
             headers = eval(excel_report[4])
             if eval(excel_report[1]).index(url) == 0:
                 url = str(URL) + url
-                # print(eval(excel_report[5]))
-                data=eval(excel_report[5])[0]
+                data = eval(excel_report[5])[0]
                 session = requests.session()
                 method_list = ["post"]
 
@@ -263,16 +267,18 @@ class report_data(object):
                 for i in yyds:
                     if i[excel_report[6]]=='串关':
                         pass
-                        # print("我是串关")
                     else:
                         sportId_list.append(i[excel_report[6]])
-                # print(sportId_list)
+                print(sportId_list)
             else:
                 url = str(URL) + url
                 sportId_yyds_lsit=[]
                 for sportId in sportId_list:
                     data = eval(excel_report[5])[1]
-                    data[excel_report[6]]=sportId
+                    if excel_report[0]=="未完成交易-登0-登3-会员-查看订单详情-子查询":
+                        data['parentId']=sportId
+                    else:
+                        data[excel_report[6]] = sportId
                     session = requests.session()
                     method_list = ["post"]
 
@@ -283,7 +289,26 @@ class report_data(object):
                     results = json.loads(response.text)
 
                     if excel_report[0] in module_list:
-                        yyds = results['data']
+                        if excel_report[0]=="未完成交易-登0-登3-会员-查看订单详情-子查询":
+
+                            # print(results)
+                            # print(results['data']['data'])
+                            # print(results['data']['totalData'])
+                            # print(results['data']['totalData']['betAmount'])
+                            if results['data']['data'] == []:
+                                pass
+                            else:
+                                yydt = results['data']['totalData']['betAmount']
+                                yyds=results['data']['data']
+                                # print(yyds)
+                                for ppds in range(0,len(yyds)):
+                                    data =yyds[ppds]['bettingTime']
+                                    data = data.replace("T", " ")
+                                    data = data.replace(".000Z", "")
+                                    yyds[ppds]['bettingTime']=data
+                                    yyds[ppds]['Total_Amount']=yydt
+                        else:
+                            yyds = results['data']
                     else:
                         yyds = results['data']['data']
                     sportId_yyds_lsit.append(yyds)
@@ -299,6 +324,9 @@ class report_data(object):
         sport_report_list = []
         str_sum = excel_report[2]
         for i in range(0, len(report02_list)):
+            if excel_report[0] == "未完成交易-登0-登3-会员-查看订单详情-子查询":
+                for options in report02_list[i]['options']:
+                    del options['matchTime']
             if excel_report[2] != None:
                 ppxt_lsit = str_sum.split(",")
                 # print(ppxt_lsit)
@@ -308,7 +336,7 @@ class report_data(object):
             sport_report_list.append(report02_list[i])
 
 
-
+        print(sport_report_list)
         sport_report_dict= []
         for key, value in sportId_yyds_lsit[0][0].items():
             sport_report_dict.append(key)
@@ -320,6 +348,102 @@ class report_data(object):
         self.tt.sport_report_sql(begin=begin + time_list[0], end=end + time_list[1], excel_report=excel_report,sport_report_dict=sport_report_dict, sport_report_list=sport_report_list)
         return sportId_list
 
+    def sport_report03(self, URL, token, excel_report, begin, end):
+        global sportId_list, sportId_yyds_lsit
+
+        sportId_list = []
+        sportId_yyds_lsit=[]
+        for yytt in range(0,int(excel_report[3])):
+            headers = eval(excel_report[4])
+            if yytt==0:
+                url = str(URL) + excel_report[1]
+                data = eval(excel_report[5])[0]
+                session = requests.session()
+                method_list = ["post"]
+
+                if excel_report[7] == method_list[0]:
+                    response = session.post(url=url, headers=headers, json=data)
+                else:
+                    response = session.get(url=url, headers=headers, params=data)
+                results = json.loads(response.text)
+
+                if excel_report[0] in module_list:
+                    yyds = results['data']
+                else:
+                    yyds = results['data']['data']
+
+                sportId_yyds_lsit.append(yyds)
+
+                for i in yyds:
+                    if i[excel_report[6]] == '串关':
+                        pass
+                    elif excel_report[0] in interface_list:
+                        sportId_list.append(i[excel_report[6]])
+                        sportId_list.append(i['accountId'])
+                        roid_list.append(i['levelId'])
+                        # print(sportId_list,roid_list)
+                    else:
+                        sportId_list.append(i[excel_report[6]])
+
+            else:
+                url = str(URL) + excel_report[1]
+                #特殊处理（未完成交易-登0-主查询接口的bady传参）
+                if excel_report[0] in interface_list:
+                    data = eval(excel_report[5])[0]
+                    # print(excel_report[6],sportId_list[yytt])
+                    data[excel_report[6]]=sportId_list[yytt]
+                else:
+                    data = eval(excel_report[5])[0]
+                session = requests.session()
+                method_list = ["post"]
+
+                if excel_report[7] == method_list[0]:
+                    response = session.post(url=url, headers=headers, json=data)
+                else:
+                    response = session.get(url=url, headers=headers, params=data)
+                results = json.loads(response.text)
+
+                if excel_report[0] in module_list:
+                    yyds = results['data']
+                else:
+                    yyds = results['data']['data']
+                sportId_yyds_lsit.append(yyds)
+
+                for i in yyds:
+                    if i[excel_report[6]] == '串关':
+                        pass
+                    elif excel_report[0] in interface_list:
+                        sportId_list.append(i['accountId'])
+                        roid_list.append(i['levelId'])
+                        # print(sportId_list, roid_list)
+                    else:
+                        sportId_list.append(i[excel_report[6]])
+
+        report03_list = []
+        for gg in range(0, len(sportId_yyds_lsit)):
+            for yy in range(0, len(sportId_yyds_lsit[gg])):
+                report03_list.append(sportId_yyds_lsit[gg][yy])
+        # print(report02_list)
+
+        sport_report_list = []
+        str_sum = excel_report[2]
+        for i in range(0, len(report03_list)):
+            if excel_report[2] != None:
+                ppxt_lsit = str_sum.split(",")
+                # print(ppxt_lsit)
+                for j in ppxt_lsit:
+                    # print(sportId_yyds_lsit[i])
+                    del report03_list[i][j]
+            sport_report_list.append(report03_list[i])
+
+        sport_report_dict = []
+        for key, value in sportId_yyds_lsit[0][0].items():
+            sport_report_dict.append(key)
+        # print(sport_report_dict)
+
+        time_list = [" 00:00:00", " 23:59:59"]
+        self.tt.sport_report_sql(begin=begin + time_list[0], end=end + time_list[1], excel_report=excel_report,sport_report_dict=sport_report_dict, sport_report_list=sport_report_list)
+        return sportId_list
 
 
 class BetController(object):
@@ -347,7 +471,7 @@ class BetController(object):
                     if sport_list[i][Compared] == sql_list[j][Compared]:
                         if sport_list[i] == sql_list[j]:
                             correct_list.append(sql_list[j])
-                            print(correct_list[-1])
+                            # print(correct_list[-1])
                             print(sport_list[i][Compared],"数据对比正确：" + str(sport_list[i]) + "/" + str(sql_list[j]))
                             break
                         else:
@@ -392,10 +516,13 @@ class BetController(object):
                                         if excel_report[3] == 1:
                                             sport_all_error.append(str(str(sport_list[i][ppxt_lsit[0]])+"-"+str(sport_list[i][ppxt_lsit[1]])) + "/" + str(yyds_list[report]) + "的数据对比错误,请检查SQL查询的字段与接口字段数据是否一致,数据对比：" +  str(sport_list[i][yyds_list[report]]) + "/" + str(sql_list[j][yyds_list[report]]))
                                             print("\033[31m" + str(sport_list[i][ppxt_lsit[0]])+"-"+str(sport_list[i][ppxt_lsit[1]]), str(yyds_list[report]),"数据对比错误：" + str(sport_list[i][yyds_list[report]]) + "/" + str( sql_list[j][yyds_list[report]]) + "\033[0m",type(sport_list[i][yyds_list[report]]),type(sql_list[j][yyds_list[report]]))
-
+                                            if excel_report[0] in options_list:
+                                                self.options_report(A=sport_list[i][ppxt_lsit[0]],B=sport_list[i][ppxt_lsit[1]],C=yyds_list[report],D=sport_list[i][yyds_list[report]],E=sql_list[j][yyds_list[report]])
                                         else:
                                             sport_all_error.append(str(str(sport_list[i][ppxt_lsit[0]])+"-"+str(sport_list[i][ppxt_lsit[1]])) + "/" +yyth + "/"+str(yyds_list[report]) + "的数据对比错误,请检查SQL查询的字段与接口字段数据是否一致,数据对比：" +  str(sport_list[i][yyds_list[report]]) + "/" + str(sql_list[j][yyds_list[report]]))
                                             print("\033[31m" + str(sport_list[i][ppxt_lsit[0]])+"-"+str(sport_list[i][ppxt_lsit[1]]+"-"+yyth), str(yyds_list[report]),"数据对比错误：" + str(sport_list[i][yyds_list[report]]) + "/" + str( sql_list[j][yyds_list[report]]) +"\033[0m",type(sport_list[i][yyds_list[report]]),type(sql_list[j][yyds_list[report]]))
+                                            if excel_report[0] in options_list:
+                                                self.options_report(A=sport_list[i][ppxt_lsit[0]],B=sport_list[i][ppxt_lsit[1]], C=yyds_list[report],D=sport_list[i][yyds_list[report]], E=sql_list[j][yyds_list[report]])
         else:
             if sport_list== []:
                 sport_all_error.append("接口数据为空")
@@ -441,11 +568,30 @@ class BetController(object):
             if sql_list== []:
                 sport_all_error.append("SQL数据为空")
 
+    def options_report(self,A, B, C,D,E):
+        print(f"\033[32m{A}-{B},{C}：数据对比开始\033[0m")
+        aa_list = []
+        for key, value in D.items():
+            aa_list.append(key)
+        if D==E:
+            print("数据对比正确")
+        else:
+            for ykk in range(0, len(D)):
+                for i in aa_list:
+                    if D[ykk][i] == E[ykk][i]:
+                        print(f"{A}-{B},{C}数据对比正确：{D[ykk][i]}/{E[ykk][i]}")
+                    else:
+                        print(
+                            f"\033[31m{A}-{B},{C}数据对比错误：{D[ykk][i]}/{E[ykk][i]},{type(D[ykk][i])}/{type(E[ykk][i])}\033[0m")
+        print(f"\033[32m{A}-{B},{C}：数据对比结束\033[0m")
+
     def sport_report_sql(self,begin,end,excel_report,sport_report_dict,sport_report_list):
+        global options_list
 
         num_list = []
         sort_num_list = []
         mix_number=[]
+        options_list = []
         sum_yyds = excel_report[8]
         yyds = sum_yyds.split("@")
         if yyds[0]=='':
@@ -470,7 +616,7 @@ class BetController(object):
                 num_list.append(sort_num_list)
                 sort_num = num_list
                 mix_number.append("2-2")
-        else:
+        elif excel_report[3] == 2:
             for all in sportId_list:
                 sort_num_list = []
                 if len(yyds) == 1:
@@ -480,6 +626,72 @@ class BetController(object):
                     if num_list[0] ==():
                         del num_list[0]
                     mix_number.append("2-1")
+                elif len(yyds) == 2:
+                    sql01 = eval(yyds[0])
+                    sql02 = eval(yyds[1])
+                    sort_num01 = self.my.query_data(sql01, db_name='bfty_credit')
+                    sort_num02 = self.my.query_data(sql02, db_name='bfty_credit')
+                    sort_num_list.append(sort_num01)
+                    sort_num_list.append(sort_num02)
+                    num_list.append(sort_num_list)
+                    mix_number.append("2-2")
+                else:
+                    if excel_report[0]=="未完成交易-登0-登3-会员-查看订单详情-子查询":
+                        yyrt_list = []
+                        order_list=[]
+                        sql01=eval(yyds[1])
+                        sql=eval(yyds[0])
+                        sort_num01 = self.my.query_data(sql01, db_name='bfty_credit')
+                        sort_num=self.my.query_data(sql, db_name='bfty_credit')
+                        for i in sort_num01:
+                            order_list.append(i[0])
+                        for all_order_no in order_list:
+                            sql02 = eval(yyds[2])
+                            sql03 = eval(yyds[3])
+                            sort_num02 = self.my.query_data(sql02, db_name='bfty_credit')
+                            sort_num03 = self.my.query_data(sql03, db_name='bfty_credit')
+                            #拼接元祖参数
+                            yyrt_list.append(sort_num02[0])
+                            if order_list.index(all_order_no)==0:
+                                ggg=yyrt_list[0]+sort_num[0]
+                                yyrt_list[0]=ggg
+                                # print("拼接打印：",yyrt_list)
+                            aa_list = []
+                            jkk_list = []
+                            for key, value in sport_report_list[0]['options'][0].items():
+                                aa_list.append(key)
+                            print(sort_num03)
+                            for jkk in sort_num03:
+                                jkk_dict = {}
+                                for jkk_2 in range(0, len(jkk)):
+                                    if str(type(jkk[jkk_2])) in type_list:
+                                        if jkk[jkk_2]==None:
+                                            new_jkk=None
+                                        else:
+                                            new_jkk=str(jkk[jkk_2])
+                                    else:
+                                        new_jkk = float(jkk[jkk_2])
+                                    jkk_dict[aa_list[jkk_2]]=new_jkk
+                                jkk_list.append(jkk_dict)
+                            # print(jkk_list)
+                        options_list.append(jkk_list)
+                        print(options_list)
+                        num_list.append(yyrt_list)
+                        # print(num_list)
+            sort_num = num_list
+            mix_number.append("2-1")
+        else:
+            for all in sportId_list:
+                sort_num_list = []
+                if len(yyds) == 1:
+                    if excel_report[0] in interface_list:
+                        num=int(proxy_id_list[sportId_list.index(all)])
+                        sql = eval(yyds[0])
+                        sort_num = self.my.query_data(sql, db_name='bfty_credit')
+                        num_list.append(sort_num)
+                        if num_list[0] == ():
+                            del num_list[0]
+                        mix_number.append("2-1")
                 else:
                     sql01 = eval(yyds[0])
                     sql02 = eval(yyds[1])
@@ -489,7 +701,7 @@ class BetController(object):
                     sort_num_list.append(sort_num02)
                     num_list.append(sort_num_list)
             mix_number.append("2-2")
-            sort_num=num_list
+            sort_num = num_list
 
 
         sport_sql_list = sport_report_dict
@@ -508,18 +720,23 @@ class BetController(object):
         str_num=Compared
         yyds01=str_num.split(",")
         print(f"正在执行{excel_report[0]}-{excel_report[1]}")
-        print(sort_num)
+        print(sort_num[1])
+        print(mix[0])
+        print(sql_name_list)
         if mix[0]==str('1-1'):
+            print(sort_num)
+            print(sort_num[0])
             for i in range(0, len(sort_num)):
                 sql_dict = {}
                 for j in range(0, len(sort_num[i])):
-                    if type(sort_num[i][j]) == type('str') or type(sort_num[i][j])==type(datetime.datetime(2022, 6, 15, 2, 35, 42)) or type(sort_num[i][j]) == type(None) or type(sort_num[i][j]) == type(1):
+                    if str(type(sort_num[i][j])) in type_list:
                         if sort_num[i][j]=="odds":
                             yy_num =self.sr.credit_odds(order_no=sort_num[i][j+1],bet_type="",AB_list=AB_list,dict=dict)
-                        elif type(sort_num[i][j])==type(datetime.datetime(2022, 6, 15, 2, 35, 42)):
-                            yy_num = str(sort_num[i][j])
-                        elif type(sort_num[i][j])==type(1):
-                            yy_num = str(sort_num[i][j])
+                        elif sql_name_list[j] in int_list:
+                            if sql_name_list[j]=="levelId":
+                                yy_num = int(sort_num[i][j])+1
+                            else:
+                                yy_num = int(sort_num[i][j])
                         else:
                             yy_num=sort_num[i][j]
                     else:
@@ -528,21 +745,30 @@ class BetController(object):
                 sql_list.append(sql_dict)
         # print(sql_list)
         if mix[0]==str('2-1'):
+            print(sort_num)
+            print(sort_num[0])
+            print(sort_num[0][0])
+            count = 0
             for i in range(0, len(sort_num)):
                 for j in range(0,len(sort_num[i])):
                     sql_dict = {}
                     for g in range(0,len(sort_num[i][j])):
-                        if type(sort_num[i][j][g]) == type('str') or type(sort_num[i][j][g]) == type(None) or type(sort_num[i][j][g])==type(datetime.datetime(2022, 6, 15, 2, 35, 42)) or type(sort_num[i][j][g])==type(1):
-                            if type(sort_num[i][j][g]) == type(datetime.datetime(2022, 6, 15, 2, 35, 42)):
-                                yy_num = str(sort_num[i][j][g])
-                            elif type(sort_num[i][j][g]) == type(1):
-                                yy_num = str(sort_num[i][j][g])
-                            else:
+                        if str(type(sort_num[i][j][g]))in type_list:
+                            if sql_name_list[g] in int_list:
+                                yy_num = int(sort_num[i][j][g])
+                            elif sort_num[i][j][g] == "options":
+                                 yy_num=options_list[i]
+                                 print(i,j,g)
+                            elif str(type(sort_num[i][j][g]))==type(None):
                                 yy_num = sort_num[i][j][g]
+                            else:
+                                yy_num = str(sort_num[i][j][g])
                         else:
                             yy_num = float(sort_num[i][j][g])
                         sql_dict[sql_name_list[g]] = yy_num
                     sql_list.append(sql_dict)
+            print(sql_list[1])
+            print(sport_list[1])
         if mix[0]==str('2-2'):
             print(sort_num)
             print(sort_num[0])
@@ -551,20 +777,22 @@ class BetController(object):
             for i in range(0, len(sort_num)):
                 for j in range(0, len(sort_num[i])):
                     for l in range(0, len(sort_num[i][j])):
-                        # print(sort_num[i][j][l])
+                        print(sort_num[i][j][l])
                         sql_dict = {}
                         for g in range(0,len(sort_num[i][j][l])):
-                            if type(sort_num[i][j][l][g]) == type('str') or type(sort_num[i][j][l][g]) == type(None) or type(sort_num[i][j][l][g])==type(datetime.datetime(2022, 6, 15, 2, 35, 42)) or type(sort_num[i][j][l][g])==type(1):
-                                if type(sort_num[i][j][l][g]) == type(datetime.datetime(2022, 6, 15, 2, 35, 42)):
-                                    yy_num = str(sort_num[i][j][l][g])
-                                elif type(sort_num[i][j][l][g]) == type(1):
-                                    yy_num = str(sort_num[i][j][l][g])
-                                else:
+                            if str(type(sort_num[i][j][l][g])) in type_list:
+                                if sql_name_list[g] in int_list:
+                                    yy_num = int(sort_num[i][j][l][g])
+                                elif str(type(sort_num[i][j][l][g])) == type(None):
                                     yy_num = sort_num[i][j][l][g]
+                                else:
+                                    yy_num = str(sort_num[i][j][l][g])
                             else:
                                 yy_num = float(sort_num[i][j][l][g])
                             sql_dict[sql_name_list[g]] = yy_num
                         sql_list.append(sql_dict)
+        print(sql_list[1])
+        print(sport_list[1])
 
         if len(yyds01)==1:
             self.report_list_Compared01(sport_list=sport_list, sql_list=sql_list, Compared=Compared,excel_report=excel_report)
@@ -643,12 +871,19 @@ if __name__ == "__main__":
         excel = [r"C:\test\d0_comparison_report.xlsx",0]
         save_excel = ["C:\\test\\d0_comparison_report.xlsx"]
         # 参数化接口返回数据，字典取值判断list，在list中，取results['data'],不在列表中，取results['data']['data']
-        module_list = ["总投注-混合串关-主查询","总投注-混合串关-子查询(查询其注单号，包含的比赛)"]
-
+        module_list = ["总投注-混合串关-主查询","总投注-混合串关-子查询(查询其注单号，包含的比赛)","未完成交易-登0-主查询","未完成交易-登0-登3-会员-子查询","未完成交易-登0-登3-会员-查看订单详情-子查询"]
+        interface_list=["未完成交易-登0-主查询"]
+        roid_list=[]
+        proxy_id_list=['0','1','2','3']
+        int_list=['levelId','numberOfBets',"betType"]
+        type_list=["<class 'str'>", "<class 'datetime.datetime'>", "<class 'NoneType'>", "<class 'int'>"]
+        sport_report02_list=[]
+        options_list=['未完成交易-登0-登3-会员-查看订单详情-子查询']
 
 
         # yyds=cc.login(URL=URL,begin="2022-06-04",end="2022-06-10")
-        # ppds=bc.sport_report_sql(begin="2022-06-04 00:00:00",end="2022-06-10 23:59:59")
+        # ppds=bc.
+        # (begin="2022-06-04 00:00:00",end="2022-06-10 23:59:59")
 
         #调用本地Exce读取数据
         ccds=cc.reading_Excel(excel=excel, save_excel=save_excel,begin="2022-06-04",end="2022-06-15", URL=URL)
