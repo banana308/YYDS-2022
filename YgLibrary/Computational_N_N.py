@@ -443,6 +443,44 @@ class SQL_report_ods(BetController):
         return odd
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#佣金计算
+class water_ammount(BetController):
+    ROBOT_LIBRARY_SCOPE = 'GLOBAL'
+
+    def __init__(self, mysql_info, mongo_info, *args):
+        """
+        模拟ctrl给我司推送数据
+        """
+        self.session = requests.session()
+        self.dbq = DbQuery(mongo_info)
+        self.cf = CommonFunc()
+        self.mysql = MysqlCommonQuery(mysql_info)
+        self.my = MysqlFunc(mysql_info)
+        self.AB_list = AB_list
+        self.dict = dict
+
+
+    #注单是否能返水，预处理判断
     def market_id(self,order_no):
         """
         @此函数用于对佣金比例进行对比：
@@ -481,8 +519,7 @@ class SQL_report_ods(BetController):
         return water_account
 
 
-#佣金计算类
-class water_ammount(object):
+    # 会员、代理返水佣金计算
     def water(self,order_no,num_0):
         yy_list = ["efficient_amount", "company_retreat_proportion", "level0_retreat_proportion",
                    "level1_retreat_proportion", "level2_retreat_proportion", "level3_retreat_proportion",
@@ -499,11 +536,17 @@ class water_ammount(object):
         yybs="backwater_amount,level3_backwater_amount,level2_backwater_amount,level1_backwater_amount,level0_backwater_amount,company_backwater_amount"
 
         water_list = []
+        sum_list=[]
         #判断是否进行佣金计算的字段：0不计算赋值为0、1计算返回计算值
         if num_0==1:
             #查询会员、公司~登3的佣金
             sql=f"SELECT {yybs} FROM o_account_order WHERE order_no='{order_no}'"
             sum=self.my.query_data(sql, db_name='bfty_credit')
+
+            ##循环SQL返回数据，并写入对应的列表里
+            for i in range(0, len(sum[0])):
+                sum_list.append(float(sum[0][i]))
+
 
             #查询有效金额、公司~登3的佣金比例、占成比例
             sql01 = f"SELECT {yyts} FROM o_account_order WHERE order_no='{order_no}'"
@@ -511,49 +554,133 @@ class water_ammount(object):
 
             #循环SQL返回数据，并写入对应的字典里
             for i in range(0, len(sum01[0])):
-                yy_dict[yy_list[i]] = sum01[0][i]
+                yy_dict[yy_list[i]] = (sum01[0][i])
             # print(yy_dict)
 
             #计算会员、登3~公司的佣金，并写入列表
             member=(yy_dict['efficient_amount']*yy_dict['level3_retreat_proportion'])
+            member=self.water_intercept(number=member)
             water_list.append(member)
-            d3=yy_dict['efficient_amount']*(yy_dict['level2_retreat_proportion'])*(1-(yy_dict['level3_actual_percentage']))-member
+            d3=yy_dict['efficient_amount']*(yy_dict['level2_retreat_proportion'])*(1-(yy_dict['level3_actual_percentage']))
+            d3=float(d3)-member
+            d3 = self.water_intercept(number=d3)
             water_list.append(d3)
-            d2 = yy_dict['efficient_amount'] * (yy_dict['level1_retreat_proportion']) * (1 -(yy_dict['level2_actual_percentage']+yy_dict['level3_actual_percentage'])) - (d3+member)
+            d2 = yy_dict['efficient_amount'] * (yy_dict['level1_retreat_proportion']) * (1 -(yy_dict['level2_actual_percentage']+yy_dict['level3_actual_percentage']))
+            d2=float(d2)-(d3+member)
+            d2 =self.water_intercept(number=d2)
             water_list.append(d2)
-            d1 = yy_dict['efficient_amount'] * (yy_dict['level0_retreat_proportion']) * (1 -(yy_dict['level1_actual_percentage']+yy_dict['level2_actual_percentage']+yy_dict['level3_actual_percentage'])) - (d2+d3+member)
+            d1 = yy_dict['efficient_amount'] * (yy_dict['level0_retreat_proportion']) * (1 -(yy_dict['level1_actual_percentage']+yy_dict['level2_actual_percentage']+yy_dict['level3_actual_percentage']))
+            d1=float(d1)- (d2+d3+member)
+            d1 = self.water_intercept(number=d1)
             water_list.append(d1)
-            d0 = yy_dict['efficient_amount'] * (yy_dict['company_retreat_proportion']) * ( 1 -(yy_dict['level0_actual_percentage']+yy_dict['level1_actual_percentage']+yy_dict['level2_actual_percentage']+yy_dict['level3_actual_percentage'])) - (d1+d2+d3+member)
+            d0 = yy_dict['efficient_amount'] * (yy_dict['company_retreat_proportion']) * ( 1 -(yy_dict['level0_actual_percentage']+yy_dict['level1_actual_percentage']+yy_dict['level2_actual_percentage']+yy_dict['level3_actual_percentage']))
+            d0=float(d0)-(d1+d2+d3+member)
+            d0 = self.water_intercept(number=d0)
             water_list.append(d0)
             d=-(member+d3+d2+d1+d0)
+            d=self.water_intercept(number=d)
             water_list.append(d)
-
-            #循环列表，并对佣金值做截取，然后再写入列表
-            for number in water_list:
-                ium = water_list.index(number)
-                if number>0:
-                    lember = float(str(re.findall(r"\d{1,}?\.\d{2}", str(number))[0]))
-                    water_list[ium]=lember
-                else:
-                    lember = -float(str(re.findall(r"\d{1,}?\.\d{2}", str(number))[0]))
-                    water_list[ium]=lember
+            d_z=member + d3 + d2 + d1 + d0 + d
 
             print(f"---------------------------------------------------------------------------------------------\n"
-                  f"我的佣金计算：member的佣金：{water_list[0]},d3的佣金：{water_list[1]},d2的佣金：{water_list[2]},d1的佣金：{water_list[3]},d0的佣金：{water_list[4]},公司的佣金：{water_list[5]}")
-            print(f"SQL佣金计算{sum}")
+                  f"我的佣金计算：会员的佣金：{water_list[0]},d3的佣金：{water_list[1]},d2的佣金：{water_list[2]},d1的佣金：{water_list[3]},d0的佣金：{water_list[4]},公司的佣金：{water_list[5]}")
+            print(f"SQL佣金计算:会员的佣金：{sum_list[0]},d3的佣金：{sum_list[1]},d2的佣金：{sum_list[2]},d1的佣金：{sum_list[3]},d0的佣金：{sum_list[4]},公司的佣金：{sum_list[5]}"
+                  f"\n---------------------------------------------------------------------------------------------")
 
-            #循环取到的SQL数据的所有佣金值，和自己计算的佣金制，验证全部相加是否等于0
-            yygf = 0
-            for i in range(0, len(sum[0])):
-                yygf = yygf + sum[0][i]
-
-            d_z = member + d3 + d2 + d1 + d0 + d
-            print(yygf,float(d_z),"\n","---------------------------------------------------------------------------------------------")
-
+            #循环取到的SQL数据的所有佣金值，和自己计算的佣金制，验证对应佣金是否相等
+            for i in range(0,len(water_list)):
+                if water_list[i]==sum_list[i]:
+                    pass
+                else:
+                    print(f"我的佣金计算和SQL佣金计算数据对比错误,{water_list[i]}/{sum_list[i]}")
         else:
             for number in range(0,5):
                 water_list.append(0)
         return water_list
+
+    #根据佣金金额，进行正则表达式截取、保留两位小数
+    def water_intercept(self,number):
+        # 判断number，并对佣金值做截取，然后返回
+        if number > 0:
+            lember =float(str(re.findall(r"\d{1,}?\.\d{2}", str(number))[0]))
+        else:
+            lember =-float(str(re.findall(r"\d{1,}?\.\d{2}", str(number))[0]))
+        return lember
+
+
+
+    # 总佣金结算
+    def total_commission(self,agent_id,member_id):
+
+        #SQL参数列表
+        proxy_id_list = ['c.proxy0_id', 'c.proxy1_id', 'c.proxy2_id', 'c.proxy3_id','c.user_id']
+        water_SQL_list=['SUM(c.backwater_amount+c.level3_backwater_amount+c.level2_backwater_amount+c.level1_backwater_amount+c.level0_backwater_amount)',
+                        'SUM(c.backwater_amount+c.level3_backwater_amount+c.level2_backwater_amount+c.level1_backwater_amount)',
+                        'SUM(c.backwater_amount+c.level3_backwater_amount+c.level2_backwater_amount)',
+                        'SUM(c.backwater_amount+c.level3_backwater_amount)',
+                        'SUM(c.backwater_amount)']
+
+        #判断查询代理ID，还是会员ID
+        if agent_id=='':
+            # 根据会员ID，进行参数替换：
+            num=4
+            sql02 = f"SELECT {water_SQL_list[num]} as '总佣金',any_value(c.login_account) as '登入账号' FROM o_account_order as c WHERE {proxy_id_list[num]}='{member_id}'"
+            sum02 = self.my.query_data(sql02, db_name='bfty_credit')
+            username = (sum02[0][1])
+            sum02 = float(sum02[0][0])
+            print(f"会员{username}-{member_id}的总佣金为{sum02}")
+
+        else:
+            # 查询ID的代理等级：
+            # sql01 = f"SELECT role_id FROM m_account WHERE id='1531516017847869442'"
+            sql01 = f"SELECT role_id FROM m_account WHERE id='{agent_id}'"
+            sum01 = self.my.query_data(sql01, db_name='bfty_credit')
+
+            # 根据查询等级，进行参数替换
+            num = int(sum01[0][0])
+            sql02 = f"SELECT {water_SQL_list[num]} as '总佣金' FROM o_account_order as c WHERE {proxy_id_list[num]}='{agent_id}'"
+            sum02 = self.my.query_data(sql02, db_name='bfty_credit')
+            sum02 = float(sum02[0][0])
+            print(f"登{num}-{agent_id}的总佣金为{sum02}")
+
+        return sum02
+
+    # 公司输赢计算
+    def Company_winlose(self,agent_id,member_id):
+        for pkk in range(0, 1):
+            # 参数化代理账号数据列表
+            Dl_list = ["d0", "d10", "d2", "d3"]
+        # SQL参数列表
+        proxy_id_list = ['c.proxy0_id', 'c.proxy1_id', 'c.proxy2_id', 'c.proxy3_id','c.user_id']
+        total_list=['SUM(c.company_win_or_lose)','SUM(c.level0_win_or_lose+c.company_win_or_lose)','SUM(c.level0_win_or_lose+c.company_win_or_lose+c.level1_win_or_lose)','SUM(c.level0_win_or_lose+c.company_win_or_lose+c.level1_win_or_lose+c.level2_win_or_lose)','SUM(c.company_win_or_lose)']
+
+        #查询登录代理的代理等级
+        sql = f"SELECT role_id FROM m_account WHERE login_account='{Dl_list[pkk]}'"
+        sum = self.my.query_data(sql, db_name='bfty_credit')
+        num = int(sum[0][0])
+
+        # 判断查询代理ID，还是会员ID
+        if agent_id == '':
+            # 根据会员member_id，返回查询公司输赢：
+            num01 = 4
+            sql02 = f"SELECT {total_list[num]} as '总佣金',any_value(c.login_account) as '登入账号' FROM o_account_order as c WHERE {proxy_id_list[num01]}='{member_id}'"
+            sum02 = self.my.query_data(sql02, db_name='bfty_credit')
+            username = (sum02[0][1])
+            sum02 = float(sum02[0][0])
+            print(f"\033[32m登{num}查询会员{username}-{member_id}的总公司输赢为{sum02}\033[0m")
+        else:
+            # 查询传参agent_id的代理等级
+            sql01 = f"SELECT role_id FROM m_account WHERE id='{agent_id}'"
+            sum01 = self.my.query_data(sql01, db_name='bfty_credit')
+            num01 = int(sum01[0][0])
+
+            # 根据登录代理的代理等级，返回查询公司输赢
+            sql02 = f"SELECT {total_list[num]} as '总佣金' FROM o_account_order as c WHERE {proxy_id_list[num01]}='{agent_id}'"
+            sum02 = self.my.query_data(sql02, db_name='bfty_credit')
+            sum02 = float(sum02[0][0])
+            print(f"\033[32m登{num}查询登{num01}-{agent_id}的总公司输赢为{sum02}\033[0m")
+            return sum02
+
 
 
 
@@ -579,6 +706,7 @@ if __name__ == "__main__":
                'company_actual_percentage': [], 'level0_actual_percentage': [], 'level1_actual_percentage': [], 'level2_actual_percentage': [], 'level3_actual_percentage': []}
 
     bc=SQL_report_ods(mysql_inf, mongo_inf, AB_list,dict)
+    tt = water_ammount(mysql_inf, mongo_inf)
     # yyds=bc.Type_odd()
     # yyds=bc.bet_type(order_no="XEP93LkShTT3",AB_list=AB_list,dict=dict)
     # yydt=bc.order_no(bet_type=0, status=1, AB_list=AB_list,dict=dict,proxy3_id=1531517760300163074)
@@ -587,10 +715,20 @@ if __name__ == "__main__":
     # print(yybt)
 
     # yyds=bc.water()
-    order_no_list=['XFBa8eAW5zbi','XFBa6SNxq5xS','XFBa5FrM3vUk','XFB75QWy8djS','XFB73prpGLta']
+    order_no_list=['XGwi26WFH3mk']
 
 
-    for i in order_no_list:
-        # yyds=bc.market_id(order_no=i)
-        yyds = bc.credit_odds(order_no=i, bet_type="", AB_list=AB_list, dict=dict)
-        print(yyds)
+    # for i in order_no_list:
+    #     yyds=tt.market_id(order_no=i)
+    #     # yyds = bc.credit_odds(order_no=i, bet_type="", AB_list=AB_list, dict=dict)
+    #     print(yyds)
+
+    agent_id_list=['1531516017847869442','1531517033355976705','1531517351158390786','1531517760300163074']
+    member_id_list=['1531522809348792321','1531519190650101761','1531521709191241729']
+    for agent_id in range(len(agent_id_list)+len(member_id_list)):
+        if agent_id<=len(agent_id_list)-1:
+            yyds=tt.total_commission(agent_id=agent_id_list[agent_id],member_id='')
+            yyqt=tt.Company_winlose(agent_id=agent_id_list[agent_id],member_id='')
+        else:
+            yyds=tt.total_commission(agent_id='', member_id=member_id_list[agent_id-(len(agent_id_list))])
+            yyqt=tt.Company_winlose(agent_id='', member_id=member_id_list[agent_id-(len(agent_id_list))])

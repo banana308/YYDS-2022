@@ -82,7 +82,7 @@ class report_data(object):
         time01 = datetime.datetime.strptime(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),'%Y-%m-%d %H:%M:%S')
 
         #循环Excel所有表
-        for gg in range(0,1):
+        for gg in range(0,3):
             gg = shenames[gg]
         # for gg in shenames:
             # 获取该表相应的行数和列数
@@ -102,7 +102,7 @@ class report_data(object):
             if content_A2!=None:
                 # 循环行数
                 # for i in range(4, rows+1):
-                for i in range(4, rows+1):
+                for i in range(2, rows+1):
                     excel_report = []
                     # 循环列数
                     for j in range(2, int(columns)-2):
@@ -269,7 +269,6 @@ class report_data(object):
                         pass
                     else:
                         sportId_list.append(i[excel_report[6]])
-                print(sportId_list)
             else:
                 url = str(URL) + url
                 sportId_yyds_lsit=[]
@@ -504,6 +503,7 @@ class BetController(object):
                                 print(str(sport_list[i][ppxt_lsit[0]])+"-"+str(sport_list[i][ppxt_lsit[1]]),"数据对比正确：" + str(sport_list[i]) + "/" + str(sql_list[j]))
                                 break
                             else:
+                                print(sport_list[i],"\n",sql_list[j])
                                 for report in range(0, len(sql_list[j])):
                                     if sport_list[i][yyds_list[report]] == sql_list[j][yyds_list[report]]:
                                         # pass
@@ -516,12 +516,12 @@ class BetController(object):
                                         if excel_report[3] == 1:
                                             sport_all_error.append(str(str(sport_list[i][ppxt_lsit[0]])+"-"+str(sport_list[i][ppxt_lsit[1]])) + "/" + str(yyds_list[report]) + "的数据对比错误,请检查SQL查询的字段与接口字段数据是否一致,数据对比：" +  str(sport_list[i][yyds_list[report]]) + "/" + str(sql_list[j][yyds_list[report]]))
                                             print("\033[31m" + str(sport_list[i][ppxt_lsit[0]])+"-"+str(sport_list[i][ppxt_lsit[1]]), str(yyds_list[report]),"数据对比错误：" + str(sport_list[i][yyds_list[report]]) + "/" + str( sql_list[j][yyds_list[report]]) + "\033[0m",type(sport_list[i][yyds_list[report]]),type(sql_list[j][yyds_list[report]]))
-                                            if excel_report[0] in options_list:
+                                            if excel_report[0] in options_report_list:
                                                 self.options_report(A=sport_list[i][ppxt_lsit[0]],B=sport_list[i][ppxt_lsit[1]],C=yyds_list[report],D=sport_list[i][yyds_list[report]],E=sql_list[j][yyds_list[report]])
                                         else:
                                             sport_all_error.append(str(str(sport_list[i][ppxt_lsit[0]])+"-"+str(sport_list[i][ppxt_lsit[1]])) + "/" +yyth + "/"+str(yyds_list[report]) + "的数据对比错误,请检查SQL查询的字段与接口字段数据是否一致,数据对比：" +  str(sport_list[i][yyds_list[report]]) + "/" + str(sql_list[j][yyds_list[report]]))
                                             print("\033[31m" + str(sport_list[i][ppxt_lsit[0]])+"-"+str(sport_list[i][ppxt_lsit[1]]+"-"+yyth), str(yyds_list[report]),"数据对比错误：" + str(sport_list[i][yyds_list[report]]) + "/" + str( sql_list[j][yyds_list[report]]) +"\033[0m",type(sport_list[i][yyds_list[report]]),type(sql_list[j][yyds_list[report]]))
-                                            if excel_report[0] in options_list:
+                                            if excel_report[0] in options_report_list:
                                                 self.options_report(A=sport_list[i][ppxt_lsit[0]],B=sport_list[i][ppxt_lsit[1]], C=yyds_list[report],D=sport_list[i][yyds_list[report]], E=sql_list[j][yyds_list[report]])
         else:
             if sport_list== []:
@@ -569,9 +569,9 @@ class BetController(object):
                 sport_all_error.append("SQL数据为空")
 
     def options_report(self,A, B, C,D,E):
-        print(f"\033[32m{A}-{B},{C}：数据对比开始\033[0m")
+        print(f"\033[32m{A}-{B},{C}：数据对比开始---------------------------------------------------------------------------\033[0m")
         aa_list = []
-        for key, value in D.items():
+        for key, value in D[0].items():
             aa_list.append(key)
         if D==E:
             print("数据对比正确")
@@ -582,8 +582,8 @@ class BetController(object):
                         print(f"{A}-{B},{C}数据对比正确：{D[ykk][i]}/{E[ykk][i]}")
                     else:
                         print(
-                            f"\033[31m{A}-{B},{C}数据对比错误：{D[ykk][i]}/{E[ykk][i]},{type(D[ykk][i])}/{type(E[ykk][i])}\033[0m")
-        print(f"\033[32m{A}-{B},{C}：数据对比结束\033[0m")
+                            f"\033[31m{A}-{B},{C}数据对比错误：{D[ykk][i]}/{E[ykk][i]}\033[0m{type(D[ykk][i])}/{type(E[ykk][i])}")
+        print(f"\033[32m{A}-{B},{C}：数据对比结束----------------------------------------------------------------------------------------------\033[0m")
 
     def sport_report_sql(self,begin,end,excel_report,sport_report_dict,sport_report_list):
         global options_list
@@ -637,7 +637,6 @@ class BetController(object):
                     mix_number.append("2-2")
                 else:
                     if excel_report[0]=="未完成交易-登0-登3-会员-查看订单详情-子查询":
-                        yyrt_list = []
                         order_list=[]
                         sql01=eval(yyds[1])
                         sql=eval(yyds[0])
@@ -645,22 +644,25 @@ class BetController(object):
                         sort_num=self.my.query_data(sql, db_name='bfty_credit')
                         for i in sort_num01:
                             order_list.append(i[0])
+                        # print(order_list)
                         for all_order_no in order_list:
+                            yyrt_list = []
                             sql02 = eval(yyds[2])
                             sql03 = eval(yyds[3])
                             sort_num02 = self.my.query_data(sql02, db_name='bfty_credit')
                             sort_num03 = self.my.query_data(sql03, db_name='bfty_credit')
                             #拼接元祖参数
                             yyrt_list.append(sort_num02[0])
-                            if order_list.index(all_order_no)==0:
-                                ggg=yyrt_list[0]+sort_num[0]
-                                yyrt_list[0]=ggg
-                                # print("拼接打印：",yyrt_list)
+                            ggg=yyrt_list[0]+sort_num[0]
+                            yyrt_list[0]=ggg
+                            # print("拼接打印：",yyrt_list)
+
+                            #单独获取options列表的数据，然后组装回去
                             aa_list = []
                             jkk_list = []
                             for key, value in sport_report_list[0]['options'][0].items():
                                 aa_list.append(key)
-                            print(sort_num03)
+                            # print(sort_num03)
                             for jkk in sort_num03:
                                 jkk_dict = {}
                                 for jkk_2 in range(0, len(jkk)):
@@ -673,10 +675,10 @@ class BetController(object):
                                         new_jkk = float(jkk[jkk_2])
                                     jkk_dict[aa_list[jkk_2]]=new_jkk
                                 jkk_list.append(jkk_dict)
+                            options_list.append(jkk_list)
                             # print(jkk_list)
-                        options_list.append(jkk_list)
-                        print(options_list)
-                        num_list.append(yyrt_list)
+                            # print(options_list)
+                            num_list.append(yyrt_list)
                         # print(num_list)
             sort_num = num_list
             mix_number.append("2-1")
@@ -720,7 +722,7 @@ class BetController(object):
         str_num=Compared
         yyds01=str_num.split(",")
         print(f"正在执行{excel_report[0]}-{excel_report[1]}")
-        print(sort_num[1])
+        # print(sort_num[1])
         print(mix[0])
         print(sql_name_list)
         if mix[0]==str('1-1'):
@@ -738,16 +740,23 @@ class BetController(object):
                             else:
                                 yy_num = int(sort_num[i][j])
                         else:
-                            yy_num=sort_num[i][j]
+                            yy_num=str(sort_num[i][j])
                     else:
                         yy_num = float(sort_num[i][j])
                     sql_dict[sql_name_list[j]] = yy_num
                 sql_list.append(sql_dict)
         # print(sql_list)
         if mix[0]==str('2-1'):
-            print(sort_num)
-            print(sort_num[0])
-            print(sort_num[0][0])
+            # print(sort_num)
+            # print(sort_num[0])
+            # print(sort_num[0][0])
+            # new_options=[]
+            # for yy in sport_list:
+            #     print(yy)
+            #     new_options.append(yy['options'])
+            # print(new_options)
+            # print(options_list)
+            # print(len(new_options),len(options_list))
             count = 0
             for i in range(0, len(sort_num)):
                 for j in range(0,len(sort_num[i])):
@@ -758,8 +767,8 @@ class BetController(object):
                                 yy_num = int(sort_num[i][j][g])
                             elif sort_num[i][j][g] == "options":
                                  yy_num=options_list[i]
-                                 print(i,j,g)
-                            elif str(type(sort_num[i][j][g]))==type(None):
+                                 # print(i,j,g)
+                            elif type(sort_num[i][j][g])==type(None):
                                 yy_num = sort_num[i][j][g]
                             else:
                                 yy_num = str(sort_num[i][j][g])
@@ -767,8 +776,8 @@ class BetController(object):
                             yy_num = float(sort_num[i][j][g])
                         sql_dict[sql_name_list[g]] = yy_num
                     sql_list.append(sql_dict)
-            print(sql_list[1])
-            print(sport_list[1])
+            # print(sql_list[1])
+            # print(sport_list[1])
         if mix[0]==str('2-2'):
             print(sort_num)
             print(sort_num[0])
@@ -783,7 +792,7 @@ class BetController(object):
                             if str(type(sort_num[i][j][l][g])) in type_list:
                                 if sql_name_list[g] in int_list:
                                     yy_num = int(sort_num[i][j][l][g])
-                                elif str(type(sort_num[i][j][l][g])) == type(None):
+                                elif type(sort_num[i][j][l][g]) == type(None):
                                     yy_num = sort_num[i][j][l][g]
                                 else:
                                     yy_num = str(sort_num[i][j][l][g])
@@ -878,7 +887,7 @@ if __name__ == "__main__":
         int_list=['levelId','numberOfBets',"betType"]
         type_list=["<class 'str'>", "<class 'datetime.datetime'>", "<class 'NoneType'>", "<class 'int'>"]
         sport_report02_list=[]
-        options_list=['未完成交易-登0-登3-会员-查看订单详情-子查询']
+        options_report_list=['未完成交易-登0-登3-会员-查看订单详情-子查询']
 
 
         # yyds=cc.login(URL=URL,begin="2022-06-04",end="2022-06-10")
@@ -887,3 +896,4 @@ if __name__ == "__main__":
 
         #调用本地Exce读取数据
         ccds=cc.reading_Excel(excel=excel, save_excel=save_excel,begin="2022-06-04",end="2022-06-15", URL=URL)
+
