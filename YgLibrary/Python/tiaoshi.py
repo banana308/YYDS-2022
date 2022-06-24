@@ -1,0 +1,75 @@
+
+
+
+
+# yyts_tuple=(('d0d1/d10', '1531517033355976705', '公司总计', 'CNY', "Decimal('-0.10')", "Decimal('-928.21')", "Decimal('-928.11')", "Decimal('-0.10')", "Decimal('-928.21')", "Decimal('-928.11')", "Decimal('-0.09')", "Decimal('-928.20')", "Decimal('-928.11')", "Decimal('0.20')", "Decimal('-927.91')", "Decimal('-928.11')", '1', '一级代理', "Decimal('0.27')", "Decimal('4640.91')", "Decimal('4640.64')", '杜鑫登1', 70, '1531516017847869442', "Decimal('5800.00')", '总佣金', "Decimal('4121.69')"),)
+#
+# for i in yyts_tuple[0]:
+#     if i=='公司总计':
+#         bbt=('已替换公司总计',)
+#         yyts_tuple=yyts_tuple[0][0:2]+bbt+yyts_tuple[0][3:]
+#     elif i =='总佣金':
+#         bbt =('已替换总佣金',)
+#         yyts_tuple = yyts_tuple[0:25]+bbt+(yyts_tuple[-1],)
+# print(yyts_tuple)
+
+
+
+# name=['account', 'betAmount', 'betIp', 'betIpAddress', 'betResult', 'betTimeStr', 'betType', 'level0Commission', 'level0CommissionRatio', 'level0Percentage', 'level0Total', 'level0WinOrLose', 'level1Commission', 'level1CommissionRatio', 'level1Percentage', 'level1Total', 'level1WinOrLose', 'level2Commission', 'level2CommissionRatio', 'level2Percentage', 'level2Total', 'level2WinOrLose', 'level3Commission', 'level3CommissionRatio', 'level3Percentage', 'level3Total', 'level3WinOrLose', 'memberCommission', 'memberCommissionRatio', 'memberTotal', 'memberWinOrLose', 'name', 'options', 'orderNo', 'settlementTimeStr', 'sportId', 'sportType', 'validAmount', 'winOrLose', ' total_level0Commission', ' total_level0Total', ' total_level0WinOrLose', ' total_level1Commission', ' total_level1Total', ' total_level1WinOrLose', ' total_level2Commission', ' total_level2Total', ' total_level2WinOrLose', ' total_level3Commission', ' total_level3Total', ' total_level3WinOrLose', ' total_memberCommission', ' total_memberTotal', ' total_memberWinOrLose', ' total_validAmount', ' total_winOrLose']
+# name_value=('d0d1d2d30c/fceshi02', "Decimal('150.00')", '192.168.10.120', '局域网', '赢', "datetime.datetime(2022, 6, 15, 2, 26, 54)", 3, "Decimal('0.00')", "Decimal('0.0000')", "Decimal('0.20')", "Decimal('-62.85')", "Decimal('-62.85')", "Decimal('0.00')", "Decimal('0.0000')", "Decimal('0.20')", "Decimal('-62.85')", "Decimal('-62.85')", "Decimal('0.00')", "Decimal('0.0000')", "Decimal('0.20')", "Decimal('-62.85')", "Decimal('-62.85')", "Decimal('0.00')", "Decimal('0.0000')", "Decimal('0.20')", "Decimal('-62.85')", "Decimal('-62.85')", "Decimal('0.00')", "Decimal('0.0000')", "Decimal('314.27')", "Decimal('314.27')", '杜鑫test账号ac', 'options', 'XFB75iQbakKD', "datetime.datetime(2022, 6, 15, 2, 38, 22)", 'sr:sport:1', '足球', "Decimal('150.00')", "Decimal('314.27')", "Decimal('190.00')", "Decimal('0.00')", "Decimal('-54.85')", "Decimal('-54.85')", "Decimal('0.00')", "Decimal('-54.85')", "Decimal('-54.85')", "Decimal('0.00')", "Decimal('-54.85')", "Decimal('-54.85')", "Decimal('0.00')", "Decimal('-54.85')", "Decimal('-54.85')", "Decimal('0.00')", "Decimal('274.27')", "Decimal('274.27')", "Decimal('190.00')", "Decimal('274.27')")
+# name_dict={}
+#
+# print(len(name),len(name_value))
+# for i in range(0,len(name)):
+#     name_dict[name[i]]=name_value[i]
+# print(name_dict)
+
+
+
+# str_list=['46465456465644564']
+#
+# z_m_num01=["0","1","2","3","4","5","6","7","8","9"]
+# vv_id=[]
+# for i in str_list:
+#     i=list(i)
+#     for j in i:
+#         if j in z_m_num01:
+#             pass
+#         else:
+#             vv_id.append(0)
+#             print("这是一个代理账号")
+
+# agent_id="75674567674"
+# agent_id_list=['agent_id']
+# if agent_id_list[0]=='agent_id':
+#     yyy="asdasda"+agent_id
+#     print(yyy)
+
+# sum02=(("Decimal('0.00')", '澳大利亚全国超级联赛,南澳大利亚', '足球'),)
+# tournamentId= sum02[0][1]
+# username = sum02[0][2]
+# # sum02 = float(sum02[0][0])
+#
+#
+# vv_id = []
+# agent_id=5
+# if vv_id== []:
+#     agent_id = agent_id
+#     print(agent_id)
+
+
+def www(agent_id,member_id,sportId,marketId,tournamentId,matchId):
+    total_tuple=(agent_id,member_id,sportId,marketId,tournamentId,matchId)
+    print(total_tuple)
+    print("它来呢：",matchId)
+    xxx_list=['agent_id','member_id','sportId','marketId','tournamentId','matchId']
+    total_list=[]
+    for jj in  total_tuple:
+        if jj=='' or jj=="":
+            print(jj)
+            pass
+        else:
+            total_list.append(xxx_list[total_tuple.index(jj)])
+            print(total_list)
+
+www(agent_id='',member_id='',sportId='',marketId='',tournamentId='',matchId='sr:match:33725427')

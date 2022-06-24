@@ -42,7 +42,7 @@ class betting_odds(object):
 
         a=credit_odds_list[0]
         single_bet_odds=str(re.findall(r"\d{1,}?\.\d{2}",str(a))[0])
-        print(f"\033[33m注单：{order_no}，单注的总赔率：{single_bet_odds}\033[0m")
+        print(f"\033[34m注单：{order_no}，单注的总赔率：{single_bet_odds}\033[0m")
         return single_bet_odds
 
     def stray_bet(self, credit_odds_list,order_no):
@@ -63,7 +63,6 @@ class betting_odds(object):
         for i in range(0, len(credit_odds_list)):
             dict[AB_list[i]] = credit_odds_list[i]
 
-        print(dict)
         # 计算赔率：
         AB = dict['A'] * dict['B']
         BC = dict['B'] * dict['C']
@@ -421,7 +420,7 @@ class SQL_report_ods(BetController):
             else:
                 sum_odds=(sum[i][0])+1
                 credit_odds_list.append(sum_odds)
-        print(credit_odds_list)
+        print(f"查询注单的盘赔率为：{credit_odds_list}")
         yyds_ky=self.Calculate_odds(credit_odds_list=credit_odds_list,bet_type=bet_type,AB_list=AB_list,dict=dict,order_no=order_no)
 
         return yyds_ky
@@ -476,8 +475,7 @@ class water_ammount(BetController):
         self.cf = CommonFunc()
         self.mysql = MysqlCommonQuery(mysql_info)
         self.my = MysqlFunc(mysql_info)
-        self.AB_list = AB_list
-        self.dict = dict
+
 
 
     #注单是否能返水，预处理判断
@@ -514,7 +512,7 @@ class water_ammount(BetController):
         else:
             num_0 = 0
             water_account = self.water(order_no,num_0)
-            print(f"\033[33m此订单号{order_no}为串关或负数串关,此两类订单类型，默认佣金为0，不用计算\033[0m")
+            print(f"\033[34m此订单号{order_no}为串关或负数串关,此两类订单类型，默认佣金为0，不用计算\033[0m")
 
         return water_account
 
@@ -610,76 +608,301 @@ class water_ammount(BetController):
 
 
     # 总佣金结算
-    def total_commission(self,agent_id,member_id):
+    def total_commission(self,agent_id,member_id,sportId,marketId,tournamentId,matchId,login_account,begin,end,Duplex):
+        '''
+        @报表规则：
+        1、总佣金是查询登陆者的下级所产生的总和（涉及总台~登3），会员的总佣金取此账号，所订单会员佣金的总和
+        2、公司是查询登录者的公司输赢（包括跳转任意下级代理），会员的公司输赢取此账号，所订单(公司输赢+公司佣金)的总和
+        '''
+
+        # 判断agent_id为代理ID，还是为代理账号
+        z_m_num01 = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+        vv_id = []
+        qq_id = []
+        for j in list(agent_id):
+            if j in z_m_num01:
+                pass
+            else:
+                vv_id.append(0)
+                # print("这是一个代理账号")
+        # 判断member_id为会员ID，还是为会员账号
+        for j in list(member_id):
+            if j in z_m_num01:
+                pass
+            else:
+                qq_id.append(0)
+                # print("这是一个代理账号")
+        # agent_id传递：
+        if vv_id == []:
+            pass
+        else:
+            sql00 = f"SELECT id as '代理ID' FROM o_account_order as c WHERE account='{agent_id}'"
+            sum00 = self.my.query_data(sql00, db_name='bfty_credit')
+            agent_id = sum00[0][0]
+
+        # member_id传递：
+        if qq_id == []:
+            pass
+        else:
+            sql00 = f"SELECT id as '会员ID' FROM u_user as c WHERE account='{member_id}'"
+            sum00 = self.my.query_data(sql00, db_name='bfty_credit')
+            member_id = sum00[0][0]
+
+        # 查询登录代理的代理等级
+        sql = f"SELECT role_id FROM m_account WHERE login_account='{login_account}'"
+        sum = self.my.query_data(sql, db_name='bfty_credit')
+        num = int(sum[0][0])
 
         #SQL参数列表
-        proxy_id_list = ['c.proxy0_id', 'c.proxy1_id', 'c.proxy2_id', 'c.proxy3_id','c.user_id']
-        water_SQL_list=['SUM(c.backwater_amount+c.level3_backwater_amount+c.level2_backwater_amount+c.level1_backwater_amount+c.level0_backwater_amount)',
+        bet_type_list = ['=', '!=']
+        proxy_id_list = ['c.proxy0_id', 'c.proxy1_id', 'c.proxy2_id', 'c.proxy3_id','c.user_id','c.sport_id','a.market_id','a.tournament_id','a.match_id']
+        water_SQL_list = [
+                        'SUM(c.backwater_amount+c.level3_backwater_amount+c.level2_backwater_amount+c.level1_backwater_amount+c.level0_backwater_amount)',
                         'SUM(c.backwater_amount+c.level3_backwater_amount+c.level2_backwater_amount+c.level1_backwater_amount)',
                         'SUM(c.backwater_amount+c.level3_backwater_amount+c.level2_backwater_amount)',
                         'SUM(c.backwater_amount+c.level3_backwater_amount)',
                         'SUM(c.backwater_amount)']
 
-        #判断查询代理ID，还是会员ID
-        if agent_id=='':
-            # 根据会员ID，进行参数替换：
-            num=4
-            sql02 = f"SELECT {water_SQL_list[num]} as '总佣金',any_value(c.login_account) as '登入账号' FROM o_account_order as c WHERE {proxy_id_list[num]}='{member_id}'"
-            sum02 = self.my.query_data(sql02, db_name='bfty_credit')
-            username = (sum02[0][1])
-            sum02 = float(sum02[0][0])
-            print(f"会员{username}-{member_id}的总佣金为{sum02}")
+        total_tuple=(agent_id,member_id,sportId,marketId,tournamentId,matchId)
+        xxx_list=['agent_id','member_id','sportId','marketId','tournamentId','matchId']
+        total_list=[]
+        for jj in  total_tuple:
+            if jj=='' or jj=="":
+                pass
+            else:
+                total_list.append(xxx_list[total_tuple.index(jj)])
 
-        else:
-            # 查询ID的代理等级：
-            # sql01 = f"SELECT role_id FROM m_account WHERE id='1531516017847869442'"
-            sql01 = f"SELECT role_id FROM m_account WHERE id='{agent_id}'"
-            sum01 = self.my.query_data(sql01, db_name='bfty_credit')
+        #判断到相应的ID时，进行数据处理
+        sum02=""
+        if len(total_list)==1:
+            if total_list[0]=='agent_id':
+                # 查询ID的代理等级：
+                # sql01 = f"SELECT role_id FROM m_account WHERE id='1531516017847869442'"
+                sql01 = f"SELECT role_id FROM m_account WHERE id='{agent_id}'"
+                sum01 = self.my.query_data(sql01, db_name='bfty_credit')
 
-            # 根据查询等级，进行参数替换
-            num = int(sum01[0][0])
-            sql02 = f"SELECT {water_SQL_list[num]} as '总佣金' FROM o_account_order as c WHERE {proxy_id_list[num]}='{agent_id}'"
-            sum02 = self.my.query_data(sql02, db_name='bfty_credit')
-            sum02 = float(sum02[0][0])
-            print(f"登{num}-{agent_id}的总佣金为{sum02}")
-
+                # 根据查询等级，进行参数替换
+                num = int(sum01[0][0])
+                sql02 = f"SELECT {water_SQL_list[num]} as '总佣金' FROM o_account_order as c WHERE {proxy_id_list[num]}='{agent_id}' AND c.settlement_time>='{begin}' AND c.settlement_time<='{end}'"
+                sum02 = self.my.query_data(sql02, db_name='bfty_credit')
+                sum02 = float(sum02[0][0])
+                print(f"\033[34m登{num}-{agent_id}的总佣金为{sum02}\033[0m")
+            elif total_list[0]=='member_id':
+                # 根据会员ID，进行参数替换：
+                num = 4
+                if Duplex=='':
+                    sql02 = f"SELECT {water_SQL_list[num]} as '总佣金',any_value(c.login_account) as '登入账号' FROM o_account_order as c WHERE {proxy_id_list[num]}='{member_id}' AND c.settlement_time>='{begin}' AND c.settlement_time<='{end}'"
+                else:
+                    bet_type = bet_type_list[1]
+                    sql02 = f"SELECT {water_SQL_list[num]} as '总佣金',any_value(c.login_account) as '登入账号' FROM o_account_order as c WHERE {proxy_id_list[num]}='{member_id}' AND c.settlement_time>='{begin}' AND c.settlement_time<='{end}' AND c.bet_type{bet_type}1"
+                sum02 = self.my.query_data(sql02, db_name='bfty_credit')
+                username = (sum02[0][1])
+                sum02 = float(sum02[0][0])
+                print(f"\033[34m会员{username}-{member_id}的总佣金为{sum02}\033[0m")
+            elif total_list[0]=='sportId':
+                # 根据球类ID，进行参数替换：
+                if sportId=='串关':
+                    sum02=0
+                else:
+                    num01 = 5
+                    sql02 = f"SELECT {water_SQL_list[num]} as '总佣金',CASE any_value(c.sport_id) WHEN 'sr:sport:1' THEN '足球' WHEN 'sr:sport:20' THEN '乒乓球' WHEN 'sr:sport:5' THEN '网球' WHEN 'sr:sport:3' THEN '棒球' WHEN 'sr:sport:2' THEN '篮球' WHEN 'sr:sport:31' THEN '羽毛球' WHEN 'sr:sport:4' THEN '冰球' WHEN 'sr:sport:23' THEN '排球' END AS '球类' FROM o_account_order as c WHERE {proxy_id_list[num01]}='{sportId}' AND {proxy_id_list[num]}=(SELECT id FROM m_account WHERE login_account='{login_account}') AND c.settlement_time>='{begin}' AND c.settlement_time<='{end}'"
+                    sum02 = self.my.query_data(sql02, db_name='bfty_credit')
+                    username = (sum02[0][1])
+                    sum02 = float(sum02[0][0])
+                    print(f"\033[34m{username}的-{sportId}的总佣金为{sum02}\033[0m")
+            elif total_list[0] == 'tournamentId':
+                # 根据球类ID和联赛ID，进行参数替换：
+                num01 = 7
+                if tournamentId=='串关':
+                    bet_type = bet_type_list[1]
+                    sql02 = f"SELECT {water_SQL_list[num]} as '总佣金','串关',CASE any_value(c.sport_id) WHEN 'sr:sport:1' THEN '足球' WHEN 'sr:sport:20' THEN '乒乓球' WHEN 'sr:sport:5' THEN '网球' WHEN 'sr:sport:3' THEN '棒球' WHEN 'sr:sport:2' THEN '篮球' WHEN 'sr:sport:31' THEN '羽毛球' WHEN 'sr:sport:4' THEN '冰球' WHEN 'sr:sport:23' THEN '排球' END AS '球类' FROM o_account_order as c  WHERE  {proxy_id_list[num]}=(SELECT id FROM m_account WHERE login_account='{login_account}') AND c.settlement_time>='{begin}' AND c.settlement_time<='{end}' AND c.bet_type{bet_type}1"
+                else:
+                    sql02 = f"SELECT {water_SQL_list[num]} as '总佣金',any_value(tournament_name),CASE any_value(c.sport_id) WHEN 'sr:sport:1' THEN '足球' WHEN 'sr:sport:20' THEN '乒乓球' WHEN 'sr:sport:5' THEN '网球' WHEN 'sr:sport:3' THEN '棒球' WHEN 'sr:sport:2' THEN '篮球' WHEN 'sr:sport:31' THEN '羽毛球' WHEN 'sr:sport:4' THEN '冰球' WHEN 'sr:sport:23' THEN '排球' END AS '球类' FROM o_account_order as c  LEFT JOIN o_account_order_match as a ON a.order_no=c.order_no WHERE {proxy_id_list[num01]}='{tournamentId}' AND {proxy_id_list[num]}=(SELECT id FROM m_account WHERE login_account='{login_account}') AND c.settlement_time>='{begin}' AND c.settlement_time<='{end}'"
+                sum02 = self.my.query_data(sql02, db_name='bfty_credit')
+                username =sum02[0][2]
+                tournamentId = sum02[0][1]
+                sum02 =float(sum02[0][0])
+                print(f"\033[34m{username}-{tournamentId}的总佣金为{sum02}\033[0m")
+            elif total_list[0] == 'matchId':
+                # 根据球类ID和赛事ID，进行参数替换：
+                num01 = 8
+                if matchId == '串关':
+                    bet_type = bet_type_list[1]
+                    sql02 = f"SELECT {water_SQL_list[num]} as '总佣金','串关',CASE any_value(c.sport_id) WHEN 'sr:sport:1' THEN '足球' WHEN 'sr:sport:20' THEN '乒乓球' WHEN 'sr:sport:5' THEN '网球' WHEN 'sr:sport:3' THEN '棒球' WHEN 'sr:sport:2' THEN '篮球' WHEN 'sr:sport:31' THEN '羽毛球' WHEN 'sr:sport:4' THEN '冰球' WHEN 'sr:sport:23' THEN '排球' END AS '球类' FROM o_account_order as c   WHERE  {proxy_id_list[num]}=(SELECT id FROM m_account WHERE login_account='{login_account}') AND c.settlement_time>='{begin}' AND c.settlement_time<='{end}' AND c.bet_type{bet_type}1"
+                else:
+                    sql02 = f"SELECT {water_SQL_list[num]} as '总佣金',any_value({proxy_id_list[num01]}),any_value({proxy_id_list[num01]}),CASE any_value(c.sport_id) WHEN 'sr:sport:1' THEN '足球' WHEN 'sr:sport:20' THEN '乒乓球' WHEN 'sr:sport:5' THEN '网球' WHEN 'sr:sport:3' THEN '棒球' WHEN 'sr:sport:2' THEN '篮球' WHEN 'sr:sport:31' THEN '羽毛球' WHEN 'sr:sport:4' THEN '冰球' WHEN 'sr:sport:23' THEN '排球' END AS '球类' FROM o_account_order as c  LEFT JOIN o_account_order_match as a ON a.order_no=c.order_no WHERE {proxy_id_list[num01]}='{matchId}' AND {proxy_id_list[num]}=(SELECT id FROM m_account WHERE login_account='{login_account}') AND c.settlement_time>='{begin}' AND c.settlement_time<='{end}'"
+                sum02 = self.my.query_data(sql02, db_name='bfty_credit')
+                matchId = (sum02[0][1])
+                username = (sum02[0][2])
+                sum02 = float(sum02[0][0])
+                print(f"\033[34m{username}-{matchId}的总佣金为{sum02}\033[0m")
+        elif len(total_list)==2 or len(total_list)==3:
+            if total_list[1] == 'marketId':
+                # 根据球类ID和盘口ID，进行参数替换：
+                num01 = 6
+                if marketId=='串关':
+                    bet_type = bet_type_list[1]
+                    bet_type=f"AND c.bet_type{bet_type}1"
+                    sql02 = f"SELECT {water_SQL_list[num+1]} as '总佣金','串关',CASE any_value(c.sport_id) WHEN 'sr:sport:1' THEN '足球' WHEN 'sr:sport:20' THEN '乒乓球' WHEN 'sr:sport:5' THEN '网球' WHEN 'sr:sport:3' THEN '棒球' WHEN 'sr:sport:2' THEN '篮球' WHEN 'sr:sport:31' THEN '羽毛球' WHEN 'sr:sport:4' THEN '冰球' WHEN 'sr:sport:23' THEN '排球' END AS '球类' FROM o_account_order as c  WHERE {proxy_id_list[num]}=(SELECT id FROM m_account WHERE login_account='{login_account}') AND c.settlement_time>='{begin}' AND c.settlement_time<='{end}' {bet_type}"
+                else:
+                    bet_type = bet_type_list[0]
+                    if matchId == '':
+                        bet_type=f"AND c.bet_type{bet_type}1"
+                    else:
+                        bet_type = f"AND c.bet_type{bet_type}1 AND a.match_id='{matchId}'"
+                    sql02 = f"SELECT {water_SQL_list[num]} as '总佣金',any_value(market_name),CASE any_value(c.sport_id) WHEN 'sr:sport:1' THEN '足球' WHEN 'sr:sport:20' THEN '乒乓球' WHEN 'sr:sport:5' THEN '网球' WHEN 'sr:sport:3' THEN '棒球' WHEN 'sr:sport:2' THEN '篮球' WHEN 'sr:sport:31' THEN '羽毛球' WHEN 'sr:sport:4' THEN '冰球' WHEN 'sr:sport:23' THEN '排球' END AS '球类' FROM o_account_order as c  LEFT JOIN o_account_order_match as a ON a.order_no=c.order_no  WHERE {proxy_id_list[num01]}='{marketId}' and {proxy_id_list[5]}='{sportId}' AND {proxy_id_list[num]}=(SELECT id FROM m_account WHERE login_account='{login_account}') AND c.settlement_time>='{begin}' AND c.settlement_time<='{end}' {bet_type}"
+                sum02 = self.my.query_data(sql02, db_name='bfty_credit')
+                username = (sum02[0][2])
+                marketId= (sum02[0][1])
+                sum02=float(sum02[0][0])
+                print(f"\033[34m{username}-{marketId}的总佣金为{sum02}\033[0m")
         return sum02
 
     # 公司输赢计算
-    def Company_winlose(self,agent_id,member_id):
-        for pkk in range(0, 1):
-            # 参数化代理账号数据列表
-            Dl_list = ["d0", "d10", "d2", "d3"]
+    def Company_winlose(self,agent_id,member_id,sportId,marketId,tournamentId,matchId,login_account,begin,end,Duplex):
+        '''
+         @报表规则：
+         1、总佣金是查询登陆者的下级所产生的总和（涉及总台~登3），会员的总佣金取此账号，所订单会员佣金的总和
+         2、公司是查询登录者的公司输赢（包括跳转任意下级代理），会员的公司输赢取此账号，所订单(公司输赢+公司佣金)的总和
+        '''
+
+        #判断agent_id为代理ID，还是为代理账号
+        z_m_num01 = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+        vv_id = []
+        qq_id=[]
+        for j in list(agent_id):
+            if j in z_m_num01:
+                pass
+            else:
+                vv_id.append(0)
+                # print("这是一个代理账号")
+        # 判断member_id为会员ID，还是为会员账号
+        for j in list(member_id):
+            if j in z_m_num01:
+                pass
+            else:
+                qq_id.append(0)
+                # print("这是一个代理账号")
+        #agent_id传递：
+        if vv_id==[]:
+            pass
+        else:
+            sql00 = f"SELECT id as '代理ID' FROM o_account_order as c WHERE account='{agent_id}'"
+            sum00 = self.my.query_data(sql00, db_name='bfty_credit')
+            agent_id = sum00[0][0]
+
+
+        #member_id传递：
+        if qq_id==[]:
+            pass
+        else:
+            sql00 = f"SELECT id as '会员ID' FROM u_user as c WHERE account='{member_id}'"
+            sum00 = self.my.query_data(sql00, db_name='bfty_credit')
+            member_id = sum00[0][0]
+
         # SQL参数列表
-        proxy_id_list = ['c.proxy0_id', 'c.proxy1_id', 'c.proxy2_id', 'c.proxy3_id','c.user_id']
+        bet_type_list=['=','!=']
+        proxy_id_list = ['c.proxy0_id', 'c.proxy1_id', 'c.proxy2_id', 'c.proxy3_id','c.user_id','c.sport_id','a.market_id','a.tournament_id','a.match_id']
         total_list=['SUM(c.company_win_or_lose)','SUM(c.level0_win_or_lose+c.company_win_or_lose)','SUM(c.level0_win_or_lose+c.company_win_or_lose+c.level1_win_or_lose)','SUM(c.level0_win_or_lose+c.company_win_or_lose+c.level1_win_or_lose+c.level2_win_or_lose)','SUM(c.company_win_or_lose)']
 
         #查询登录代理的代理等级
-        sql = f"SELECT role_id FROM m_account WHERE login_account='{Dl_list[pkk]}'"
+        sql = f"SELECT role_id FROM m_account WHERE login_account='{login_account}'"
         sum = self.my.query_data(sql, db_name='bfty_credit')
         num = int(sum[0][0])
 
-        # 判断查询代理ID，还是会员ID
-        if agent_id == '':
-            # 根据会员member_id，返回查询公司输赢：
-            num01 = 4
-            sql02 = f"SELECT {total_list[num]} as '总佣金',any_value(c.login_account) as '登入账号' FROM o_account_order as c WHERE {proxy_id_list[num01]}='{member_id}'"
-            sum02 = self.my.query_data(sql02, db_name='bfty_credit')
-            username = (sum02[0][1])
-            sum02 = float(sum02[0][0])
-            print(f"\033[32m登{num}查询会员{username}-{member_id}的总公司输赢为{sum02}\033[0m")
-        else:
-            # 查询传参agent_id的代理等级
-            sql01 = f"SELECT role_id FROM m_account WHERE id='{agent_id}'"
-            sum01 = self.my.query_data(sql01, db_name='bfty_credit')
-            num01 = int(sum01[0][0])
+        total_tuple = (agent_id, member_id, sportId, marketId, tournamentId, matchId)
+        xxx_list = ['agent_id', 'member_id', 'sportId', 'marketId', 'tournamentId', 'matchId']
+        total_list01 = []
+        for jj in total_tuple:
+            if jj == '' or jj == "":
+                pass
+            else:
+                total_list01.append(xxx_list[total_tuple.index(jj)])
 
-            # 根据登录代理的代理等级，返回查询公司输赢
-            sql02 = f"SELECT {total_list[num]} as '总佣金' FROM o_account_order as c WHERE {proxy_id_list[num01]}='{agent_id}'"
-            sum02 = self.my.query_data(sql02, db_name='bfty_credit')
-            sum02 = float(sum02[0][0])
-            print(f"\033[32m登{num}查询登{num01}-{agent_id}的总公司输赢为{sum02}\033[0m")
-            return sum02
+        # 判断到相应的ID时，进行数据处理
+        sum02 = ""
+        if len(total_list01) == 1:
+            if total_list01[0] == 'agent_id':
+                # 查询传参agent_id的代理等级
+                sql01 = f"SELECT role_id FROM m_account WHERE id='{agent_id}'"
+                sum01 = self.my.query_data(sql01, db_name='bfty_credit')
+                num01 = int(sum01[0][0])
+
+                # 根据登录代理的代理等级，返回查询公司输赢
+                sql02 = f"SELECT {total_list[num]} as '公司共计' FROM o_account_order as c WHERE {proxy_id_list[num01]}='{agent_id}' and c.STATUS=2 AND c.award_time IS NOT NULL AND c.settlement_time>='{begin}' AND c.settlement_time<='{end}'"
+                sum02 = self.my.query_data(sql02, db_name='bfty_credit')
+                sum02 = float(sum02[0][0])
+                print(f"\033[32m登录账号:(登{num})-查询登{num01}-{agent_id}的总公司输赢为{sum02}\033[0m")
+            elif total_list01[0] == 'member_id':
+                # 根据会员ID，进行参数替换：
+                # 根据会员member_id，返回查询公司输赢：
+                num01 = 4
+                if Duplex=='':
+                    sql02 = f"SELECT {total_list[num]} as '公司共计',any_value(c.login_account) as '登入账号' FROM o_account_order as c WHERE {proxy_id_list[num01]}='{member_id}' AND c.settlement_time>='{begin}' AND c.settlement_time<='{end}' and c.STATUS=2 AND c.award_time IS NOT NULL"
+                else:
+                    bet_type=bet_type_list[1]
+                    sql02 = f"SELECT {total_list[num]} as '公司共计',any_value(c.login_account) as '登入账号' FROM o_account_order as c WHERE {proxy_id_list[num01]}='{member_id}' AND c.settlement_time>='{begin}' AND c.settlement_time<='{end}' and c.STATUS=2 AND c.award_time IS NOT NULL AND c.bet_type{bet_type}1"
+                sum02 = self.my.query_data(sql02, db_name='bfty_credit')
+                username = (sum02[0][1])
+                sum02 = float(sum02[0][0])
+                print(f"\033[32m登{num}查询会员{username}-{member_id}的总公司输赢为{sum02}\033[0m")
+            elif total_list01[0] == 'sportId':
+                # 根据球类ID，进行参数替换：
+                num01 = 5
+                sql02 = f"SELECT {total_list[num]} as '公司共计',CASE any_value(c.sport_id) WHEN 'sr:sport:1' THEN '足球' WHEN 'sr:sport:20' THEN '乒乓球' WHEN 'sr:sport:5' THEN '网球' WHEN 'sr:sport:3' THEN '棒球' WHEN 'sr:sport:2' THEN '篮球' WHEN 'sr:sport:31' THEN '羽毛球' WHEN 'sr:sport:4' THEN '冰球' WHEN 'sr:sport:23' THEN '排球' END AS '球类' FROM o_account_order as c WHERE {proxy_id_list[num01]}='{sportId}' AND {proxy_id_list[num]}=(SELECT id FROM m_account WHERE login_account='{login_account}') AND c.settlement_time>='{begin}' AND c.settlement_time<='{end}' and c.STATUS=2 AND c.award_time IS NOT NULL"
+                sum02 = self.my.query_data(sql02, db_name='bfty_credit')
+                username = (sum02[0][1])
+                sum02 = float(sum02[0][0])
+                print(f"\033[32m{username}的-{sportId}的总公司输赢为{sum02}\033[0m")
+            elif total_list01[0] == 'tournamentId':
+                # 根据球类ID和联赛ID，进行参数替换：
+                num01 = 7
+                if tournamentId=='串关':
+                    bet_type=bet_type_list[1]
+                    sql02 = f"SELECT {total_list[num]} as '公司共计','串关',CASE any_value(c.sport_id) WHEN 'sr:sport:1' THEN '足球' WHEN 'sr:sport:20' THEN '乒乓球' WHEN 'sr:sport:5' THEN '网球' WHEN 'sr:sport:3' THEN '棒球' WHEN 'sr:sport:2' THEN '篮球' WHEN 'sr:sport:31' THEN '羽毛球' WHEN 'sr:sport:4' THEN '冰球' WHEN 'sr:sport:23' THEN '排球' END AS '球类' FROM o_account_order as c  WHERE {proxy_id_list[num]}=(SELECT id FROM m_account WHERE login_account='{login_account}') AND c.settlement_time>='{begin}' AND c.settlement_time<='{end}' and c.STATUS=2 AND c.award_time IS NOT NULL AND c.bet_type{bet_type}1"
+                else:
+                    bet_type=bet_type_list[0]
+                    sql02 = f"SELECT {total_list[num]} as '公司共计',any_value(tournament_name),CASE any_value(c.sport_id) WHEN 'sr:sport:1' THEN '足球' WHEN 'sr:sport:20' THEN '乒乓球' WHEN 'sr:sport:5' THEN '网球' WHEN 'sr:sport:3' THEN '棒球' WHEN 'sr:sport:2' THEN '篮球' WHEN 'sr:sport:31' THEN '羽毛球' WHEN 'sr:sport:4' THEN '冰球' WHEN 'sr:sport:23' THEN '排球' END AS '球类' FROM o_account_order as c  LEFT JOIN o_account_order_match as a ON a.order_no=c.order_no WHERE {proxy_id_list[num01]}='{tournamentId}' AND {proxy_id_list[num]}=(SELECT id FROM m_account WHERE login_account='{login_account}') AND c.settlement_time>='{begin}' AND c.settlement_time<='{end}' and c.STATUS=2 AND c.award_time IS NOT NULL AND c.bet_type{bet_type}1"
+                sum02 = self.my.query_data(sql02, db_name='bfty_credit')
+                username =sum02[0][2]
+                tournamentId = sum02[0][1]
+                sum02 =float(sum02[0][0])
+                print(f"\033[32m{username}-{tournamentId}的总公司输赢为{sum02}\033[0m")
+            elif total_list01[0] == 'matchId':
+                # 根据球类ID和赛事ID，进行参数替换：
+                num01 = 8
+                if matchId == '串关':
+                    bet_type=bet_type_list[1]
+                    sql02 = f"SELECT {total_list[num]} as '公司共计','串关',CASE any_value(c.sport_id) WHEN 'sr:sport:1' THEN '足球' WHEN 'sr:sport:20' THEN '乒乓球' WHEN 'sr:sport:5' THEN '网球' WHEN 'sr:sport:3' THEN '棒球' WHEN 'sr:sport:2' THEN '篮球' WHEN 'sr:sport:31' THEN '羽毛球' WHEN 'sr:sport:4' THEN '冰球' WHEN 'sr:sport:23' THEN '排球' END AS '球类' FROM o_account_order as c  WHERE  {proxy_id_list[num]}=(SELECT id FROM m_account WHERE login_account='{login_account}') AND c.settlement_time>='{begin}' AND c.settlement_time<='{end}' and c.STATUS=2 AND c.award_time IS NOT NULL AND c.bet_type{bet_type}1"
+                else:
+                    bet_type = bet_type_list[0]
+                    sql02 = f"SELECT {total_list[num]} as '公司共计',any_value({proxy_id_list[num01]}),CASE any_value(c.sport_id) WHEN 'sr:sport:1' THEN '足球' WHEN 'sr:sport:20' THEN '乒乓球' WHEN 'sr:sport:5' THEN '网球' WHEN 'sr:sport:3' THEN '棒球' WHEN 'sr:sport:2' THEN '篮球' WHEN 'sr:sport:31' THEN '羽毛球' WHEN 'sr:sport:4' THEN '冰球' WHEN 'sr:sport:23' THEN '排球' END AS '球类' FROM o_account_order as c  LEFT JOIN o_account_order_match as a ON a.order_no=c.order_no WHERE {proxy_id_list[num01]}='{matchId}' AND {proxy_id_list[num]}=(SELECT id FROM m_account WHERE login_account='{login_account}') AND c.settlement_time>='{begin}' AND c.settlement_time<='{end}' and c.STATUS=2 AND c.award_time IS NOT NULL AND c.bet_type{bet_type}1"
+                sum02 = self.my.query_data(sql02, db_name='bfty_credit')
+                matchId = (sum02[0][1])
+                username = (sum02[0][2])
+                sum02 = float(sum02[0][0])
+                print(f"\033[32m{username}-{matchId}的总公司输赢为{sum02}\033[0m")
+        elif len(total_list01)==2 or len(total_list01)==3:
+            if total_list01[1] == 'marketId':
+                # 根据球类ID和盘口ID，进行参数替换：
+                num01 = 6
+                if marketId=='串关':
+                    bet_type=bet_type_list[1]
+                    bet_type=f"AND c.bet_type{bet_type}1"
+                    sql02 = f"SELECT {total_list[num]} as '公司共计','串关',CASE any_value(c.sport_id) WHEN 'sr:sport:1' THEN '足球' WHEN 'sr:sport:20' THEN '乒乓球' WHEN 'sr:sport:5' THEN '网球' WHEN 'sr:sport:3' THEN '棒球' WHEN 'sr:sport:2' THEN '篮球' WHEN 'sr:sport:31' THEN '羽毛球' WHEN 'sr:sport:4' THEN '冰球' WHEN 'sr:sport:23' THEN '排球' END AS '球类' FROM o_account_order as c  WHERE {proxy_id_list[num]}=(SELECT id FROM m_account WHERE login_account='{login_account}') AND c.settlement_time>='{begin}' AND c.settlement_time<='{end}' and c.STATUS=2 AND c.award_time IS NOT NULL AND c.sport_id='{sportId}' {bet_type} GROUP BY c.sport_id"
+                else:
+                    bet_type = bet_type_list[0]
+                    if matchId == '':
+                        bet_type=f"AND c.bet_type{bet_type}1"
+                    else:
+                        bet_type = f"AND c.bet_type{bet_type}1 AND a.match_id='{matchId}'"
+                    sql02 = f"SELECT {total_list[num]} as '公司共计',any_value(market_name),CASE any_value(c.sport_id) WHEN 'sr:sport:1' THEN '足球' WHEN 'sr:sport:20' THEN '乒乓球' WHEN 'sr:sport:5' THEN '网球' WHEN 'sr:sport:3' THEN '棒球' WHEN 'sr:sport:2' THEN '篮球' WHEN 'sr:sport:31' THEN '羽毛球' WHEN 'sr:sport:4' THEN '冰球' WHEN 'sr:sport:23' THEN '排球' END AS '球类' FROM o_account_order as c  LEFT JOIN o_account_order_match as a ON a.order_no=c.order_no  WHERE {proxy_id_list[num01]}='{marketId}'  AND {proxy_id_list[num]}=(SELECT id FROM m_account WHERE login_account='{login_account}') AND c.settlement_time>='{begin}' AND c.settlement_time<='{end}' and c.STATUS=2 AND c.award_time IS NOT NULL {bet_type}"
+                sum02 = self.my.query_data(sql02, db_name='bfty_credit')
+                username = (sum02[0][2])
+                marketId = (sum02[0][1])
+                sum02=float(sum02[0][0])
+                print(f"\033[32m{username}-{marketId}的总公司输赢为{sum02}\033[0m")
+        return sum02
 
 
 
@@ -715,20 +938,32 @@ if __name__ == "__main__":
     # print(yybt)
 
     # yyds=bc.water()
-    order_no_list=['XGwi26WFH3mk']
+    #总赔率计算
+    order_no_list=['XFBa8eAW5zbi','XFBa9qrwd6jL']
 
 
     # for i in order_no_list:
-    #     yyds=tt.market_id(order_no=i)
-    #     # yyds = bc.credit_odds(order_no=i, bet_type="", AB_list=AB_list, dict=dict)
-    #     print(yyds)
+    #     # yyds=tt.market_id(order_no=i)
+    #     yyds = bc.credit_odds(order_no=i, bet_type="", AB_list=AB_list, dict=dict)
+    #     # print(yyds)
 
+
+    #总佣金和公司输赢计算
+    login_account = "d0"
     agent_id_list=['1531516017847869442','1531517033355976705','1531517351158390786','1531517760300163074']
     member_id_list=['1531522809348792321','1531519190650101761','1531521709191241729']
-    for agent_id in range(len(agent_id_list)+len(member_id_list)):
-        if agent_id<=len(agent_id_list)-1:
-            yyds=tt.total_commission(agent_id=agent_id_list[agent_id],member_id='')
-            yyqt=tt.Company_winlose(agent_id=agent_id_list[agent_id],member_id='')
-        else:
-            yyds=tt.total_commission(agent_id='', member_id=member_id_list[agent_id-(len(agent_id_list))])
-            yyqt=tt.Company_winlose(agent_id='', member_id=member_id_list[agent_id-(len(agent_id_list))])
+    # for agent_id in range(len(agent_id_list)+len(member_id_list)):
+    #     if agent_id<=len(agent_id_list)-1:
+    #         yyds=tt.total_commission(agent_id=agent_id_list[agent_id],member_id='',sportId='',marketId='',tournamentId='',matchId='',login_account=login_account)
+    #         yyqt=tt.Company_winlose(agent_id=agent_id_list[agent_id],member_id='',login_account=login_account)
+    #     else:
+    #         yyds=tt.total_commission(agent_id='', member_id=member_id_list[agent_id-(len(agent_id_list))])
+    #         yyqt=tt.Company_winlose(agent_id='', member_id=member_id_list[agent_id-(len(agent_id_list))],login_account=login_account)
+    # yyds = tt.total_commission(agent_id='', member_id='', sportId='sr:sport:1', marketId='1', tournamentId='',matchId='sr:match:32013725', login_account=login_account,begin="2022-06-17 00:00:00",end="2022-06-23 23:59:59")
+
+    begin="2022-06-17 00:00:00"
+    end="2022-06-23 23:59:59"
+    marketId='串关'
+    for agent_id in agent_id_list:
+        yybt = tt.total_commission(agent_id='', member_id='', sportId='', marketId='',tournamentId='', matchId='sr:match:33725427', login_account=login_account,begin=begin,end=end,Duplex='')
+        yyds=tt.Company_winlose(agent_id=agent_id, member_id='', sportId='', marketId='', tournamentId='',matchId='', login_account=login_account,begin=begin,end=end,Duplex='')
