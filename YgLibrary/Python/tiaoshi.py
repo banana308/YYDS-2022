@@ -58,18 +58,209 @@
 #     print(agent_id)
 
 
-def www(agent_id,member_id,sportId,marketId,tournamentId,matchId):
-    total_tuple=(agent_id,member_id,sportId,marketId,tournamentId,matchId)
-    print(total_tuple)
-    print("它来呢：",matchId)
-    xxx_list=['agent_id','member_id','sportId','marketId','tournamentId','matchId']
-    total_list=[]
-    for jj in  total_tuple:
-        if jj=='' or jj=="":
-            print(jj)
-            pass
-        else:
-            total_list.append(xxx_list[total_tuple.index(jj)])
-            print(total_list)
+# def www(agent_id,member_id,sportId,marketId,tournamentId,matchId):
+#     total_tuple=(agent_id,member_id,sportId,marketId,tournamentId,matchId)
+#     print(total_tuple)
+#     print("它来呢：",matchId)
+#     xxx_list=['agent_id','member_id','sportId','marketId','tournamentId','matchId']
+#     total_list=[]
+#     for jj in  total_tuple:
+#         if jj=='' or jj=="":
+#             print(jj)
+#             pass
+#         else:
+#             total_list.append(xxx_list[total_tuple.index(jj)])
+#             print(total_list)
+#
+# www(agent_id='',member_id='',sportId='',marketId='',tournamentId='',matchId='sr:match:33725427')
 
-www(agent_id='',member_id='',sportId='',marketId='',tournamentId='',matchId='sr:match:33725427')
+sportId_sql_list=[]
+sport_num_sql_list=[]
+sort_num=[(('1531516017847869442', '0'),), (('1531517033355976705', '1'),), (('1531517351158390786', '2'),), (('1531517760300163074', '3'),)]
+
+for sportId in sort_num:
+    sportId_sql_list.append(sportId[0][0])
+    sport_num_sql_list.append(sportId[0][1])
+print(sportId_sql_list)
+print(sport_num_sql_list)
+
+
+
+del sportId_sql_list[0:2]
+print(sportId_sql_list)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+def order_no():
+    yyds_list=[{ 'betTime': '2022-06-16 23: 26: 42', 'orderNo': 'XFTztEQGVk9k', 'sportName': '足球', 'outcomeList': [
+            { 'tournamentName': '模拟现实联盟K-League 1 SRL', 'TeamName': 'Gimcheon Sangmu (Srl)VsSuwon FC (Srl)', 'betScore': '(1: 0) ', 'marketName': '大/小', 'outcomeName': '大2.5/3', 'oddsType': 1, 'odds': 2.35, 'outcomeWinOrLoseName': '输'
+            }
+        ], 'betAmount': 100.0, 'profitAmount': -100.0, 'backwaterAmount': 0.0, 'resultAmount': 0.0
+    },
+    { 'betTime': '2022-06-16 23: 26: 42', 'orderNo': 'XFTztEQGVk9k', 'sportName': '足球', 'outcomeList': [
+            { 'tournamentName': '模拟现实联盟K-League 1 SRL', 'TeamName': 'Pohang Steelers SRLVsGangwon FC SRL', 'betScore': '(4: 0) ', 'marketName': '大/小', 'outcomeName': '小2', 'oddsType': 1, 'odds': 2.42, 'outcomeWinOrLoseName': '赢'
+            }
+        ], 'betAmount': 100.0, 'profitAmount': -100.0, 'backwaterAmount': 0.0, 'resultAmount': 0.0
+    },
+               {'betTime': '2022-06-16 23: 26: 42', 'orderNo': 'XFTztEQGVk9k', 'sportName': '足球', 'outcomeList': [
+                   {'tournamentName': '模拟现实联盟K-League 1 SRL', 'TeamName': 'Pohang Steelers SRLVsGangwon FC SRL',
+                    'betScore': '(4: 0) ', 'marketName': '大/小', 'outcomeName': '小2', 'oddsType': 1, 'odds': 2.42,
+                    'outcomeWinOrLoseName': '赢'
+                    }
+               ], 'betAmount': 100.0, 'profitAmount': -100.0, 'backwaterAmount': 0.0, 'resultAmount': 0.0
+                },
+    { 'betTime': '2022-06-15 22: 26: 20', 'orderNo': 'YYYYYYYYSSSSS', 'sportName': '足球', 'outcomeList': [
+            { 'tournamentName': '澳大利亚全国超级联赛,塔斯马尼亚', 'TeamName': 'Olympia Warriors HobartVs河岸奥林匹克', 'betScore': None, 'marketName': '双重机会&大/小', 'outcomeName': 'Olympia Warriors Hobart/河岸奥林匹克 & 大 3.5', 'oddsType': 1, 'odds': 2.06, 'outcomeWinOrLoseName': '输'
+            }
+        ], 'betAmount': 154.0, 'profitAmount': -154.0, 'backwaterAmount': 0.03, 'resultAmount': 0.03
+    },
+               {'betTime': '2022-06-16 23: 26: 42', 'orderNo': 'bbkkkkk', 'sportName': '足球', 'outcomeList': [
+                   {'tournamentName': '模拟现实联盟K-League 1 SRL', 'TeamName': 'Gimcheon Sangmu (Srl)VsSuwon FC (Srl)',
+                    'betScore': '(1: 0) ', 'marketName': '大/小', 'outcomeName': '大2.5/3', 'oddsType': 1, 'odds': 2.35,
+                    'outcomeWinOrLoseName': '输'
+                    }
+               ], 'betAmount': 100.0, 'profitAmount': -100.0, 'backwaterAmount': 0.0, 'resultAmount': 0.0
+                },
+
+               {'betTime': '2022-06-16 23: 26: 42', 'orderNo': 'bbkkkkk', 'sportName': '足球', 'outcomeList': [
+                   {'tournamentName': '模拟现实联盟K-League 1 SRL', 'TeamName': 'Pohang Steelers SRLVsGangwon FC SRL',
+                    'betScore': '(4: 0) ', 'marketName': '大/小', 'outcomeName': '小2', 'oddsType': 1, 'odds': 2.42,
+                    'outcomeWinOrLoseName': '赢'
+                    }
+               ], 'betAmount': 100.0, 'profitAmount': -100.0, 'backwaterAmount': 0.0, 'resultAmount': 0.0
+                },
+
+               {'betTime': '2022-06-16 23: 26: 42', 'orderNo': 'bbkkkkk', 'sportName': '足球', 'outcomeList': [
+                   {'tournamentName': '模拟现实联盟K-League 1 SRL', 'TeamName': 'Pohang Steelers SRLVsGangwon FC SRL',
+                    'betScore': '(4: 0) ', 'marketName': '大/小', 'outcomeName': '小2', 'oddsType': 1, 'odds': 2.42,
+                    'outcomeWinOrLoseName': '赢'
+                    }
+               ], 'betAmount': 100.0, 'profitAmount': -100.0, 'backwaterAmount': 0.0, 'resultAmount': 0.0
+                },
+               {'betTime': '2022-06-15 22: 26: 20', 'orderNo': '666666666666666', 'sportName': '足球', 'outcomeList': [
+                   {'tournamentName': '澳大利亚全国超级联赛,塔斯马尼亚', 'TeamName': 'Olympia Warriors HobartVs河岸奥林匹克',
+                    'betScore': None, 'marketName': '双重机会&大/小', 'outcomeName': 'Olympia Warriors Hobart/河岸奥林匹克 & 大 3.5',
+                    'oddsType': 1, 'odds': 2.06, 'outcomeWinOrLoseName': '输'}], 'betAmount': 154.0,
+                'profitAmount': -154.0, 'backwaterAmount': 0.03, 'resultAmount': 0.03},
+               {'betTime': '2022-06-15 22: 26: 20', 'orderNo': '7777777777', 'sportName': '足球', 'outcomeList': [
+                   {'tournamentName': '澳大利亚全国超级联赛,塔斯马尼亚', 'TeamName': 'Olympia Warriors HobartVs河岸奥林匹克',
+                    'betScore': None, 'marketName': '双重机会&大/小', 'outcomeName': 'Olympia Warriors Hobart/河岸奥林匹克 & 大 3.5',
+                    'oddsType': 1, 'odds': 2.06, 'outcomeWinOrLoseName': '输'}], 'betAmount': 154.0,
+                'profitAmount': -154.0, 'backwaterAmount': 0.03, 'resultAmount': 0.03},
+               {'betTime': '2022-06-15 22: 26: 20', 'orderNo': '9999', 'sportName': '足球', 'outcomeList': [
+                   {'tournamentName': '澳大利亚全国超级联赛,塔斯马尼亚', 'TeamName': 'Olympia Warriors HobartVs河岸奥林匹克',
+                    'betScore': None, 'marketName': '双重机会&大/小', 'outcomeName': 'Olympia Warriors Hobart/河岸奥林匹克 & 大 3.5',
+                    'oddsType': 1, 'odds': 2.06, 'outcomeWinOrLoseName': '输'}], 'betAmount': 154.0,
+                'profitAmount': -154.0, 'backwaterAmount': 0.03, 'resultAmount': 0.03},
+               {'betTime': '2022-06-15 22: 26: 20', 'orderNo': '9999', 'sportName': '足球', 'outcomeList': [
+                   {'tournamentName': '澳大利亚全国超级联赛,塔斯马尼亚', 'TeamName': 'Olympia Warriors HobartVs河岸奥林匹克',
+                    'betScore': None, 'marketName': '双重机会&大/小', 'outcomeName': 'Olympia Warriors Hobart/河岸奥林匹克 & 大 3.5',
+                    'oddsType': 1, 'odds': 2.06, 'outcomeWinOrLoseName': '输'}], 'betAmount': 154.0,
+                'profitAmount': -154.0, 'backwaterAmount': 0.03, 'resultAmount': 0.03},
+               {'betTime': '2022-06-15 22: 26: 20', 'orderNo': '1010', 'sportName': '足球', 'outcomeList': [
+                   {'tournamentName': '澳大利亚全国超级联赛,塔斯马尼亚', 'TeamName': 'Olympia Warriors HobartVs河岸奥林匹克',
+                    'betScore': None, 'marketName': '双重机会&大/小', 'outcomeName': 'Olympia Warriors Hobart/河岸奥林匹克 & 大 3.5',
+                    'oddsType': 1, 'odds': 2.06, 'outcomeWinOrLoseName': '输'}], 'betAmount': 154.0,
+                'profitAmount': -154.0, 'backwaterAmount': 0.03, 'resultAmount': 0.03}
+               ]
+
+    orderNo_list=[]
+    new_list=[]
+    count_i = 0
+    count_j = 1
+    count=0
+    for i in range(0, len(yyds_list)):
+        print("i循环:",i,count_i)
+        if i==count_i:
+            orderNo_list = []
+            # if i==len(yyds_list)-1:
+            new_list.append(yyds_list[i])
+            for j in range(count_j, len(yyds_list)):
+                print("j循环:",j,count_j)
+                if j == count_j:
+                    if yyds_list[i]['orderNo']==yyds_list[j]['orderNo']:
+                        print(yyds_list[i]['orderNo'],yyds_list[j]['orderNo'])
+                        orderNo_list.append(yyds_list[i]['outcomeList'][0])
+                        orderNo_list.append(yyds_list[j]['outcomeList'][0])
+                        count_j = count_j + 1
+                        count_i = count_i + 1
+                        if j==len(yyds_list) - 1:
+                            new_list[-1]['outcomeList'] = orderNo_list
+                            print(f"第{count}次,{count_i},{count_j}")
+                        else:
+                            for k in range(count_j,len(yyds_list)):
+                                print(yyds_list[i]['orderNo'],yyds_list[k]['orderNo'])
+                                if yyds_list[i]['orderNo'] == yyds_list[k]['orderNo']:
+                                    if k == len(yyds_list) - 1:
+                                        count = count + 1
+                                        count_j = count_j + 1
+                                        count_i = count_i + 1
+                                        new_list[-1]['outcomeList'] = orderNo_list
+                                        print(f"第{count}次,{count_i},{count_j}")
+                                    else:
+                                        orderNo_list.append(yyds_list[k]['outcomeList'][0])
+                                        count_j = count_j + 1
+                                        count_i = count_i + 1
+                                else:
+                                    new_list[-1]['outcomeList']=orderNo_list
+                                    count_j = count_j + 1
+                                    count_i = count_i + 1
+                                    count = count + 1
+                                    print(f"第{count}次,{count_i},{count_j}")
+                                    break
+                    else:
+                        count_i = count_i + 1
+                        count_j = count_j + 1
+                        count=count+1
+                        break
+                else:
+                    break
+        else:
+            continue
+
+    print(new_list)
+    print(len(new_list))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

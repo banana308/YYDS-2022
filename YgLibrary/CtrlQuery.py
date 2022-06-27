@@ -887,11 +887,11 @@ if __name__ == "__main__":
     # order_list=bc.generate_settlement_str_by_orderNo_number_type(proxy3_id="1531517760300163074", bet_type="3")
     order_list=['XGwi26WFH3mk']
 
-    # time.sleep(30)
+    time.sleep(120)
     for order_no in order_list:
         print(f"共有 ",str(len(order_list))+" 笔结算注单,"+"正在结算第 "+str(order_list.index(order_no)+1)+" 笔注单："+str(order_no))
         # message = bc.send_message_to_datasourse(order_no=str(order_no), sort=0, certainty="2",result=None,result_handicap=None)  # 生成注单结算指令
-        message = bc.send_message_to_datasourse(order_no=str(order_no), sort=0, certainty="2", result="赢",result_handicap="赢")  # 生成注单结算指令
+        message = bc.send_message_to_datasourse(order_no=str(order_no), sort=0, certainty="2", result=None,result_handicap=None)  # 生成注单结算指令
         print("已完成注单："+str(order_list.index(order_no)+1)+"  "+"未完成注单"+str(len(order_list)-(order_list.index(order_no)+1))+"\n"+"----------------------------------------------------------------------------------------------------------------"+"\n"+"\n")
 
 

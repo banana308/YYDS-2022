@@ -240,12 +240,17 @@ class betting_odds(object):
         BE = dict['B'] * dict['E']
         CE = dict['C'] * dict['E']
         DE = dict['D'] * dict['E']
+        AF=dict['A'] * dict['F']
+        BF=dict['B'] * dict['F']
+        CF=dict['C'] * dict['F']
+        DF=dict['D'] * dict['F']
+        EF=dict['E'] * dict['F']
 
         CD = dict['D'] * dict['C']
         AB = dict['A'] * dict['B']
         BC = dict['B'] * dict['C']
         AC = dict['A'] * dict['C']
-        odds_2_15 = AB + BC + AC + CD + BD + AD + AE + BE + CE + DE
+        odds_2_15 = AB + BC + AC + CD + BD + AD + AE + BE + CE + DE + AF+ BF+ CF+ DF+ EF
         return odds_2_15
 
     def Duplex_bet(self, credit_odds_list,AB_list,dict,order_no):
@@ -303,6 +308,7 @@ class betting_odds(object):
             Duplex_bet_odds = sum01 + sum02+sum03+sum04
             Duplex_bet_odds = float(str(re.findall(r"\d{1,}?\.\d{2}", str(Duplex_bet_odds))[0]))
             print(f"\033[34m注单：{order_no}复式串关{list(mix_num)[0]}串{list(mix_num)[2]+list(mix_num)[3]}的总赔率为：{Duplex_bet_odds}\n\033[0m")
+            print(sum01,sum02,sum03,sum04)
 
         # 6串57赔率结算：
         if mix_num == str('5_6_0'):
@@ -327,9 +333,10 @@ class betting_odds(object):
             sum03 = self.Duplex_4_15(credit_odds_list=credit_odds_list, AB_list=AB_list, dict=dict,order_no=order_no)
             sum04 = self.Duplex_3_20(credit_odds_list=credit_odds_list, AB_list=AB_list, dict=dict,order_no=order_no)
             sum05 = self.Duplex_2_15(credit_odds_list=credit_odds_list, AB_list=AB_list, dict=dict,order_no=order_no)
-            Duplex_bet_odds = sum01 + sum02+sum03+sum04+sum05
+            Duplex_bet_odds = sum01+sum02+sum03+sum04+sum05
             Duplex_bet_odds = float(str(re.findall(r"\d{1,}?\.\d{2}", str(Duplex_bet_odds))[0]))
             print(f"\033[34m注单：{order_no}复式串关{list(mix_num)[0]}串{list(mix_num)[2]+list(mix_num)[3]}的总赔率为：{Duplex_bet_odds}\n\033[0m")
+            print(sum01,sum02,sum03,sum04,sum05)
 
         return Duplex_bet_odds
 
@@ -939,13 +946,13 @@ if __name__ == "__main__":
 
     # yyds=bc.water()
     #总赔率计算
-    order_no_list=['XFBa8eAW5zbi','XFBa9qrwd6jL']
+    order_no_list=['XH4tF8z2kSWS','XH4tL4REXVDW','XH4ud8cbEa8M']
 
 
-    # for i in order_no_list:
-    #     # yyds=tt.market_id(order_no=i)
-    #     yyds = bc.credit_odds(order_no=i, bet_type="", AB_list=AB_list, dict=dict)
-    #     # print(yyds)
+    for i in order_no_list:
+        # yyds=tt.market_id(order_no=i)
+        yyds = bc.credit_odds(order_no=i, bet_type="", AB_list=AB_list, dict=dict)
+        # print(yyds)
 
 
     #总佣金和公司输赢计算
@@ -961,9 +968,10 @@ if __name__ == "__main__":
     #         yyqt=tt.Company_winlose(agent_id='', member_id=member_id_list[agent_id-(len(agent_id_list))],login_account=login_account)
     # yyds = tt.total_commission(agent_id='', member_id='', sportId='sr:sport:1', marketId='1', tournamentId='',matchId='sr:match:32013725', login_account=login_account,begin="2022-06-17 00:00:00",end="2022-06-23 23:59:59")
 
-    begin="2022-06-17 00:00:00"
-    end="2022-06-23 23:59:59"
-    marketId='串关'
-    for agent_id in agent_id_list:
-        yybt = tt.total_commission(agent_id='', member_id='', sportId='', marketId='',tournamentId='', matchId='sr:match:33725427', login_account=login_account,begin=begin,end=end,Duplex='')
-        yyds=tt.Company_winlose(agent_id=agent_id, member_id='', sportId='', marketId='', tournamentId='',matchId='', login_account=login_account,begin=begin,end=end,Duplex='')
+
+    # begin="2022-06-17 00:00:00"
+    # end="2022-06-23 23:59:59"
+    # marketId='串关'
+    # for agent_id in agent_id_list:
+    #     yybt = tt.total_commission(agent_id='', member_id='', sportId='', marketId='',tournamentId='', matchId='sr:match:33725427', login_account=login_account,begin=begin,end=end,Duplex='')
+    #     yyds=tt.Company_winlose(agent_id=agent_id, member_id='', sportId='', marketId='', tournamentId='',matchId='', login_account=login_account,begin=begin,end=end,Duplex='')

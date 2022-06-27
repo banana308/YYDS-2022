@@ -335,10 +335,22 @@ def get_odds(g):
     else:
         # 赛事里取出本场比赛的所有盘口ID,方便下注
         # k = random.randint(0, len(results['data']['marketList']))
+
+        #判断参数，下注香港盘
+        yyds_dict={'足球':['16', '66', '18', '68', '104', '19', '20', '69', '70', '165', '176', '166', '177', '139', '152', '116', '117', '120', '127'],
+                   '篮球':['223', '225', '227', '228', '66', '68', '69', '70', '303', '236', '756', '757'],
+                   '网球':['188', '187', '189', '190', '191'],'排球':['204', '314'],'羽毛球':['237', '238', '237', '238'],'乒乓球':['237', '238', '237', '238'],'棒球':['246', '247'],
+                   '冰球':['256', '258', '16', '18', '410', '460', '446']}
+
         k_list=[]
         for k in range(0, len(results['data']['marketList'])):
-            # print((results['data']['marketList'][k]['outcomeList'][0]))
-            k_list.append((results['data']['marketList'][k]['outcomeList'][0]))
+            if oddsType_str=='':
+                k_list.append((results['data']['marketList'][k]['outcomeList'][0]))
+            else:
+                if results['data']['marketList'][k]['id'] in yyds_dict[j]:
+                    k_list.append((results['data']['marketList'][k]['outcomeList'][0]))
+                else:
+                    pass
         matchid_dict[matchId[g]]=k_list
         mixedNum_N_1_number_YYds_list_01.append(len(k_list))
         aa_list.append(results['data']['awayTeamName'])
@@ -797,7 +809,9 @@ if __name__ == '__main__':
         sprot_yyds(j)
         get_toten_00()
         #赔率类型随机：1代表：欧洲盘，2代表：香港盘
-        oddsType = random.randint(1, 2)
+        oddsType_str='香港盘'
+        # oddsType = random.randint(1, 2)
+        oddsType = 2
         get_today_odds(nub=3,oddsType=oddsType)
         if (len(sort_list_null))==0:
             print(f"{yyds}没有赛事,无法下注,已跳过\n-------------------------------------------------------")

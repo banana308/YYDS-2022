@@ -339,7 +339,6 @@ def get_odds(g):
         k_list = []
         id_list=['16','18','1','66','68','60','223','225','219','188','314','186','256','258','251',]
         for k in range(0, len(results['data']['marketList'])):
-            # print((results['data']['marketList'][k]['outcomeList'][0]))
             if results['data']['marketList'][k]['id'] in id_list:
                 k_list.append((results['data']['marketList'][k]['outcomeList'][0]))
             else:

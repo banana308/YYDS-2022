@@ -22,17 +22,23 @@ def match_id():
     lines=f.readlines()
     for lines in lines:
         list_y.append(lines.strip('\n'))
-        # list_y.append(lines.strip('@'))
-        for k in range(0,len(list_y)):
+    for k in range(0,len(list_y)):
+        list01.append(list_y[k])
+        if  list_y[k] in list01:
+            pass
+        else:
             list01.append(list_y[k])
-            # if  list_y[k] in list01:
-            #     pass
-            # else:
-            #     list01.append(list_y[k])
+    for j in list01:
+        if j=='':
+            del list01[list01.index(j)]
+        else:
+            pass
+
     print(len(list01))
     print(list01)
     return list01
 
+match_id()
 
 # ppk="188@187@314@189@190@191@203@204@237@238@245@246@247@248@256@258@16@18@26@410@460@446"
 # ppxt_lsit =ppk.split("@")
@@ -40,8 +46,6 @@ def match_id():
 
 
 
-for i in range(0,10):
-    print(i)
 
 
 
@@ -427,8 +431,7 @@ if excel_report[0] == "未完成交易-登0-登3-会员-查看订单详情-子�
 #         del options['matchTime']
 
 
-for i in range(0,10):
-    print(i)
+
 
 
 
@@ -495,15 +498,42 @@ def order_no():
             }
         ], 'betAmount': 100.0, 'profitAmount': -100.0, 'backwaterAmount': 0.0, 'resultAmount': 0.0
     },
+               {'betTime': '2022-06-16 23: 26: 42', 'orderNo': 'XFTztEQGVk9k', 'sportName': '足球', 'outcomeList': [
+                   {'tournamentName': '模拟现实联盟K-League 1 SRL', 'TeamName': 'Pohang Steelers SRLVsGangwon FC SRL',
+                    'betScore': '(4: 0) ', 'marketName': '大/小', 'outcomeName': '小2', 'oddsType': 1, 'odds': 2.42,
+                    'outcomeWinOrLoseName': '赢'
+                    }
+               ], 'betAmount': 100.0, 'profitAmount': -100.0, 'backwaterAmount': 0.0, 'resultAmount': 0.0
+                },
     { 'betTime': '2022-06-15 22: 26: 20', 'orderNo': 'YYYYYYYYSSSSS', 'sportName': '足球', 'outcomeList': [
             { 'tournamentName': '澳大利亚全国超级联赛,塔斯马尼亚', 'TeamName': 'Olympia Warriors HobartVs河岸奥林匹克', 'betScore': None, 'marketName': '双重机会&大/小', 'outcomeName': 'Olympia Warriors Hobart/河岸奥林匹克 & 大 3.5', 'oddsType': 1, 'odds': 2.06, 'outcomeWinOrLoseName': '输'
             }
         ], 'betAmount': 154.0, 'profitAmount': -154.0, 'backwaterAmount': 0.03, 'resultAmount': 0.03
-    }
+    },
+               {'betTime': '2022-06-16 23: 26: 42', 'orderNo': 'bbkkkkk', 'sportName': '足球', 'outcomeList': [
+                   {'tournamentName': '模拟现实联盟K-League 1 SRL', 'TeamName': 'Gimcheon Sangmu (Srl)VsSuwon FC (Srl)',
+                    'betScore': '(1: 0) ', 'marketName': '大/小', 'outcomeName': '大2.5/3', 'oddsType': 1, 'odds': 2.35,
+                    'outcomeWinOrLoseName': '输'
+                    }
+               ], 'betAmount': 100.0, 'profitAmount': -100.0, 'backwaterAmount': 0.0, 'resultAmount': 0.0
+                },
+
+               {'betTime': '2022-06-16 23: 26: 42', 'orderNo': 'bbkkkkk', 'sportName': '足球', 'outcomeList': [
+                   {'tournamentName': '模拟现实联盟K-League 1 SRL', 'TeamName': 'Pohang Steelers SRLVsGangwon FC SRL',
+                    'betScore': '(4: 0) ', 'marketName': '大/小', 'outcomeName': '小2', 'oddsType': 1, 'odds': 2.42,
+                    'outcomeWinOrLoseName': '赢'
+                    }
+               ], 'betAmount': 100.0, 'profitAmount': -100.0, 'backwaterAmount': 0.0, 'resultAmount': 0.0
+                },
+
+               {'betTime': '2022-06-16 23: 26: 42', 'orderNo': 'bbkkkkk', 'sportName': '足球', 'outcomeList': [
+                   {'tournamentName': '模拟现实联盟K-League 1 SRL', 'TeamName': 'Pohang Steelers SRLVsGangwon FC SRL',
+                    'betScore': '(4: 0) ', 'marketName': '大/小', 'outcomeName': '小2', 'oddsType': 1, 'odds': 2.42,
+                    'outcomeWinOrLoseName': '赢'
+                    }
+               ], 'betAmount': 100.0, 'profitAmount': -100.0, 'backwaterAmount': 0.0, 'resultAmount': 0.0
+                }
     ]
-
-
-
 
     orderNo_list=[]
     new_list=[]
@@ -511,6 +541,7 @@ def order_no():
     count_j = 1
     for i in range(0, len(yyds_list)):
         if i==count_i:
+            # print(i)
             orderNo_list = []
             new_list.append(yyds_list[i])
             for j in range(count_j, len(yyds_list)):
@@ -538,16 +569,16 @@ def order_no():
         else:
             continue
 
-    print(new_list)
-    print(len(new_list))
+    # print(new_list)
+    # print(len(new_list))
+
+order_no()
 
 
-
-
-yypp_list=match_id()
-print(len(yypp_list))
-f_count=0
-for pp in range(0,len(yypp_list)):
-    f_count=f_count+int(yypp_list[pp])
-print(f_count)
+# yypp_list=match_id()
+# print(len(yypp_list))
+# f_count=0
+# for pp in range(0,len(yypp_list)):
+#     f_count=f_count+int(yypp_list[pp])
+# print(f_count)
 
