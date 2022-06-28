@@ -982,13 +982,13 @@ if __name__ == "__main__":
 
     # yyds=bc.water()
     #总赔率计算
-    order_no_list=['XH4tF8z2kSWS','XH4tL4REXVDW','XH4ud8cbEa8M']
+    order_no_list=['XFB6TSaffb9U','XH4tL4REXVDW','XH4ud8cbEa8M']
 
 
     for i in order_no_list:
         # yyds=tt.market_id(order_no=i)
-        # yyds = bc.credit_odds(order_no=i, bet_type="", AB_list=AB_list, dict=dict)
-        yyds=bc.total_odds(order_no=i)
+        yyds = bc.credit_odds(order_no=i, bet_type="", AB_list=AB_list, dict=dict)
+        # yyds=bc.total_odds(order_no=i)
         # print(yyds)
 
 
