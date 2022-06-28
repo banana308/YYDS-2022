@@ -34,7 +34,7 @@ class betting_odds(object):
         self.dict=dict
 
 
-    def single_bet(self, credit_odds_list,order_no):
+    def single_bet(self, credit_odds_list,order_no,login_account):
         odds = credit_odds_list
         # win_amount = (int(odds[0]) * (bet_amount)) - bet_amount
         # backwater_amount = level3_retreat_proportion * bet_amount
@@ -42,10 +42,10 @@ class betting_odds(object):
 
         a=credit_odds_list[0]
         single_bet_odds=str(re.findall(r"\d{1,}?\.\d{2}",str(a))[0])
-        print(f"\033[34m注单：{order_no}，单注的总赔率：{single_bet_odds}\033[0m")
+        print(f"\033[34m登入账号{login_account}的注单：{order_no}，单注的总赔率：{single_bet_odds}\033[0m")
         return single_bet_odds
 
-    def stray_bet(self, credit_odds_list,order_no):
+    def stray_bet(self, credit_odds_list,order_no,login_account):
         stray_bet_list=['2_1_0','3_1_0','4_1_0','5_1_0','6_1_0','7_1_0','8_1_0','9_1_0','10_1_0','11_1_0','12_1_0','13_1_0']
         # 计算赔率
         odds = 1
@@ -53,7 +53,7 @@ class betting_odds(object):
             odds = odds*j
         if mix_num in stray_bet_list:
             odds=float(str(re.findall(r"\d{1,}?\.\d{2}",str(odds))[0]))
-            print(f"\033[35m注单：{order_no}，串关{len(credit_odds_list)}串1的总赔率为：{odds}\033[0m")
+            print(f"\033[35m登入账号{login_account}的注单：{order_no}，串关{len(credit_odds_list)}串1的总赔率为：{odds}\033[0m")
         return odds
 
 
@@ -253,7 +253,7 @@ class betting_odds(object):
         odds_2_15 = AB + BC + AC + CD + BD + AD + AE + BE + CE + DE + AF+ BF+ CF+ DF+ EF
         return odds_2_15
 
-    def Duplex_bet(self, credit_odds_list,AB_list,dict,order_no):
+    def Duplex_bet(self, credit_odds_list,AB_list,dict,order_no,login_account):
         yyds = {'复式串关': [3, {"3串4": [3_1_0, 2_3_0,3_4_1]}, {"4串11": [4_1_0, 3_4_0, 2_6_0,4_11_1]},{"5串26": [5_1_0, 4_5_0, 3_10_0, 2_10_0,5_26_1]}, {"6串57": [6_1_0, 5_6_0, 4_15_0, 3_20_0, 2_15_0,6_57_1]}]}
 
         Duplex_bet_odds=""
@@ -262,81 +262,79 @@ class betting_odds(object):
         if mix_num=='2_3_0':
             Duplex_bet_odds=self.Duplex_2_3(credit_odds_list=credit_odds_list, AB_list=AB_list, dict=dict, order_no=order_no)
             Duplex_bet_odds = float(str(re.findall(r"\d{1,}?\.\d{2}", str(Duplex_bet_odds))[0]))
-            print(f"\033[32m注单：{order_no}复式串关2串1*3的总赔率为：{Duplex_bet_odds}\033[0m")
+            print(f"\033[32m登入账号{login_account}的注单：{order_no}复式串关2串1*3的总赔率为：{Duplex_bet_odds}\033[0m")
         if mix_num==str('3_4_1'):
-            sum01=self.stray_bet(credit_odds_list=credit_odds_list,order_no=order_no)
+            sum01=self.stray_bet(credit_odds_list=credit_odds_list,order_no=order_no,login_account=login_account)
             sum02=self.Duplex_2_3(credit_odds_list=credit_odds_list,  AB_list=AB_list, dict=dict,order_no=order_no)
             Duplex_bet_odds=sum01+sum02
             Duplex_bet_odds = float(str(re.findall(r"\d{1,}?\.\d{2}", str(Duplex_bet_odds))[0]))
-            print(f"\033[34m注单：{order_no}复式串关{list(mix_num)[0]}串{list(mix_num)[2]}的总赔率为：{Duplex_bet_odds}\n\033[0m")
+            print(f"\033[34登入账号{login_account}的m注单：{order_no}复式串关{list(mix_num)[0]}串{list(mix_num)[2]}的总赔率为：{Duplex_bet_odds}\n\033[0m")
 
         # 4串11赔率结算：
         if mix_num == str('3_4_0'):
             Duplex_bet_odds=self.Duplex_3_4(credit_odds_list=credit_odds_list, AB_list=AB_list, dict=dict, order_no=order_no)
             Duplex_bet_odds = float(str(re.findall(r"\d{1,}?\.\d{2}", str(Duplex_bet_odds))[0]))
-            print(f"\033[32m注单：{order_no}复式串关3串1*4的总赔率为：{Duplex_bet_odds}\033[0m")
+            print(f"\033[32m登入账号{login_account}的注单：{order_no}复式串关3串1*4的总赔率为：{Duplex_bet_odds}\033[0m")
         if mix_num == str('2_6_0'):
             Duplex_bet_odds=self.Duplex_2_6(credit_odds_list=credit_odds_list, AB_list=AB_list, dict=dict, order_no=order_no)
             Duplex_bet_odds = float(str(re.findall(r"\d{1,}?\.\d{2}", str(Duplex_bet_odds))[0]))
-            print(f"\033[32m注单：{order_no}复式串关2串1*6的总赔率为：{Duplex_bet_odds}\033[0m")
+            print(f"\033[32m登入账号{login_account}的注单：{order_no}复式串关2串1*6的总赔率为：{Duplex_bet_odds}\033[0m")
         if mix_num == str('4_11_1'):
-            sum01 = self.stray_bet(credit_odds_list=credit_odds_list,order_no=order_no)
+            sum01 = self.stray_bet(credit_odds_list=credit_odds_list,order_no=order_no,login_account=login_account)
             sum02 = self.Duplex_3_4(credit_odds_list=credit_odds_list, AB_list=AB_list, dict=dict,order_no=order_no)
             sum03 = self.Duplex_2_6(credit_odds_list=credit_odds_list, AB_list=AB_list, dict=dict,order_no=order_no)
             Duplex_bet_odds = sum01 + sum02+sum03
             Duplex_bet_odds = float(str(re.findall(r"\d{1,}?\.\d{2}", str(Duplex_bet_odds))[0]))
-            print(f"\033[34m注单：{order_no}复式串关{list(mix_num)[0]}串{list(mix_num)[2]+list(mix_num)[3]}的总赔率为：{Duplex_bet_odds}\n\033[0m")
+            print(f"\033[34m登入账号{login_account}的注单：{order_no}复式串关{list(mix_num)[0]}串{list(mix_num)[2]+list(mix_num)[3]}的总赔率为：{Duplex_bet_odds}\n\033[0m")
 
         # 5串26赔率结算：
         if mix_num == str('4_5_0'):
             Duplex_bet_odds = self.Duplex_4_5(credit_odds_list=credit_odds_list, AB_list=AB_list, dict=dict, order_no=order_no)
             Duplex_bet_odds = float(str(re.findall(r"\d{1,}?\.\d{2}", str(Duplex_bet_odds))[0]))
-            print(f"\033[32m注单：{order_no}复式串关4串1*5的总赔率为：{Duplex_bet_odds}\033[0m")
+            print(f"\033[32m登入账号{login_account}的注单：{order_no}复式串关4串1*5的总赔率为：{Duplex_bet_odds}\033[0m")
         if mix_num == str('3_10_0'):
             Duplex_bet_odds = self.Duplex_3_10(credit_odds_list=credit_odds_list, AB_list=AB_list, dict=dict, order_no=order_no)
             Duplex_bet_odds = float(str(re.findall(r"\d{1,}?\.\d{2}", str(Duplex_bet_odds))[0]))
-            print(f"\033[32m注单：{order_no}复式串关3串1*10的总赔率为：{Duplex_bet_odds}\033[0m")
+            print(f"\033[32m登入账号{login_account}的注单：{order_no}复式串关3串1*10的总赔率为：{Duplex_bet_odds}\033[0m")
         if mix_num == str('2_10_0'):
             Duplex_bet_odds = self.Duplex_2_10(credit_odds_list=credit_odds_list, AB_list=AB_list, dict=dict, order_no=order_no)
             Duplex_bet_odds = float(str(re.findall(r"\d{1,}?\.\d{2}", str(Duplex_bet_odds))[0]))
-            print(f"\033[32m注单：{order_no}复式串关2串1*10的总赔率为：{Duplex_bet_odds}\033[0m")
+            print(f"\033[32m登入账号{login_account}的注单：{order_no}复式串关2串1*10的总赔率为：{Duplex_bet_odds}\033[0m")
         if mix_num == str('5_26_1'):
-            sum01 = self.stray_bet(credit_odds_list=credit_odds_list,order_no=order_no)
+            sum01 = self.stray_bet(credit_odds_list=credit_odds_list,order_no=order_no,login_account=login_account)
             sum02 = self.Duplex_4_5(credit_odds_list=credit_odds_list, AB_list=AB_list, dict=dict,order_no=order_no)
             sum03 = self.Duplex_3_10(credit_odds_list=credit_odds_list, AB_list=AB_list, dict=dict,order_no=order_no)
             sum04= self.Duplex_2_10(credit_odds_list=credit_odds_list, AB_list=AB_list, dict=dict,order_no=order_no)
             Duplex_bet_odds = sum01 + sum02+sum03+sum04
             Duplex_bet_odds = float(str(re.findall(r"\d{1,}?\.\d{2}", str(Duplex_bet_odds))[0]))
-            print(f"\033[34m注单：{order_no}复式串关{list(mix_num)[0]}串{list(mix_num)[2]+list(mix_num)[3]}的总赔率为：{Duplex_bet_odds}\n\033[0m")
-            print(sum01,sum02,sum03,sum04)
+            print(f"\033[34m登入账号{login_account}的注单：{order_no}复式串关{list(mix_num)[0]}串{list(mix_num)[2]+list(mix_num)[3]}的总赔率为：{Duplex_bet_odds}\n\033[0m")
 
         # 6串57赔率结算：
         if mix_num == str('5_6_0'):
             Duplex_bet_odds = self.Duplex_5_6(credit_odds_list=credit_odds_list, AB_list=AB_list, dict=dict, order_no=order_no)
             Duplex_bet_odds = float(str(re.findall(r"\d{1,}?\.\d{2}", str(Duplex_bet_odds))[0]))
-            print(f"\033[32m注单：{order_no}复式串关5串1*6的总赔率为：{Duplex_bet_odds}\033[0m")
+            print(f"\033[32m登入账号{login_account}的注单：{order_no}复式串关5串1*6的总赔率为：{Duplex_bet_odds}\033[0m")
         if mix_num == str('4_15_0'):
             Duplex_bet_odds = self.Duplex_4_15(credit_odds_list=credit_odds_list, AB_list=AB_list, dict=dict,order_no=order_no)
             Duplex_bet_odds = float(str(re.findall(r"\d{1,}?\.\d{2}", str(Duplex_bet_odds))[0]))
-            print(f"\033[32m注单：{order_no}复式串关4串1*15的总赔率为：{Duplex_bet_odds}\033[0m")
+            print(f"\033[32m登入账号{login_account}的注单：{order_no}复式串关4串1*15的总赔率为：{Duplex_bet_odds}\033[0m")
         if mix_num == str('3_20_0'):
             Duplex_bet_odds = self.Duplex_3_20(credit_odds_list=credit_odds_list, AB_list=AB_list, dict=dict,order_no=order_no)
             Duplex_bet_odds = float(str(re.findall(r"\d{1,}?\.\d{2}", str(Duplex_bet_odds))[0]))
-            print(f"\033[32m注单：{order_no}复式串关3串1*20的总赔率为：{Duplex_bet_odds}\033[0m")
+            print(f"\033[32m登入账号{login_account}的注单：{order_no}复式串关3串1*20的总赔率为：{Duplex_bet_odds}\033[0m")
         if mix_num == str('2_15_0'):
             Duplex_bet_odds = self.Duplex_2_15(credit_odds_list=credit_odds_list, AB_list=AB_list, dict=dict, order_no=order_no)
             Duplex_bet_odds = float(str(re.findall(r"\d{1,}?\.\d{2}", str(Duplex_bet_odds))[0]))
-            print(f"\033[32m注单：{order_no}复式串关2串1*15的总赔率为：{Duplex_bet_odds}\033[0m")
+            print(f"\033[32m登入账号{login_account}的注单：{order_no}复式串关2串1*15的总赔率为：{Duplex_bet_odds}\033[0m")
         if mix_num == str('6_57_1'):
-            sum01 = self.stray_bet(credit_odds_list=credit_odds_list,order_no=order_no)
+            sum01 = self.stray_bet(credit_odds_list=credit_odds_list,order_no=order_no,login_account=login_account)
             sum02 = self.Duplex_5_6(credit_odds_list=credit_odds_list, AB_list=AB_list, dict=dict,order_no=order_no)
             sum03 = self.Duplex_4_15(credit_odds_list=credit_odds_list, AB_list=AB_list, dict=dict,order_no=order_no)
             sum04 = self.Duplex_3_20(credit_odds_list=credit_odds_list, AB_list=AB_list, dict=dict,order_no=order_no)
             sum05 = self.Duplex_2_15(credit_odds_list=credit_odds_list, AB_list=AB_list, dict=dict,order_no=order_no)
             Duplex_bet_odds = sum01+sum02+sum03+sum04+sum05
             Duplex_bet_odds = float(str(re.findall(r"\d{1,}?\.\d{2}", str(Duplex_bet_odds))[0]))
-            print(f"\033[34m注单：{order_no}复式串关{list(mix_num)[0]}串{list(mix_num)[2]+list(mix_num)[3]}的总赔率为：{Duplex_bet_odds}\n\033[0m")
-            print(sum01,sum02,sum03,sum04,sum05)
+            print(f"\033[34m登入账号{login_account}的注单：{order_no}复式串关{list(mix_num)[0]}串{list(mix_num)[2]+list(mix_num)[3]}的总赔率为：{Duplex_bet_odds}\n\033[0m")
 
         return Duplex_bet_odds
 
@@ -386,7 +384,7 @@ class SQL_report_ods(BetController):
         return order_no_lsit
 
 
-    def bet_type(self,order_no,AB_list,dict,proxy3_id,status):
+    def bet_type(self,order_no,AB_list,dict,proxy3_id,status,):
         global bet_amount,level3_retreat_proportion
         """
         @判断注单的类型：bet_type:1(单注)，bet_type:2(串关)，bet_type:3(复式串关)
@@ -410,17 +408,20 @@ class SQL_report_ods(BetController):
         @根据注单类型查询其赔率
         @根据赔率进行计算
         """
-        sql01 = f"SELECT mix_num,bet_type FROM o_account_order WHERE order_no='{order_no}'"
+        sql01 = f"SELECT mix_num,bet_type,login_account FROM o_account_order WHERE order_no='{order_no}'"
         sum01 = self.my.query_data(sql01, db_name='bfty_credit')
 
 
         sql = f"SELECT credit_odds,odds_type FROM o_account_order_match  WHERE order_no='{order_no}'"
         sum = self.my.query_data(sql, db_name='bfty_credit')
 
+
+        #取得注单的赔率，欧盘保持原始赔率，香港盘原始赔率+1,顺便取得赔率类型
         credit_odds_list=[]
         yyds_ky=""
         mix_num=sum01[0][0]
         bet_type=sum01[0][1]
+        login_account=sum01[0][2]
         for i in range(0,len(sum)):
             if sum[i][-1]==1:
                 credit_odds_list.append(sum[i][0])
@@ -428,11 +429,41 @@ class SQL_report_ods(BetController):
                 sum_odds=(sum[i][0])+1
                 credit_odds_list.append(sum_odds)
         print(f"查询注单的盘赔率为：{credit_odds_list}")
-        yyds_ky=self.Calculate_odds(credit_odds_list=credit_odds_list,bet_type=bet_type,AB_list=AB_list,dict=dict,order_no=order_no)
+
+        yyds_ky=self.Calculate_odds(credit_odds_list=credit_odds_list,bet_type=bet_type,AB_list=AB_list,dict=dict,order_no=order_no,login_account=login_account)
 
         return yyds_ky
 
-    def Calculate_odds(self, credit_odds_list,bet_type,AB_list,dict,order_no):
+    def total_odds(self, order_no,number):
+        """
+        @根据注单类型查询其赔率类型
+        @根据赔率类型进行判断返回：欧盘、香港盘
+        """
+
+        sql = f"SELECT odds_type FROM o_account_order_match  WHERE order_no='{order_no}'"
+        sum = self.my.query_data(sql, db_name='bfty_credit')
+
+        # 取得注单的赔率，欧盘保持原始赔率，香港盘原始赔率+1,顺便取得赔率类型
+        total_odds_list = []
+        for i in range(0, len(sum)):
+            total_odds_list.append(sum[i][0])
+        # 取得赔率的赔率类型：
+        if '欧洲盘' in total_odds_list:
+            if number=='':
+                type_odds = '欧盘'
+            else:
+                type_odds = 1
+        else:
+            if number=='':
+                type_odds = '港盘'
+            else:
+                type_odds = 2
+
+        print(f"查询注单的赔率类型为：{type_odds}")
+
+        return type_odds
+
+    def Calculate_odds(self, credit_odds_list,bet_type,AB_list,dict,order_no,login_account):
         """
         @根据注单类型判断其类型，1为单注，2为串关，3为复式串关
         @根据其类型赔率进行计算
@@ -441,12 +472,17 @@ class SQL_report_ods(BetController):
         bet_type_dict={'单注':[1,1_1_0],'串关':[2,2_1_0],
                        '复式串关':[3,{"3串4":[3_1_0,2_3_0]},{"4串11":[4_1_0,3_4_0,2_6_0]},{"5串26":[5_1_0,4_5_0,3_10_0,2_10_0]},{"6串57":[6_1_0,5_6_0,4_15_0,3_20_0,2_15_0]}]}
         if bet_type==1:
-            odd=self.ce.single_bet(credit_odds_list=credit_odds_list,order_no=order_no)
+            odd=self.ce.single_bet(credit_odds_list=credit_odds_list,order_no=order_no,login_account=login_account)
         elif bet_type==2:
-            odd=self.ce.stray_bet(credit_odds_list=credit_odds_list,order_no=order_no)
+            odd=self.ce.stray_bet(credit_odds_list=credit_odds_list,order_no=order_no,login_account=login_account)
         else:
-            odd=self.ce.Duplex_bet(credit_odds_list=credit_odds_list,AB_list=AB_list, dict=dict,order_no=order_no)
+            odd=self.ce.Duplex_bet(credit_odds_list=credit_odds_list,AB_list=AB_list, dict=dict,order_no=order_no,login_account=login_account)
         return odd
+
+
+
+
+
 
 
 
@@ -951,7 +987,8 @@ if __name__ == "__main__":
 
     for i in order_no_list:
         # yyds=tt.market_id(order_no=i)
-        yyds = bc.credit_odds(order_no=i, bet_type="", AB_list=AB_list, dict=dict)
+        # yyds = bc.credit_odds(order_no=i, bet_type="", AB_list=AB_list, dict=dict)
+        yyds=bc.total_odds(order_no=i)
         # print(yyds)
 
 

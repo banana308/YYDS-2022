@@ -74,28 +74,35 @@
 #
 # www(agent_id='',member_id='',sportId='',marketId='',tournamentId='',matchId='sr:match:33725427')
 
-sportId_sql_list=[]
-sport_num_sql_list=[]
-sort_num=[(('1531516017847869442', '0'),), (('1531517033355976705', '1'),), (('1531517351158390786', '2'),), (('1531517760300163074', '3'),)]
-
-for sportId in sort_num:
-    sportId_sql_list.append(sportId[0][0])
-    sport_num_sql_list.append(sportId[0][1])
-print(sportId_sql_list)
-print(sport_num_sql_list)
-
-
-
-del sportId_sql_list[0:2]
-print(sportId_sql_list)
-
-
+# sportId_sql_list=[]
+# sport_num_sql_list=[]
+# sort_num=[(('1531516017847869442', '0'),), (('1531517033355976705', '1'),), (('1531517351158390786', '2'),), (('1531517760300163074', '3'),)]
+#
+# for sportId in sort_num:
+#     sportId_sql_list.append(sportId[0][0])
+#     sport_num_sql_list.append(sportId[0][1])
+# print(sportId_sql_list)
+# print(sport_num_sql_list)
+#
+#
+#
+# del sportId_sql_list[0:2]
+# print(sportId_sql_list)
 
 
 
 
 
+yyrt_list=[]
+ppt=(('d0d1d2d30v/fceshi021', "Decimal('10.00')", '192.168.10.120', '局域网', '未结算', 2, "datetime.datetime(2022, 6, 15, 2, 35, 57)", "Decimal('0.20')", "Decimal('0.0000')", "Decimal('0.20')", "Decimal('0.0000')", "Decimal('0.20')", "Decimal('0.0000')", "Decimal('0.20')", "Decimal('0.0000')", "Decimal('0.20')", "Decimal('0.0000')", '杜鑫test账号av', 'options', 'XFBaaCfa4EEt', '足球'),)
+yyd=(("Decimal('20.00')",),)
 
+yyrt_list.append(ppt[0])
+print(yyrt_list)
+ggg = yyrt_list[0] + yyd[0]
+
+print(type(yyrt_list[0]))
+print(type(yyd[0]))
 
 
 

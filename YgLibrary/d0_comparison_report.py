@@ -82,7 +82,7 @@ class report_data(object):
         time01 = datetime.datetime.strptime(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),'%Y-%m-%d %H:%M:%S')
 
         #循环Excel所有表
-        for gg in range(0,1):
+        for gg in range(2,3):
             gg = shenames[gg]
         # for gg in shenames:
             # 获取该表相应的行数和列数
@@ -101,8 +101,8 @@ class report_data(object):
             content_A2 = worksheet.cell(2, 1).value
             if content_A2!=None:
                 # 循环行数
-                for i in range(2, 4):
-                # for i in range(2, rows+1):
+                # for i in range(4, 6):
+                for i in range(2, rows+1):
                     excel_report = []
                     # 循环列数
                     for j in range(2, int(columns)-2):
@@ -116,7 +116,7 @@ class report_data(object):
                     if sport_error==[]:
                         execute=execute+1
                         worksheet.cell(i,int(columns)-4,("测试通过"+"\n"+now))
-                        worksheet.cell(i, int(columns) - 3, "")
+                        worksheet.cell(i, int(columns)-3, "")
                         worksheet.cell(i, int(columns)-2, "")
                         worksheet.cell(i, int(columns-1), str(Prepare_enough_list))
                     else:
@@ -493,8 +493,9 @@ class BetController(object):
             yyds_list = []
             for key, value in sport_list[0].items():
                 yyds_list.append(key)
-            for i in range(0, len(sql_list)):
+            for i in range(0, len(sport_list)):
                 for j in range(0, len(sql_list)):
+                    print(sport_list[i][Compared],sql_list[j][Compared])
                     if sport_list[i][Compared] == sql_list[j][Compared]:
                         if sport_list[i] == sql_list[j]:
                             correct_list.append(sql_list[j])
@@ -524,7 +525,7 @@ class BetController(object):
             yyds_list = []
             for key, value in sport_list[0].items():
                 yyds_list.append(key)
-            for i in range(0, len(sql_list)):
+            for i in range(0, len(sport_list)):
                 for j in range(0, len(sql_list)):
                     ppxt_lsit =Compared.split(",")
                     if sport_list[i][ppxt_lsit[0]] == sql_list[j][ppxt_lsit[0]]:
@@ -756,17 +757,14 @@ class BetController(object):
                                 sort_num02 = self.my.query_data(sql02, db_name='bfty_credit')
                                 sort_num03 = self.my.query_data(sql03, db_name='bfty_credit')
                                 #拼接元祖参数
-                                # print(sort_num)
-                                # print(sort_num01)
-                                # print(sort_num02)
-                                # print(sort_num03)
-                                # print("拼接打印sort_num[0]：", sort_num[0])
+                                print(sort_num)
+                                print(sort_num01)
+                                print(sort_num02)
+                                print(sort_num03)
+                                print("拼接打印sort_num[0]：", sort_num[0])
                                 yyrt_list.append(sort_num02[0])
-                                ggg=yyrt_list[0]+sort_num[0]
-                                # print(ggg)
+                                ggg = yyrt_list[0] + sort_num[0]
                                 yyrt_list[0]=ggg
-                                # print(yyrt_list)
-                                # print("拼接打印yyrt_list：",yyrt_list)
 
                                 #单独获取options列表的数据，然后组装回去
                                 aa_list = []
@@ -791,8 +789,8 @@ class BetController(object):
                                 # print(options_list)
                                 num_list.append(yyrt_list)
                                 # print(num_list)
-                                mix_number.append("2-1")
-                                sort_num = num_list
+                            mix_number.append("2-1")
+                            sort_num = num_list
         else:
             sql011=self.if_f(BBQ=yyds[0],all=all,num=num,all_order_no=all_order_no,begin=begin,end=end)
             sort_num = self.my.query_data(sql011, db_name='bfty_credit')
@@ -815,13 +813,14 @@ class BetController(object):
                             sort_num = ''
                             num=int(sport_num_sql_list[sportId_sql_list.index(all)])
                             if num==0:
-                               continue
-                            sql = self.if_f(BBQ=eval(yyds[0]),all=all,num=num,all_order_no=all_order_no,begin=begin,end=end)
-                            sort_num = self.my.query_data(sql, db_name='bfty_credit')
-                            num_list.append(sort_num)
-                            # if num==0:
-                            #     num_list.clear()
-                            mix_number.append("2-1")
+                                continue
+                            else:
+                                sql = self.if_f(BBQ=eval(yyds[0]),all=all,num=num,all_order_no=all_order_no,begin=begin,end=end)
+                                sort_num = self.my.query_data(sql, db_name='bfty_credit')
+                                num_list.append(sort_num)
+                                # if num==0:
+                                #     num_list.clear()
+                                mix_number.append("2-1")
                     else:
                         sql01 = self.if_f(BBQ=yyds[0],all=all,num=num,all_order_no=all_order_no,begin=begin,end=end)
                         sql02 = self.if_f(BBQ=yyds[1],all=all,num=num,all_order_no=all_order_no,begin=begin,end=end)
@@ -859,8 +858,8 @@ class BetController(object):
         else:
             print(mix[0])
         print(sql_name_list)
-        print(sort_num[0])
         if mix[0]==str('1-1'):
+            print(sort_num[0])
             print(len(sql_name_list), len(sort_num[0]))
             # print(sort_num)
             # print(sort_num[0])
@@ -870,6 +869,8 @@ class BetController(object):
                     if str(type(sort_num[i][j])) in type_list:
                         if sort_num[i][j]=="odds":
                             yy_num =self.sr.credit_odds(order_no=sort_num[i][j+1],bet_type="",AB_list=AB_list,dict=dict)
+                        elif sql_name_list[j]=="oddType":
+                            yy_num = self.sr.total_odds(order_no=sort_num[i][j+1],number='')
                         elif sql_name_list[j] in int_list:
                             if sql_name_list[j]=="levelId":
                                 yy_num = int(sort_num[i][j])+1
@@ -900,7 +901,11 @@ class BetController(object):
             print(sport_list[1])
             print(sql_list[1])
         if mix[0]==str('2-1'):
+            print(sort_num[0][0])
             print(len(sql_name_list), len(sort_num[0][0]))
+            print(sql_name_list)
+            print(sort_num)
+            print(len(sport_list),len(sort_num[0]))
             # print(sort_num)
             # print(sort_num[0])
             # print(sort_num[0][0])
@@ -912,6 +917,9 @@ class BetController(object):
                         if str(type(sort_num[i][j][g]))in type_list:
                             if sql_name_list[g] in int_list:
                                 if excel_report[0]=="盈亏详情-登0-登3-会员-查看订单详情-子查询":
+                                    print(sort_num[i][j][g])
+                                    print(i,j,g)
+                                    print(sql_name_list[g])
                                     yy_num = str(sort_num[i][j][g])
                                 else:
                                     yy_num = int(sort_num[i][j][g])
@@ -945,6 +953,7 @@ class BetController(object):
             print(sql_list[1])
             print(len(sport_list[1]),len(sql_list[1]))
         if mix[0]==str('2-2'):
+            print(sort_num[0][0][0])
             print(len(sql_name_list), len(sort_num[0][0][0]))
             # print(sort_num)
             # print(sort_num[0])
