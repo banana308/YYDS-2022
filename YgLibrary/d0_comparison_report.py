@@ -31,6 +31,7 @@ from concurrent.futures import ThreadPoolExecutor
 import openpyxl
 
 from Computational_N_N import SQL_report_ods,betting_odds,water_ammount
+from Get_excel_path import owner_backer_path
 
 
 
@@ -82,7 +83,7 @@ class report_data(object):
         time01 = datetime.datetime.strptime(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),'%Y-%m-%d %H:%M:%S')
 
         #循环Excel所有表
-        for gg in range(0,3):
+        for gg in range(0,1):
             gg = shenames[gg]
         # for gg in shenames:
             # 获取该表相应的行数和列数
@@ -101,8 +102,8 @@ class report_data(object):
             content_A2 = worksheet.cell(2, 1).value
             if content_A2!=None:
                 # 循环行数
-                # for i in range(4, 6):
-                for i in range(2, rows+1):
+                for i in range(2, 4):
+                # for i in range(2, rows+1):
                     excel_report = []
                     # 循环列数
                     for j in range(2, int(columns)-2):
@@ -1070,7 +1071,7 @@ if __name__ == "__main__":
         # 参数化代理账号数据列表
         Dl_list=["d0","d10","d2","d3"]
         # 参数化EXCEL路径列表
-        excel = [r"C:\test\d0_comparison_report.xlsx",0]
+        excel = [r"C:\\test\\d0_comparison_report.xlsx", 0]
         save_excel = ["C:\\test\\d0_comparison_report.xlsx"]
         # 参数化接口返回数据，字典取值判断list，在list中，取results['data'],不在列表中，取results['data']['data']
         module_list = ["总投注-混合串关-主查询","总投注-混合串关-子查询(查询其注单号，包含的比赛)",
