@@ -450,12 +450,12 @@ class SQL_report_ods(BetController):
         # 取得赔率的赔率类型：
         if '欧洲盘' in total_odds_list:
             if number=='':
-                type_odds = '欧盘'
+                type_odds = '欧赔'
             else:
                 type_odds = 1
         else:
             if number=='':
-                type_odds = '港盘'
+                type_odds = '港赔'
             else:
                 type_odds = 2
 
@@ -687,7 +687,7 @@ class water_ammount(BetController):
         if qq_id == []:
             pass
         else:
-            sql00 = f"SELECT id as '会员ID' FROM u_user as c WHERE account='{member_id}'"
+            sql00 = f"SELECT id as '会员ID' FROM u_user as c WHERE login_account='{member_id}'"
             sum00 = self.my.query_data(sql00, db_name='bfty_credit')
             member_id = sum00[0][0]
 
@@ -732,13 +732,15 @@ class water_ammount(BetController):
                 print(f"\033[34m登{num}-{agent_id}的总佣金为{sum02}\033[0m")
             elif total_list[0]=='member_id':
                 # 根据会员ID，进行参数替换：
-                num = 4
+                num=4
+                num_new=3
                 if Duplex=='':
-                    sql02 = f"SELECT {water_SQL_list[num]} as '总佣金',any_value(c.login_account) as '登入账号' FROM o_account_order as c WHERE {proxy_id_list[num]}='{member_id}' AND c.settlement_time>='{begin}' AND c.settlement_time<='{end}'"
+                    sql02 = f"SELECT {water_SQL_list[num_new]} as '总佣金',any_value(c.login_account) as '登入账号' FROM o_account_order as c WHERE {proxy_id_list[num]}='{member_id}' AND c.settlement_time>='{begin}' AND c.settlement_time<='{end}'"
                 else:
                     bet_type = bet_type_list[1]
-                    sql02 = f"SELECT {water_SQL_list[num]} as '总佣金',any_value(c.login_account) as '登入账号' FROM o_account_order as c WHERE {proxy_id_list[num]}='{member_id}' AND c.settlement_time>='{begin}' AND c.settlement_time<='{end}' AND c.bet_type{bet_type}1"
+                    sql02 = f"SELECT {water_SQL_list[num_new]} as '总佣金',any_value(c.login_account) as '登入账号' FROM o_account_order as c WHERE {proxy_id_list[num]}='{member_id}' AND c.settlement_time>='{begin}' AND c.settlement_time<='{end}' AND c.bet_type{bet_type}1"
                 sum02 = self.my.query_data(sql02, db_name='bfty_credit')
+                print(sql02)
                 username = (sum02[0][1])
                 sum02 = float(sum02[0][0])
                 print(f"\033[34m会员{username}-{member_id}的总佣金为{sum02}\033[0m")
@@ -982,20 +984,25 @@ if __name__ == "__main__":
 
     # yyds=bc.water()
     #总赔率计算
-    order_no_list=['XFB6TSaffb9U','XH4tL4REXVDW','XH4ud8cbEa8M']
-
-
-    for i in order_no_list:
-        # yyds=tt.market_id(order_no=i)
-        yyds = bc.credit_odds(order_no=i, bet_type="", AB_list=AB_list, dict=dict)
-        # yyds=bc.total_odds(order_no=i)
-        # print(yyds)
+    # order_no_list=['XFB6TSaffb9U','XH4tL4REXVDW','XH4ud8cbEa8M']
+    #
+    # for i in order_no_list:
+    #     # yyds=tt.market_id(order_no=i)
+    #     yyds = bc.credit_odds(order_no=i, bet_type="", AB_list=AB_list, dict=dict)
+    #     # yyds=bc.total_odds(order_no=i)
+    #     # print(yyds)
 
 
     #总佣金和公司输赢计算
     login_account = "d0"
+    begin="2022-06-22 00:00:00"
+    end="2022-06-28 23:59:59"
     agent_id_list=['1531516017847869442','1531517033355976705','1531517351158390786','1531517760300163074']
-    member_id_list=['1531522809348792321','1531519190650101761','1531521709191241729']
+    member_id_list=['fceshi04','fceshi056','fceshi0126','fceshi0190','fceshi0223','fceshi0280','fceshi0315','fceshi0362','fceshi0418','fceshi0444','fceshi0480','fceshi0551','fceshi0572','fceshi0623','fceshi0661','fceshi0735']
+
+    for member_id in member_id_list:
+        yy_num = tt.total_commission(agent_id='', member_id=member_id, sportId='', marketId='',tournamentId='', matchId='', login_account=login_account, begin=begin, end=end, Duplex='')
+
     # for agent_id in range(len(agent_id_list)+len(member_id_list)):
     #     if agent_id<=len(agent_id_list)-1:
     #         yyds=tt.total_commission(agent_id=agent_id_list[agent_id],member_id='',sportId='',marketId='',tournamentId='',matchId='',login_account=login_account)
