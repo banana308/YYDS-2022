@@ -93,18 +93,16 @@
 
 
 
-yyrt_list=[]
-ppt=(('d0d1d2d30v/fceshi021', "Decimal('10.00')", '192.168.10.120', '局域网', '未结算', 2, "datetime.datetime(2022, 6, 15, 2, 35, 57)", "Decimal('0.20')", "Decimal('0.0000')", "Decimal('0.20')", "Decimal('0.0000')", "Decimal('0.20')", "Decimal('0.0000')", "Decimal('0.20')", "Decimal('0.0000')", "Decimal('0.20')", "Decimal('0.0000')", '杜鑫test账号av', 'options', 'XFBaaCfa4EEt', '足球'),)
-yyd=(("Decimal('20.00')",),)
-
-yyrt_list.append(ppt[0])
-print(yyrt_list)
-ggg = yyrt_list[0] + yyd[0]
-
-print(type(yyrt_list[0]))
-print(type(yyd[0]))
-
-
+# yyrt_list=[]
+# ppt=(('d0d1d2d30v/fceshi021', "Decimal('10.00')", '192.168.10.120', '局域网', '未结算', 2, "datetime.datetime(2022, 6, 15, 2, 35, 57)", "Decimal('0.20')", "Decimal('0.0000')", "Decimal('0.20')", "Decimal('0.0000')", "Decimal('0.20')", "Decimal('0.0000')", "Decimal('0.20')", "Decimal('0.0000')", "Decimal('0.20')", "Decimal('0.0000')", '杜鑫test账号av', 'options', 'XFBaaCfa4EEt', '足球'),)
+# yyd=(("Decimal('20.00')",),)
+#
+# yyrt_list.append(ppt[0])
+# print(yyrt_list)
+# ggg = yyrt_list[0] + yyd[0]
+#
+# print(type(yyrt_list[0]))
+# print(type(yyd[0]))
 
 
 
@@ -124,78 +122,74 @@ print(type(yyd[0]))
 
 
 
-def order_no():
-    yyds_list=[{ 'betTime': '2022-06-16 23: 26: 42', 'orderNo': 'XFTztEQGVk9k', 'sportName': '足球', 'outcomeList': [
-            { 'tournamentName': '模拟现实联盟K-League 1 SRL', 'TeamName': 'Gimcheon Sangmu (Srl)VsSuwon FC (Srl)', 'betScore': '(1: 0) ', 'marketName': '大/小', 'outcomeName': '大2.5/3', 'oddsType': 1, 'odds': 2.35, 'outcomeWinOrLoseName': '输'
-            }
-        ], 'betAmount': 100.0, 'profitAmount': -100.0, 'backwaterAmount': 0.0, 'resultAmount': 0.0
-    },
-    { 'betTime': '2022-06-16 23: 26: 42', 'orderNo': 'XFTztEQGVk9k', 'sportName': '足球', 'outcomeList': [
-            { 'tournamentName': '模拟现实联盟K-League 1 SRL', 'TeamName': 'Pohang Steelers SRLVsGangwon FC SRL', 'betScore': '(4: 0) ', 'marketName': '大/小', 'outcomeName': '小2', 'oddsType': 1, 'odds': 2.42, 'outcomeWinOrLoseName': '赢'
-            }
-        ], 'betAmount': 100.0, 'profitAmount': -100.0, 'backwaterAmount': 0.0, 'resultAmount': 0.0
-    },
-               {'betTime': '2022-06-16 23: 26: 42', 'orderNo': 'XFTztEQGVk9k', 'sportName': '足球', 'outcomeList': [
-                   {'tournamentName': '模拟现实联盟K-League 1 SRL', 'TeamName': 'Pohang Steelers SRLVsGangwon FC SRL',
-                    'betScore': '(4: 0) ', 'marketName': '大/小', 'outcomeName': '小2', 'oddsType': 1, 'odds': 2.42,
-                    'outcomeWinOrLoseName': '赢'
-                    }
-               ], 'betAmount': 100.0, 'profitAmount': -100.0, 'backwaterAmount': 0.0, 'resultAmount': 0.0
-                },
-    { 'betTime': '2022-06-15 22: 26: 20', 'orderNo': 'YYYYYYYYSSSSS', 'sportName': '足球', 'outcomeList': [
-            { 'tournamentName': '澳大利亚全国超级联赛,塔斯马尼亚', 'TeamName': 'Olympia Warriors HobartVs河岸奥林匹克', 'betScore': None, 'marketName': '双重机会&大/小', 'outcomeName': 'Olympia Warriors Hobart/河岸奥林匹克 & 大 3.5', 'oddsType': 1, 'odds': 2.06, 'outcomeWinOrLoseName': '输'
-            }
-        ], 'betAmount': 154.0, 'profitAmount': -154.0, 'backwaterAmount': 0.03, 'resultAmount': 0.03
-    },
-               {'betTime': '2022-06-16 23: 26: 42', 'orderNo': 'bbkkkkk', 'sportName': '足球', 'outcomeList': [
-                   {'tournamentName': '模拟现实联盟K-League 1 SRL', 'TeamName': 'Gimcheon Sangmu (Srl)VsSuwon FC (Srl)',
-                    'betScore': '(1: 0) ', 'marketName': '大/小', 'outcomeName': '大2.5/3', 'oddsType': 1, 'odds': 2.35,
-                    'outcomeWinOrLoseName': '输'
-                    }
-               ], 'betAmount': 100.0, 'profitAmount': -100.0, 'backwaterAmount': 0.0, 'resultAmount': 0.0
-                },
 
-               {'betTime': '2022-06-16 23: 26: 42', 'orderNo': 'bbkkkkk', 'sportName': '足球', 'outcomeList': [
-                   {'tournamentName': '模拟现实联盟K-League 1 SRL', 'TeamName': 'Pohang Steelers SRLVsGangwon FC SRL',
-                    'betScore': '(4: 0) ', 'marketName': '大/小', 'outcomeName': '小2', 'oddsType': 1, 'odds': 2.42,
-                    'outcomeWinOrLoseName': '赢'
-                    }
-               ], 'betAmount': 100.0, 'profitAmount': -100.0, 'backwaterAmount': 0.0, 'resultAmount': 0.0
-                },
 
-               {'betTime': '2022-06-16 23: 26: 42', 'orderNo': 'bbkkkkk', 'sportName': '足球', 'outcomeList': [
-                   {'tournamentName': '模拟现实联盟K-League 1 SRL', 'TeamName': 'Pohang Steelers SRLVsGangwon FC SRL',
-                    'betScore': '(4: 0) ', 'marketName': '大/小', 'outcomeName': '小2', 'oddsType': 1, 'odds': 2.42,
-                    'outcomeWinOrLoseName': '赢'
-                    }
-               ], 'betAmount': 100.0, 'profitAmount': -100.0, 'backwaterAmount': 0.0, 'resultAmount': 0.0
-                },
-               {'betTime': '2022-06-15 22: 26: 20', 'orderNo': '666666666666666', 'sportName': '足球', 'outcomeList': [
-                   {'tournamentName': '澳大利亚全国超级联赛,塔斯马尼亚', 'TeamName': 'Olympia Warriors HobartVs河岸奥林匹克',
-                    'betScore': None, 'marketName': '双重机会&大/小', 'outcomeName': 'Olympia Warriors Hobart/河岸奥林匹克 & 大 3.5',
-                    'oddsType': 1, 'odds': 2.06, 'outcomeWinOrLoseName': '输'}], 'betAmount': 154.0,
-                'profitAmount': -154.0, 'backwaterAmount': 0.03, 'resultAmount': 0.03},
-               {'betTime': '2022-06-15 22: 26: 20', 'orderNo': '7777777777', 'sportName': '足球', 'outcomeList': [
-                   {'tournamentName': '澳大利亚全国超级联赛,塔斯马尼亚', 'TeamName': 'Olympia Warriors HobartVs河岸奥林匹克',
-                    'betScore': None, 'marketName': '双重机会&大/小', 'outcomeName': 'Olympia Warriors Hobart/河岸奥林匹克 & 大 3.5',
-                    'oddsType': 1, 'odds': 2.06, 'outcomeWinOrLoseName': '输'}], 'betAmount': 154.0,
-                'profitAmount': -154.0, 'backwaterAmount': 0.03, 'resultAmount': 0.03},
-               {'betTime': '2022-06-15 22: 26: 20', 'orderNo': '9999', 'sportName': '足球', 'outcomeList': [
-                   {'tournamentName': '澳大利亚全国超级联赛,塔斯马尼亚', 'TeamName': 'Olympia Warriors HobartVs河岸奥林匹克',
-                    'betScore': None, 'marketName': '双重机会&大/小', 'outcomeName': 'Olympia Warriors Hobart/河岸奥林匹克 & 大 3.5',
-                    'oddsType': 1, 'odds': 2.06, 'outcomeWinOrLoseName': '输'}], 'betAmount': 154.0,
-                'profitAmount': -154.0, 'backwaterAmount': 0.03, 'resultAmount': 0.03},
-               {'betTime': '2022-06-15 22: 26: 20', 'orderNo': '9999', 'sportName': '足球', 'outcomeList': [
-                   {'tournamentName': '澳大利亚全国超级联赛,塔斯马尼亚', 'TeamName': 'Olympia Warriors HobartVs河岸奥林匹克',
-                    'betScore': None, 'marketName': '双重机会&大/小', 'outcomeName': 'Olympia Warriors Hobart/河岸奥林匹克 & 大 3.5',
-                    'oddsType': 1, 'odds': 2.06, 'outcomeWinOrLoseName': '输'}], 'betAmount': 154.0,
-                'profitAmount': -154.0, 'backwaterAmount': 0.03, 'resultAmount': 0.03},
-               {'betTime': '2022-06-15 22: 26: 20', 'orderNo': '1010', 'sportName': '足球', 'outcomeList': [
-                   {'tournamentName': '澳大利亚全国超级联赛,塔斯马尼亚', 'TeamName': 'Olympia Warriors HobartVs河岸奥林匹克',
-                    'betScore': None, 'marketName': '双重机会&大/小', 'outcomeName': 'Olympia Warriors Hobart/河岸奥林匹克 & 大 3.5',
-                    'oddsType': 1, 'odds': 2.06, 'outcomeWinOrLoseName': '输'}], 'betAmount': 154.0,
-                'profitAmount': -154.0, 'backwaterAmount': 0.03, 'resultAmount': 0.03}
-               ]
+# def order_no():
+#     yyds_list=(('KPV科科拉', None, '图尔库', '上半场 - KPV科科拉 大/小', "datetime.datetime(2022, 6, 18, 8, 0)", '早盘', "Decimal('1.800'), 2, 'XFBaaCfa4EEt', '大0.5', 'total=0.5', '芬兰甲级联赛'), ('里本泰德', None, 'CA Paranaense PR', '双重机会', datetime.datetime(2022, 6, 28, 20, 30), '早盘', Decimal('2.040')", 1, 'XFBaaCfa4EEt', '和局或 里本泰德', '', '国际俱乐部解放者杯'), ('卢旺达爱国军', None, '警察(卢旺达)', '卢旺达爱国军 胜利退款', "datetime.datetime(2022, 6, 16, 9, 0)", '早盘', "Decimal('3.000')", 1, 'XFBaaCfa4EEt', '警察(卢旺达)', '', '卢旺达国家足球联赛'), ('Future FC', None, 'Enppi Club', '总入球', "datetime.datetime(2022, 6, 18, 13, 0)", '早盘', "Decimal('1.970')", 1, 'XFBaaCfa4EEt', '2-3', 'variant=sr:goal_range:7+', '埃及足球甲级联赛'), ('罗沙里奧中央', None, '沙士菲', '上半场 - 两队都进球', "datetime.datetime(2022, 6, 20, 18, 0)", '早盘', "Decimal('4.550')", 1, 'XFMvmSzEyMM9', '是', '', '阿根廷足球甲级联赛'), ('水原三星', None, 'Jeonbuk Hyundai Motors', '独赢 & 大/小', "datetime.datetime(2022, 6, 22, 6, 0)", '早盘', "Decimal('3.950')", 1, 'XFMvmSzEyMM9', '全北现代 & 小 2.5', 'total=2.5', '韩国K1联赛'), ('卡皮拉', None, '努尔米耶尔维', '上半场 - 大/小', "datetime.datetime(2022, 6, 18, 11, 0)", '早盘', "Decimal('2.310')", 1, 'XFMvmSzEyMM9', '大1.5', 'total=1.5', '芬兰乙级联赛，A组'), ('绿色古利', None, '南墨尔本', '南墨尔本 胜利退款', "datetime.datetime(2022, 6, 24, 5, 30)", '早盘', "Decimal('1.660')", 1, 'XFMvM9hrnt25', '和局', '', '澳大利亚全国超级联赛,维多利亚'), ('Nomme Kalju FC', None, '塔林弗罗拉', '上半场 - Nomme Kalju FC 不失球', "datetime.datetime(2022, 6, 19, 10, 15)", '早盘', "Decimal('1.540')", 1, 'XFMvM9hrnt25', '不是', '', '爱沙尼亚足球甲级联赛'), ('艾尔古纳', None, '马斯里足球俱乐部', '马斯里足球俱乐部 大/小', "datetime.datetime(2022, 6, 18, 13, 0)", '早盘', "Decimal('2.190')", 1, 'XFMvM9hrnt25', '大1.5', 'total=1.5', '埃及足球甲级联赛'), ('Orgryte IS', None, 'Jonkopings Sodra IF', 'Jonkopings Sodra IF 最高进球数半场', "datetime.datetime(2022, 6, 28, 13, 0)", '早盘', "Decimal('3.450')", 1, 'XFMvQKQsUhG5', '上半场', '', '瑞典超甲级联赛'))
+#
+#     orderNo_list=[]
+#     new_list=[]
+#     count_i = 0
+#     count_j = 1
+#     count=0
+#     for i in range(0, len(yyds_list)):
+#         print("i循环:",i,count_i)
+#         if i==count_i:
+#             orderNo_list = []
+#             # if i==len(yyds_list)-1:
+#             new_list.append(yyds_list[i])
+#             for j in range(count_j, len(yyds_list)):
+#                 print("j循环:",j,count_j)
+#                 if j == count_j:
+#                     if yyds_list[i]['orderNo']==yyds_list[j]['orderNo']:
+#                         print(yyds_list[i]['orderNo'],yyds_list[j]['orderNo'])
+#                         orderNo_list.append(yyds_list[i]['outcomeList'][0])
+#                         orderNo_list.append(yyds_list[j]['outcomeList'][0])
+#                         count_j = count_j + 1
+#                         count_i = count_i + 1
+#                         if j==len(yyds_list) - 1:
+#                             new_list[-1]['outcomeList'] = orderNo_list
+#                             print(f"第{count}次,{count_i},{count_j}")
+#                         else:
+#                             for k in range(count_j,len(yyds_list)):
+#                                 print(yyds_list[i]['orderNo'],yyds_list[k]['orderNo'])
+#                                 if yyds_list[i]['orderNo'] == yyds_list[k]['orderNo']:
+#                                     if k == len(yyds_list) - 1:
+#                                         count = count + 1
+#                                         count_j = count_j + 1
+#                                         count_i = count_i + 1
+#                                         new_list[-1]['outcomeList'] = orderNo_list
+#                                         print(f"第{count}次,{count_i},{count_j}")
+#                                     else:
+#                                         orderNo_list.append(yyds_list[k]['outcomeList'][0])
+#                                         count_j = count_j + 1
+#                                         count_i = count_i + 1
+#                                 else:
+#                                     new_list[-1]['outcomeList']=orderNo_list
+#                                     count_j = count_j + 1
+#                                     count_i = count_i + 1
+#                                     count = count + 1
+#                                     print(f"第{count}次,{count_i},{count_j}")
+#                                     break
+#                     else:
+#                         count_i = count_i + 1
+#                         count_j = count_j + 1
+#                         count=count+1
+#                         break
+#                 else:
+#                     break
+#         else:
+#             continue
+#
+#     print(new_list)
+#     print(len(new_list))
+
+
+
+
+
+def order_no_new(yyds_list):
+    yyds_list=(('KPV科科拉', None, '图尔库', '上半场 - KPV科科拉 大/小', "datetime.datetime(2022, 6, 18, 8, 0)", '早盘', "Decimal('1.800'), 2, 'XFBaaCfa4EEt', '大0.5', 'total=0.5', '芬兰甲级联赛'), ('里本泰德', None, 'CA Paranaense PR', '双重机会', datetime.datetime(2022, 6, 28, 20, 30), '早盘', Decimal('2.040')", 1, 'XFBaaCfa4EEt', '和局或 里本泰德', '', '国际俱乐部解放者杯'), ('卢旺达爱国军', None, '警察(卢旺达)', '卢旺达爱国军 胜利退款', "datetime.datetime(2022, 6, 16, 9, 0)", '早盘', "Decimal('3.000')", 1, 'XFBaaCfa4EEt', '警察(卢旺达)', '', '卢旺达国家足球联赛'), ('Future FC', None, 'Enppi Club', '总入球', "datetime.datetime(2022, 6, 18, 13, 0)", '早盘', "Decimal('1.970')", 1, 'XFBaaCfa4EEt', '2-3', 'variant=sr:goal_range:7+', '埃及足球甲级联赛'), ('罗沙里奧中央', None, '沙士菲', '上半场 - 两队都进球', "datetime.datetime(2022, 6, 20, 18, 0)", '早盘', "Decimal('4.550')", 1, 'XFMvmSzEyMM9', '是', '', '阿根廷足球甲级联赛'), ('水原三星', None, 'Jeonbuk Hyundai Motors', '独赢 & 大/小', "datetime.datetime(2022, 6, 22, 6, 0)", '早盘', "Decimal('3.950')", 1, 'XFMvmSzEyMM9', '全北现代 & 小 2.5', 'total=2.5', '韩国K1联赛'), ('卡皮拉', None, '努尔米耶尔维', '上半场 - 大/小', "datetime.datetime(2022, 6, 18, 11, 0)", '早盘', "Decimal('2.310')", 1, 'XFMvmSzEyMM9', '大1.5', 'total=1.5', '芬兰乙级联赛，A组'), ('绿色古利', None, '南墨尔本', '南墨尔本 胜利退款', "datetime.datetime(2022, 6, 24, 5, 30)", '早盘', "Decimal('1.660')", 1, 'XFMvM9hrnt25', '和局', '', '澳大利亚全国超级联赛,维多利亚'), ('Nomme Kalju FC', None, '塔林弗罗拉', '上半场 - Nomme Kalju FC 不失球', "datetime.datetime(2022, 6, 19, 10, 15)", '早盘', "Decimal('1.540')", 1, 'XFMvM9hrnt25', '不是', '', '爱沙尼亚足球甲级联赛'), ('艾尔古纳', None, '马斯里足球俱乐部', '马斯里足球俱乐部 大/小', "datetime.datetime(2022, 6, 18, 13, 0)", '早盘', "Decimal('2.190')", 1, 'XFMvM9hrnt25', '大1.5', 'total=1.5', '埃及足球甲级联赛'), ('Orgryte IS', None, 'Jonkopings Sodra IF', 'Jonkopings Sodra IF 最高进球数半场', "datetime.datetime(2022, 6, 28, 13, 0)", '早盘', "Decimal('3.450')", 1, 'XFMvQKQsUhG5', '上半场', '', '瑞典超甲级联赛'))
 
     orderNo_list=[]
     new_list=[]
@@ -204,38 +198,37 @@ def order_no():
     count=0
     for i in range(0, len(yyds_list)):
         print("i循环:",i,count_i)
+        orderNo_tuple = ()
         if i==count_i:
-            orderNo_list = []
-            # if i==len(yyds_list)-1:
-            new_list.append(yyds_list[i])
+            # new_list.append(yyds_list[i])
             for j in range(count_j, len(yyds_list)):
                 print("j循环:",j,count_j)
                 if j == count_j:
-                    if yyds_list[i]['orderNo']==yyds_list[j]['orderNo']:
-                        print(yyds_list[i]['orderNo'],yyds_list[j]['orderNo'])
-                        orderNo_list.append(yyds_list[i]['outcomeList'][0])
-                        orderNo_list.append(yyds_list[j]['outcomeList'][0])
+                    # print(yyds_list[i][8],yyds_list[j][8])
+                    if yyds_list[i][8]==yyds_list[j][8]:
+                        orderNo_tuple = yyds_list[i]+ yyds_list[j]
+                        print(yyds_list[i][8],yyds_list[j][8])
                         count_j = count_j + 1
                         count_i = count_i + 1
                         if j==len(yyds_list) - 1:
-                            new_list[-1]['outcomeList'] = orderNo_list
+                            orderNo_list.append(orderNo_tuple)
                             print(f"第{count}次,{count_i},{count_j}")
                         else:
                             for k in range(count_j,len(yyds_list)):
-                                print(yyds_list[i]['orderNo'],yyds_list[k]['orderNo'])
-                                if yyds_list[i]['orderNo'] == yyds_list[k]['orderNo']:
+                                print(yyds_list[i][8],yyds_list[k][8])
+                                if yyds_list[i][8] == yyds_list[k][8]:
                                     if k == len(yyds_list) - 1:
                                         count = count + 1
                                         count_j = count_j + 1
                                         count_i = count_i + 1
-                                        new_list[-1]['outcomeList'] = orderNo_list
+                                        orderNo_list.append(orderNo_tuple)
                                         print(f"第{count}次,{count_i},{count_j}")
                                     else:
-                                        orderNo_list.append(yyds_list[k]['outcomeList'][0])
+                                        orderNo_tuple=orderNo_tuple+yyds_list[k]
                                         count_j = count_j + 1
                                         count_i = count_i + 1
                                 else:
-                                    new_list[-1]['outcomeList']=orderNo_list
+                                    orderNo_list.append(orderNo_tuple)
                                     count_j = count_j + 1
                                     count_i = count_i + 1
                                     count = count + 1
@@ -251,8 +244,108 @@ def order_no():
         else:
             continue
 
-    print(new_list)
-    print(len(new_list))
+    print(orderNo_list)
+    print(len(orderNo_list))
+
+
+# dict_AA=\
+#     {'account': 'd0d1d2d38y/fceshi0224', 'betAmount': 10.0, 'betIp': '192.168.10.120', 'betIpAddress': '局域网', 'betMix': '', 'betResult': '输', 'betTime': '2022-06-24 08:57:04', 'betType': '单注', 'level0Commission': 0.0, 'level0CommissionRatio': 0.0, 'level0Percentage': 0.2, 'level0Total': 2.0, 'level0WinOrLose': 2.0, 'level1Commission': 0.0, 'level1CommissionRatio': 0.0, 'level1Percentage': 0.2, 'level1Total': 2.0, 'level1WinOrLose': 2.0, 'level2Commission': 0.0, 'level2CommissionRatio': 0.0, 'level2Percentage': 0.2, 'level2Total': 2.0, 'level2WinOrLose': 2.0, 'level3Commission': 0.0, 'level3CommissionRatio': 0.0, 'level3Percentage': 0.2, 'level3Total': 2.0, 'level3WinOrLose': 2.0, 'memberCommission': 0.0, 'memberCommissionRatio': 0.0, 'memberTotal': -10.0, 'memberWinOrLose': -10.0, 'name': '杜鑫test账号iy', 'odds': 1.69, 'oddsType': '1', 'options': [{'awayTeamName': '芹苴', 'betScore': None, 'homeTeamName': 'QNK广南足球俱乐部', 'marketName': '独赢', 'matchTime': '2022-06-25 06:00:00', 'matchType': '早盘', 'odds': 1.69, 'oddsType': '1', 'orderNo': 'XH4ydmPbRncK', 'outcomeName': 'QNK广南足球俱乐部', 'specifier': '', 'tournamentName': '越南职业足球乙级联赛'}], 'orderNo': 'XH4ydmPbRncK', 'settlementTime': '2022-06-25 08:01:45', 'sportId': 'sr:sport:1', 'sportType': '足球', 'validAmount': 10.0, 'winOrLose': -10.0}
+# list_AA=[]
+# for key,value in dict_AA.items():
+#     list_AA.append(key)
+# print(list_AA)
+
+
+
+
+
+
+
+sort_num03=(('KPV科科拉', None, '图尔库', '上半场 - KPV科科拉 大/小', "datetime.datetime(2022, 6, 18, 8, 0)", '早盘', "Decimal('1.800'), 2, 'XFBaaCfa4EEt', '大0.5', 'total=0.5', '芬兰甲级联赛'), ('里本泰德', None, 'CA Paranaense PR', '双重机会', datetime.datetime(2022, 6, 28, 20, 30), '早盘', Decimal('2.040')", 1, 'XFBaaCfa4EEt', '和局或 里本泰德', '', '国际俱乐部解放者杯'), ('卢旺达爱国军', None, '警察(卢旺达)', '卢旺达爱国军 胜利退款', "datetime.datetime(2022, 6, 16, 9, 0)", '早盘', "Decimal('3.000')", 1, 'XFBaaCfa4EEt', '警察(卢旺达)', '', '卢旺达国家足球联赛'), ('Future FC', None, 'Enppi Club', '总入球', "datetime.datetime(2022, 6, 18, 13, 0)", '早盘', "Decimal('1.970')", 1, 'XFBaaCfa4EEt', '2-3', 'variant=sr:goal_range:7+', '埃及足球甲级联赛'), ('罗沙里奧中央', None, '沙士菲', '上半场 - 两队都进球', "datetime.datetime(2022, 6, 20, 18, 0)", '早盘', "Decimal('4.550')", 1, 'XFMvmSzEyMM9', '是', '', '阿根廷足球甲级联赛'), ('水原三星', None, 'Jeonbuk Hyundai Motors', '独赢 & 大/小', "datetime.datetime(2022, 6, 22, 6, 0)", '早盘', "Decimal('3.950')", 1, 'XFMvmSzEyMM9', '全北现代 & 小 2.5', 'total=2.5', '韩国K1联赛'), ('卡皮拉', None, '努尔米耶尔维', '上半场 - 大/小', "datetime.datetime(2022, 6, 18, 11, 0)", '早盘', "Decimal('2.310')", 1, 'XFMvmSzEyMM9', '大1.5', 'total=1.5', '芬兰乙级联赛，A组'), ('绿色古利', None, '南墨尔本', '南墨尔本 胜利退款', "datetime.datetime(2022, 6, 24, 5, 30)", '早盘', "Decimal('1.660')", 1, 'XFMvM9hrnt25', '和局', '', '澳大利亚全国超级联赛,维多利亚'), ('Nomme Kalju FC', None, '塔林弗罗拉', '上半场 - Nomme Kalju FC 不失球', "datetime.datetime(2022, 6, 19, 10, 15)", '早盘', "Decimal('1.540')", 1, 'XFMvM9hrnt25', '不是', '', '爱沙尼亚足球甲级联赛'), ('艾尔古纳', None, '马斯里足球俱乐部', '马斯里足球俱乐部 大/小', "datetime.datetime(2022, 6, 18, 13, 0)", '早盘', "Decimal('2.190')", 1, 'XFMvM9hrnt25', '大1.5', 'total=1.5', '埃及足球甲级联赛'), ('Orgryte IS', None, 'Jonkopings Sodra IF', 'Jonkopings Sodra IF 最高进球数半场', "datetime.datetime(2022, 6, 28, 13, 0)", '早盘', "Decimal('3.450')", 1, 'XFMvQKQsUhG5', '上半场', '', '瑞典超甲级联赛'))
+
+
+# 遍历options里的键值对，方便写入组装数据
+aa_list = []
+sport_report_list = [
+    {'account': 'd0d1d2d38y/fceshi0224', 'betAmount': 10.0, 'betIp': '192.168.10.120', 'betIpAddress': '局域网',
+     'betMix': '', 'betResult': '输', 'betTime': '2022-06-24 08:57:04', 'betType': '单注', 'level0Commission': 0.0,
+     'level0CommissionRatio': 0.0, 'level0Percentage': 0.2, 'level0Total': 2.0, 'level0WinOrLose': 2.0,
+     'level1Commission': 0.0, 'level1CommissionRatio': 0.0, 'level1Percentage': 0.2, 'level1Total': 2.0,
+     'level1WinOrLose': 2.0, 'level2Commission': 0.0, 'level2CommissionRatio': 0.0, 'level2Percentage': 0.2,
+     'level2Total': 2.0, 'level2WinOrLose': 2.0, 'level3Commission': 0.0, 'level3CommissionRatio': 0.0,
+     'level3Percentage': 0.2, 'level3Total': 2.0, 'level3WinOrLose': 2.0, 'memberCommission': 0.0,
+     'memberCommissionRatio': 0.0, 'memberTotal': -10.0, 'memberWinOrLose': -10.0, 'name': '杜鑫test账号iy', 'odds': 1.69,
+     'oddsType': '1', 'options': [
+        {'awayTeamName': '芹苴', 'betScore': None, 'homeTeamName': 'QNK广南足球俱乐部', 'marketName': '独赢',
+         'matchTime': '2022-06-25 06:00:00', 'matchType': '早盘', 'odds': 1.69, 'oddsType': '1',
+         'orderNo': 'XH4ydmPbRncK', 'outcomeName': 'QNK广南足球俱乐部', 'specifier': '', 'tournamentName': '越南职业足球乙级联赛'}],
+     'orderNo': 'XH4ydmPbRncK', 'settlementTime': '2022-06-25 08:01:45', 'sportId': 'sr:sport:1', 'sportType': '足球',
+     'validAmount': 10.0, 'winOrLose': -10.0}]
+
+for key, value in sport_report_list[0]['options'][0].items():
+    aa_list.append(key)
+print(aa_list)
+type_list = ["<class 'str'>", "<class 'datetime.datetime'>", "<class 'NoneType'>", "<class 'int'>"]
+
+# 单独获取options列表的数据，然后组装回去
+jkk_list = []
+jkk_dict = {}
+options_list=[]
+print(len(sort_num03))
+for single in sort_num03:
+    for jkk in range(0, len(single)):
+        if str(type(single[jkk])) in type_list:
+            if single[jkk] == None:
+                new_jkk = None
+            else:
+                new_jkk = str(single[jkk])
+        else:
+            new_jkk = float(single[jkk])
+        jkk_dict[aa_list[jkk]] = new_jkk
+    jkk_list.append(jkk_dict)
+    options_list.append(jkk_list)
+print(options_list)
+
+
+
+
+
+
+
+
+
+
+# excel_report=['报表-球类报表-订单查询（根据其盘口查询订单）']
+#
+#
+#
+# print(excel_report[0])
+#
+# if excel_report[0]=='报表-球类报表-订单查询（根据其盘口查询订单）':
+#     print("saassa")
+# # if excel_report[0] in ['盈亏详情-登0-登3-会员-查看订单详情-子查询', '报表-球类报表-订单查询（根据其盘口查询订单)']:
+# #     print("saassa")
+# # else:
+# #     print("不在里面")
+
+
+
+
+#不带底的颜色
+print("\33[30m黑色\33[0m")
+print("\33[31m红色\33[0m")
+print("\33[32m绿色\33[0m")
+print("\33[33m黄色\33[0m")
+print("\33[34m蓝色\33[0m")
+print("\33[35m紫色\33[0m")
+print("\33[36m蓝绿色\33[0m")
+#带底的颜色
+print("\33[40m黄色\33[0m")
+print("\33[41m黄色\33[0m")
+print("\33[42m黄色\33[0m")
+print("\33[43m黄色\33[0m")
+
+
 
 
 

@@ -111,7 +111,18 @@ class report_data(object):
                         #获取到的数据写入列表
                         excel_report.append(report)
                     #调用登录接口，获取token，访问接口，获取数据
+                    # print(excel_report)
+                    # exit()
                     self.login(URL=URL, begin=begin, end=end, excel_report=excel_report)
+
+                    '''
+                    #调试SQL数据
+                    # print(excel_report)
+                    # sport_report_list={'account': 'd0d1d2d38y/fceshi0224', 'betAmount': 10.0, 'betIp': '192.168.10.120', 'betIpAddress': '局域网', 'betResult': '输', 'betTime': '2022-06-24 08:57:04', 'betType': '单注', 'level0Commission': 0.0, 'level0CommissionRatio': 0.0, 'level0Percentage': 0.2, 'level0Total': 2.0, 'level0WinOrLose': 2.0, 'level1Commission': 0.0, 'level1CommissionRatio': 0.0, 'level1Percentage': 0.2, 'level1Total': 2.0, 'level1WinOrLose': 2.0, 'level2Commission': 0.0, 'level2CommissionRatio': 0.0, 'level2Percentage': 0.2, 'level2Total': 2.0, 'level2WinOrLose': 2.0, 'level3Commission': 0.0, 'level3CommissionRatio': 0.0, 'level3Percentage': 0.2, 'level3Total': 2.0, 'level3WinOrLose': 2.0, 'memberCommission': 0.0, 'memberCommissionRatio': 0.0, 'memberTotal': -10.0, 'memberWinOrLose': -10.0, 'name': '杜鑫test账号iy', 'odds': 1.69, 'oddsType': '1', 'options': [{'awayTeamName': '芹苴', 'betScore': None, 'homeTeamName': 'QNK广南足球俱乐部', 'marketName': '独赢', 'matchTime': '2022-06-25 06:00:00', 'matchType': '早盘', 'odds': 1.69, 'oddsType': '1', 'orderNo': 'XH4ydmPbRncK', 'outcomeName': 'QNK广南足球俱乐部', 'specifier': '', 'tournamentName': '越南职业足球乙级联赛'}], 'orderNo': 'XH4ydmPbRncK', 'settlementTime': '2022-06-25 08:01:45', 'sportId': 'sr:sport:1', 'sportType': '足球', 'validAmount': 10.0, 'winOrLose': -10.0}
+                    # sport_report_dict=['account', 'betAmount', 'betIp', 'betIpAddress', 'betResult', 'betTime', 'betType', 'level0Commission', 'level0CommissionRatio', 'level0Percentage', 'level0Total', 'level0WinOrLose', 'level1Commission', 'level1CommissionRatio', 'level1Percentage', 'level1Total', 'level1WinOrLose', 'level2Commission', 'level2CommissionRatio', 'level2Percentage', 'level2Total', 'level2WinOrLose', 'level3Commission', 'level3CommissionRatio', 'level3Percentage', 'level3Total', 'level3WinOrLose', 'memberCommission', 'memberCommissionRatio', 'memberTotal', 'memberWinOrLose', 'name', 'odds', 'oddsType', 'options', 'orderNo', 'settlementTime', 'sportId', 'sportType', 'validAmount', 'winOrLose']
+                    # self.tt.sport_report_sql(begin=begin, end=end, excel_report=excel_report, sport_report_dict=sport_report_list, sport_report_list=sport_report_dict)
+                    '''
+
                     now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                     #判断用例是否通过
                     if sport_error==[]:
@@ -127,12 +138,12 @@ class report_data(object):
                         worksheet.cell(i,13, str(sport_error))
                         worksheet.cell(i,14, str(sport_all_error))
                         worksheet.cell(i,15, str(Prepare_enough_list))
+                    workbook.save(filename=save_excel[0])
             else:
                 continue
         time02=datetime.datetime.strptime(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),'%Y-%m-%d %H:%M:%S')
         date_time=time02-time01
         print(f"\033[32m\n\n执行通过用例共计{execute}条,\033[0m未通过用例共计\033[31m{Failed}条\033[0m,共计消耗时间{date_time}")
-        workbook.save(filename=save_excel[0])
         workbook.close()
 
     def login(self,URL, begin, end,excel_report):
@@ -255,10 +266,12 @@ class report_data(object):
         global sportId_list,sportId_yyds_lsit
 
         sportId_list = []
+        marketID_list=[]
         sport_report_list=[]
         sport_report_dict = []
         sportId_yyds_lsit = []
         yyds=''
+        index=''
         for url in eval(excel_report[1]):
             headers = eval(excel_report[4])
             if eval(excel_report[1]).index(url) == 0:
@@ -290,80 +303,126 @@ class report_data(object):
                 if yyds == []:
                     break
                 else:
-                    url = str(URL) + url
-                    for sportId in sportId_list:
-                        data = eval(excel_report[5])[1]
-                        if excel_report[0]in ("未完成交易-登0-登3-会员-查看订单详情-子查询","盈亏详情-登0-登3-会员-查看订单详情-子查询"):
-                            data['parentId']=sportId
-                        else:
-                            data[excel_report[6]] = sportId
-                        session = requests.session()
-                        method_list = ["post"]
+                    if len(eval(excel_report[1]))>2:
+                        index=2
+                        if eval(excel_report[1]).index(url)==1:
+                            url = str(URL) + url
+                            market_id_list = []
+                            if excel_report[0]=="报表-球类报表-订单查询（根据其盘口查询订单）":
+                                for sportId in sportId_list:
+                                    data = eval(excel_report[5])[1]
+                                    data[excel_report[6]] = sportId
+                                    session = requests.session()
+                                    method_list = ["post"]
 
-                        if excel_report[7] == method_list[0]:
-                            response = session.post(url=url, headers=headers, json=data)
-                        else:
-                            response = session.get(url=url, headers=headers, params=data)
-                        results = json.loads(response.text)
-
-                        if excel_report[0] in module_list:
-                            if excel_report[0] in ("未完成交易-登0-登3-会员-查看订单详情-子查询","盈亏详情-登0-登3-会员-查看订单详情-子查询"):
-                                if results['data']['data'] == []:
-                                    pass
-                                else:
-                                    # print(results)
-                                    #data字典里的数据
+                                    if excel_report[7] == method_list[0]:
+                                        response = session.post(url=url, headers=headers, json=data)
+                                    else:
+                                        response = session.get(url=url, headers=headers, params=data)
+                                    results = json.loads(response.text)
                                     yyds = results['data']['data']
-                                    if excel_report[0]=="未完成交易-登0-登3-会员-查看订单详情-子查询":
-                                        Total_Amount = results['data']['totalData']['betAmount']
-                                        for ppds in range(0,len(yyds)):
-                                            data =yyds[ppds]['bettingTime']
-                                            data = data.replace("T", " ")
-                                            data = data.replace(".000Z", "")
-                                            yyds[ppds]['bettingTime']=data
-                                            yyds[ppds]['Total_Amount']=Total_Amount
-                                    elif excel_report[0]=="盈亏详情-登0-登3-会员-查看订单详情-子查询":
-                                        # 双字典totalData的数据
-                                        totalData = ['level0Commission', 'level0Total', 'level0WinOrLose','level1Commission', 'level1Total', 'level1WinOrLose','level2Commission', 'level2Total', 'level2WinOrLose','level3Commission', 'level3Total', 'level3WinOrLose', 'memberCommission', 'memberTotal', 'memberWinOrLose', 'validAmount','winOrLose']
-                                        totalData_dict = {}
-                                        # print(results['data']['totalData'])
-                                        #把第二字典需要对比的数据取出来，放进第一个data里面，方便对比
-                                        for ppds in range(0, len(yyds)):
-                                            for total in totalData:
-                                                ppt = " total_" + total
-                                                yyds[ppds][ppt]= results['data']['totalData'][total]
-                                        # print(yyds[0])
-                            else:
-                                yyds = results['data']
+
+                                    if yyds == []:
+                                        pass
+                                    else:
+                                        for i in yyds:
+                                            if i['marketId'] == '串关':
+                                                pass
+                                            else:
+                                                market_id_list.append(i['marketId'])
+                                    marketID_list.append(market_id_list)
                         else:
-                            yyds = results['data']['data']
-                        sportId_yyds_lsit.append(yyds)
+                            url = str(URL) + url
+                            for sportId in sportId_list:
+                                for marketID in marketID_list[sportId_list.index(sportId)]:
+                                    data = eval(excel_report[5])[2]
+                                    data[excel_report[6]] = sportId
+                                    data['marketId'] = marketID
+                                    session = requests.session()
+                                    method_list = ["post"]
+
+                                    if excel_report[7] == method_list[0]:
+                                        response = session.post(url=url, headers=headers, json=data)
+                                    else:
+                                        response = session.get(url=url, headers=headers, params=data)
+                                    results = json.loads(response.text)
+                                    yyds = results['data']['data']['data']
+                                    sportId_yyds_lsit.append(yyds)
+                    else:
+                        url = str(URL) + url
+                        for sportId in sportId_list:
+                            data = eval(excel_report[5])[1]
+                            if excel_report[0]in ("未完成交易-登0-登3-会员-查看订单详情-子查询","盈亏详情-登0-登3-会员-查看订单详情-子查询"):
+                                data['parentId']=sportId
+                            else:
+                                data[excel_report[6]] = sportId
+                            session = requests.session()
+                            method_list = ["post"]
+
+                            if excel_report[7] == method_list[0]:
+                                response = session.post(url=url, headers=headers, json=data)
+                            else:
+                                response = session.get(url=url, headers=headers, params=data)
+                            results = json.loads(response.text)
+
+                            if excel_report[0] in module_list:
+                                if excel_report[0] in ("未完成交易-登0-登3-会员-查看订单详情-子查询","盈亏详情-登0-登3-会员-查看订单详情-子查询"):
+                                    if results['data']['data'] == []:
+                                        pass
+                                    else:
+                                        # print(results)
+                                        #data字典里的数据
+                                        yyds = results['data']['data']
+                                        if excel_report[0]=="未完成交易-登0-登3-会员-查看订单详情-子查询":
+                                            Total_Amount = results['data']['totalData']['betAmount']
+                                            for ppds in range(0,len(yyds)):
+                                                data =yyds[ppds]['bettingTime']
+                                                data = data.replace("T", " ")
+                                                data = data.replace(".000Z", "")
+                                                yyds[ppds]['bettingTime']=data
+                                                yyds[ppds]['Total_Amount']=Total_Amount
+                                        elif excel_report[0]=="盈亏详情-登0-登3-会员-查看订单详情-子查询":
+                                            # 双字典totalData的数据
+                                            totalData = ['level0Commission', 'level0Total', 'level0WinOrLose','level1Commission', 'level1Total', 'level1WinOrLose','level2Commission', 'level2Total', 'level2WinOrLose','level3Commission', 'level3Total', 'level3WinOrLose', 'memberCommission', 'memberTotal', 'memberWinOrLose', 'validAmount','winOrLose']
+                                            totalData_dict = {}
+                                            # print(results['data']['totalData'])
+                                            #把第二字典需要对比的数据取出来，放进第一个data里面，方便对比
+                                            for ppds in range(0, len(yyds)):
+                                                for total in totalData:
+                                                    ppt = " total_" + total
+                                                    yyds[ppds][ppt]= results['data']['totalData'][total]
+                                            # print(yyds[0])
+                                else:
+                                    yyds = results['data']
+                            else:
+                                yyds = results['data']['data']
+                            sportId_yyds_lsit.append(yyds)
+                            # print(sportId_yyds_lsit)
                         # print(sportId_yyds_lsit)
-                    # print(sportId_yyds_lsit)
 
-                    report02_list = []
-                    for gg in range(0, len(sportId_yyds_lsit)):
-                        for yy in range(0, len(sportId_yyds_lsit[gg])):
-                            report02_list.append(sportId_yyds_lsit[gg][yy])
-                    # print(report02_list)
+        report02_list = []
+        print(sportId_yyds_lsit[0:2])
+        for gg in range(0, len(sportId_yyds_lsit)):
+            for yy in range(0, len(sportId_yyds_lsit[gg])):
+                report02_list.append(sportId_yyds_lsit[gg][yy])
+        # print(report02_list)
 
-                    str_sum = excel_report[2]
-                    for i in range(0, len(report02_list)):
-                        if excel_report[0] in ("未完成交易-登0-登3-会员-查看订单详情-子查询","盈亏详情-登0-登3-会员-查看订单详情-子查询"):
-                            for options in report02_list[i]['options']:
-                                del options['matchTime']
-                        if excel_report[2] != None:
-                            ppxt_lsit = str_sum.split(",")
-                            # print(ppxt_lsit)
-                            for j in ppxt_lsit:
-                                # print(sportId_yyds_lsit[i])
-                                del report02_list[i][j]
-                        sport_report_list.append(report02_list[i])
+        str_sum = excel_report[2]
+        for i in range(0, len(report02_list)):
+            if excel_report[0] in ("未完成交易-登0-登3-会员-查看订单详情-子查询","盈亏详情-登0-登3-会员-查看订单详情-子查询"):
+                for options in report02_list[i]['options']:
+                    del options['matchTime']
+            if excel_report[2] != None:
+                ppxt_lsit = str_sum.split(",")
+                # print(ppxt_lsit)
+                for j in ppxt_lsit:
+                    # print(sportId_yyds_lsit[i])
+                    del report02_list[i][j]
+            sport_report_list.append(report02_list[i])
 
-                    for key, value in sportId_yyds_lsit[0][0].items():
-                        sport_report_dict.append(key)
-                    # print(sport_report_dict)
-
+        for key, value in sportId_yyds_lsit[0][0].items():
+            sport_report_dict.append(key)
+        # print(sport_report_dict)
 
         time_list = [" 00:00:00", " 23:59:59"]
         print(sport_report_list[1])
@@ -553,15 +612,13 @@ class BetController(object):
                                         if excel_report[3] == 1:
                                             sport_all_error.append(str(str(sport_list[i][ppxt_lsit[0]])+"-"+str(sport_list[i][ppxt_lsit[1]])) + "/" + str(yyds_list[report]) + "的数据对比错误,请检查SQL查询的字段与接口字段数据是否一致,数据对比：" +  str(sport_list[i][yyds_list[report]]) + "/" + str(sql_list[j][yyds_list[report]]))
                                             print("\033[31m" + str(sport_list[i][ppxt_lsit[0]])+"-"+str(sport_list[i][ppxt_lsit[1]]), str(yyds_list[report]),"数据对比错误：" + str(sport_list[i][yyds_list[report]]) + "/" + str( sql_list[j][yyds_list[report]]) + "\033[0m",type(sport_list[i][yyds_list[report]]),type(sql_list[j][yyds_list[report]]))
-                                            if excel_report[0] in options_report_list:
-                                                if yyds_list[report] == 'options':
-                                                    self.options_report(A=sport_list[i][ppxt_lsit[0]],B=sport_list[i][ppxt_lsit[1]],C=yyds_list[report],D=sport_list[i][yyds_list[report]],E=sql_list[j][yyds_list[report]])
+                                            if yyds_list[report] == 'options':
+                                                self.options_report(A=sport_list[i][ppxt_lsit[0]],B=sport_list[i][ppxt_lsit[1]],C=yyds_list[report],D=sport_list[i][yyds_list[report]],E=sql_list[j][yyds_list[report]])
                                         else:
                                             sport_all_error.append(str(str(sport_list[i][ppxt_lsit[0]])+"-"+str(sport_list[i][ppxt_lsit[1]])) + "/" +yyth + "/"+str(yyds_list[report]) + "的数据对比错误,请检查SQL查询的字段与接口字段数据是否一致,数据对比：" +  str(sport_list[i][yyds_list[report]]) + "/" + str(sql_list[j][yyds_list[report]]))
                                             print("\033[31m" + str(sport_list[i][ppxt_lsit[0]])+"-"+str(sport_list[i][ppxt_lsit[1]]+"-"+yyth), str(yyds_list[report]),"数据对比错误：" + str(sport_list[i][yyds_list[report]]) + "/" + str( sql_list[j][yyds_list[report]]) +"\033[0m",type(sport_list[i][yyds_list[report]]),type(sql_list[j][yyds_list[report]]))
-                                            if excel_report[0] in options_report_list:
-                                                if yyds_list[report]=='options':
-                                                    self.options_report(A=sport_list[i][ppxt_lsit[0]],B=sport_list[i][ppxt_lsit[1]], C=yyds_list[report],D=sport_list[i][yyds_list[report]], E=sql_list[j][yyds_list[report]])
+                                            if yyds_list[report]=='options':
+                                                self.options_report(A=sport_list[i][ppxt_lsit[0]],B=sport_list[i][ppxt_lsit[1]], C=yyds_list[report],D=sport_list[i][yyds_list[report]], E=sql_list[j][yyds_list[report]])
                     #     else:
                     #         print(f"数据对比错误：{sport_list[i][ppxt_lsit[1]]}/{sql_list[j][ppxt_lsit[1]]}，{type(sport_list[i][ppxt_lsit[1]])}/{type(sport_list[i][ppxt_lsit[1]])}")
                     # else:
@@ -612,11 +669,11 @@ class BetController(object):
                 sport_all_error.append("SQL数据为空")
 
     def options_report(self,A, B, C,D,E):
+        options_yyds=0
         print(f"\033[32m{A}-{B},{C}：数据对比开始---------------------------------------------------------------------------\033[0m")
         aa_list = []
-        print(type(D))
-        print(type(D[0]))
         print(D[0])
+        print(E[0])
         for key, value in D[0].items():
             aa_list.append(key)
         if D==E:
@@ -627,13 +684,61 @@ class BetController(object):
                     if D[ykk][i] == E[ykk][i]:
                         print(f"{A}-{B},{C}数据对比正确：{D[ykk][i]}/{E[ykk][i]}")
                     else:
-                        print(
-                            f"\033[31m{A}-{B},{C}数据对比错误：{D[ykk][i]}/{E[ykk][i]}\033[0m{type(D[ykk][i])}/{type(E[ykk][i])}-")
+                        print(f"\033[31m{A}-{B},{C}数据对比错误：{D[ykk][i]}/{E[ykk][i]}\033[0m{type(D[ykk][i])}/{type(E[ykk][i])}-")
+                        options_yyds = 1
         print(f"\033[32m{A}-{B},{C}：数据对比结束----------------------------------------------------------------------------------------------\033[0m")
+        return options_yyds
+
+
+    def if_error(self, A,B):
+        key01=[]
+        key02 = []
+        error=''
+        number_num = random.randint(0, len(A))
+        if number_num>len(B):
+            number_num=':'
+        else:
+            if len(A[number_num])==len(B[number_num]):
+                # if A['options']
+                for key,value in A[0].items():
+                    key01.append(key)
+                if 'options' in key01:
+                    if len(A['options'].keys)==len(B['options'].keys):
+                        yytr=self.options_report(A=A[key01[0]], B=A[key01[-1]], C='options',D=A['options'],E=B['options'])
+                        if yytr==0:
+                            if A==B:
+                                print(f"\33[31m数据预校验通过\33[0m")
+                                A=correct_list
+                            else:
+                                print("\33[31m数据预校验不通过\33[0m")
+                                error = '错误'
+                    else:
+                        print(f"A与B，key值不一致{len(A['options'].keys)}/{len(B['options'].keys)}")
+                        for key, value in B[0]['options'].items():
+                            key02.append(key)
+                        for key_value in key02:
+                            if key_value in key01:
+                                del key01[key01.index(key_value)]
+                            else:
+                                pass
+                        print(f"\33[31mA与B，options字典数量不相等,他们相差{key01}\33[0m")
+                else:
+                    if A==B:
+                        print(f"\33[31m数据预校验通过\33[0m")
+                        A=correct_list
+                    else:
+                        print(f"\33[32m数据预校验不通过\33[0m")
+                        error='错误'
+            else:
+                print(f"\33[32m接口数据与SQL数据字段比对错误,A:{len(A[number_num])}/B:{len(A[number_num])}\33[0m")
+                error = '错误'
+        return error
+
+
+
 
     def null_data_processing(self,sort_num,mix_number,excel_report):
-        print(f"正在检验{excel_report[0]}-{excel_report[1]}数据是否返回为空")
-        print(sort_num)
+        print(f"\33[33m正在检验{excel_report[0]}-{excel_report[1]}数据是否返回为空\33[0m")
 
         report_null=''
         if sort_num==() or sort_num==None or sort_num[0][0]==() or sort_num[0][0]==None:
@@ -667,9 +772,66 @@ class BetController(object):
             sql=BBQ
         return sql
 
+    def order_no_new(self,yyds_list):
+        orderNo_list = []
+        count_i = 0
+        count_j = 1
+        count = 0
+        for i in range(0, len(yyds_list)):
+            print("i循环:", i, count_i)
+            orderNo_tuple = ()
+            if i == count_i:
+                # new_list.append(yyds_list[i])
+                for j in range(count_j, len(yyds_list)):
+                    print("j循环:", j, count_j)
+                    if j == count_j:
+                        # print(yyds_list[i][8],yyds_list[j][8])
+                        if yyds_list[i][8] == yyds_list[j][8]:
+                            orderNo_tuple = yyds_list[i] + yyds_list[j]
+                            print(yyds_list[i][8], yyds_list[j][8])
+                            count_j = count_j + 1
+                            count_i = count_i + 1
+                            if j == len(yyds_list) - 1:
+                                orderNo_list.append(orderNo_tuple)
+                                print(f"第{count}次,{count_i},{count_j}")
+                            else:
+                                for k in range(count_j, len(yyds_list)):
+                                    print(yyds_list[i][8], yyds_list[k][8])
+                                    if yyds_list[i][8] == yyds_list[k][8]:
+                                        if k == len(yyds_list) - 1:
+                                            count = count + 1
+                                            count_j = count_j + 1
+                                            count_i = count_i + 1
+                                            orderNo_list.append(orderNo_tuple)
+                                            print(f"第{count}次,{count_i},{count_j}")
+                                        else:
+                                            orderNo_tuple = orderNo_tuple + yyds_list[k]
+                                            count_j = count_j + 1
+                                            count_i = count_i + 1
+                                    else:
+                                        orderNo_list.append(orderNo_tuple)
+                                        count_j = count_j + 1
+                                        count_i = count_i + 1
+                                        count = count + 1
+                                        print(f"第{count}次,{count_i},{count_j}")
+                                        break
+                        else:
+                            count_i = count_i + 1
+                            count_j = count_j + 1
+                            count = count + 1
+                            break
+                    else:
+                        break
+            else:
+                continue
+        return orderNo_list
+
+
+
+
     def sport_report_sql(self,begin,end,excel_report,sport_report_dict,sport_report_list):
         global options_list,sportId_sql_list
-        print(f"正在执行{excel_report[0]}-{excel_report[1]}")
+        print(f"\33[34m正在执行{excel_report[0]}-{excel_report[1]}\33[0m")
 
         num_list = []
         sort_num_list = []
@@ -678,11 +840,16 @@ class BetController(object):
         sportId_sql_list = []
         sport_num_sql_list=[]
         sql_yyds =[]
+        marketID_sql_list = []
+        marketID_sql_dict={}
+
+
         sum_yyds = excel_report[8]
         yyds = sum_yyds.split("@")
         report_null=''
         all=''
         num=''
+        sql_count=0
         all_order_no=''
         if yyds[0]=='':
             del yyds[0]
@@ -735,6 +902,8 @@ class BetController(object):
                             del num_list[0]
                         sort_num = num_list
                         mix_number.append("2-1")
+                        sql_count = sql_count + 1
+                        print(len(sport_report_list), sql_count)
                     elif len(yyds) == 2:
                         sql01 = self.if_f(BBQ=yyds[0],all=all,num=num,all_order_no=all_order_no,begin=begin,end=end)
                         sql02 = self.if_f(BBQ=yyds[1],all=all,num=num,all_order_no=all_order_no,begin=begin,end=end)
@@ -745,8 +914,10 @@ class BetController(object):
                         num_list.append(sort_num_list)
                         sort_num = num_list
                         mix_number.append("2-2")
+                        sql_count = sql_count + 1
+                        print(len(sport_report_list), sql_count)
                     else:
-                        if excel_report[0]in ("未完成交易-登0-登3-会员-查看订单详情-子查询","盈亏详情-登0-登3-会员-查看订单详情-子查询"):
+                        if excel_report[0] in ("未完成交易-登0-登3-会员-查看订单详情-子查询","盈亏详情-登0-登3-会员-查看订单详情-子查询"):
                             order_list=[]
                             sql01=self.if_f(BBQ=yyds[1],all=all,num=num,all_order_no=all_order_no,begin=begin,end=end)
                             sql=self.if_f(BBQ=yyds[0],all=all,num=num,all_order_no=all_order_no,begin=begin,end=end)
@@ -762,11 +933,11 @@ class BetController(object):
                                 sort_num02 = self.my.query_data(sql02, db_name='bfty_credit')
                                 sort_num03 = self.my.query_data(sql03, db_name='bfty_credit')
                                 #拼接元祖参数
-                                print(sort_num)
-                                print(sort_num01)
-                                print(sort_num02)
-                                print(sort_num03)
-                                print("拼接打印sort_num[0]：", sort_num[0])
+                                # print(sort_num)
+                                # print(sort_num01)
+                                # print(sort_num02)
+                                # print(sort_num03)
+                                # print("拼接打印sort_num[0]：", sort_num[0])
                                 yyrt_list.append(sort_num02[0])
                                 ggg = yyrt_list[0] + sort_num[0]
                                 yyrt_list[0]=ggg
@@ -790,12 +961,92 @@ class BetController(object):
                                         jkk_dict[aa_list[jkk_2]]=new_jkk
                                     jkk_list.append(jkk_dict)
                                 options_list.append(jkk_list)
-                                # print(jkk_list)
-                                # print(options_list)
                                 num_list.append(yyrt_list)
-                                # print(num_list)
+                                sql_count = sql_count + 1
+                                print(len(sport_report_list), sql_count)
                             mix_number.append("2-1")
                             sort_num = num_list
+                        elif excel_report[0] in ("报表-球类报表-订单查询（根据其盘口查询订单）"):
+                            marketID_sql_new_list=[]
+                            # sql = self.if_f(BBQ=yyds[0], all=all, num=num, all_order_no=all_order_no, begin=begin,end=end)
+                            # sort_num = self.my.query_data(sql, db_name='bfty_credit')
+                            # for marketID in sort_num:
+                            #     marketID_sql_new_list.append(marketID[0])
+                            # marketID_sql_dict[all]=marketID_sql_new_list
+                            #
+                            # for all_order_no in marketID_sql_dict[all]:
+                            #     print(all,all_order_no)
+                            #     order_list=[]
+                            #     order_list_Duplex=[]
+                            yyrt_list=[]
+                            #获取球类的单注盘口的会员数据
+                            sql01 = self.if_f(BBQ=yyds[0], all=all, num=num, all_order_no=all_order_no,begin=begin, end=end)
+                            sort_num01 = self.my.query_data(sql01, db_name='bfty_credit')
+                            #获取球类的串关的会员数据
+                            sql02 = self.if_f(BBQ=yyds[1], all=all, num=num, all_order_no=all_order_no,begin=begin, end=end)
+                            sort_num02 = self.my.query_data(sql02, db_name='bfty_credit')
+
+                            #for循环单注和串关的会员数据
+                            for member in (sort_num01,sort_num02):
+                                for num in range(0,len(member)):
+                                    tuple_new=()
+                                    tuple_new=member[num]
+                                    num_list.append(tuple_new)
+
+                            # 遍历options里的键值对，方便写入组装数据
+                            aa_list = []
+                            for key, value in sport_report_list[0]['options'][0].items():
+                                aa_list.append(key)
+                            print(aa_list)
+                            # 获取单注赛事选项
+                            sql03 = self.if_f(BBQ=yyds[2], all=all, num=num, all_order_no=all_order_no, begin=begin,end=end)
+                            sort_num03 = self.my.query_data(sql03, db_name='bfty_credit')
+                            # 单独获取options列表的数据，然后组装回去
+                            jkk_list = []
+                            jkk_dict = {}
+                            for single in sort_num03:
+                                for jkk in range(0, len(single[0])):
+                                    print()
+                                    if str(type(single[0][jkk])) in type_list:
+                                        if single[0][jkk] == None:
+                                            new_jkk = None
+                                        else:
+                                            new_jkk = str(single[0][jkk])
+                                    else:
+                                        new_jkk = float(single[0][jkk])
+                                    print(new_jkk)
+                                    print(aa_list[jkk])
+                                    print(jkk)
+                                    jkk_dict[aa_list[jkk]] = new_jkk
+                                jkk_list.append(jkk_dict)
+                                options_list.append(jkk_list)
+
+                            #获取串关options的数据
+                            sql04 = self.if_f(BBQ=yyds[3], all=all, num=num, all_order_no=all_order_no, begin=begin,end=end)
+                            sort_num04 = self.my.query_data(sql04, db_name='bfty_credit')
+                            Duplex=self.order_no_new(yyds_list=sort_num04)
+                            # 单独获取options列表的数据，然后组装回去
+                            jkk_list = []
+                            for Duplex_report in Duplex:
+                                for jkk in range(0,len(Duplex_report)):
+                                    jkk_dict = {}
+                                    for jkk_2 in range(0, len(Duplex[jkk])):
+                                        if str(type(Duplex[jkk][jkk_2])) in type_list:
+                                            if Duplex[jkk][jkk_2]== None:
+                                                new_jkk = None
+                                            else:
+                                                new_jkk = str(Duplex[jkk][jkk_2])
+                                        else:
+                                            new_jkk = float(Duplex[jkk][jkk_2])
+                                        jkk_dict[aa_list[jkk_2]] = new_jkk
+                                    jkk_list.append(jkk_dict)
+                                options_list.append(jkk_list)
+                            mix_number.append("2-1")
+                            sort_num = num_list
+                            print(sort_num[0],sort_num[-1])
+                            print(options_list[0],options_list[-1])
+                            exit()
+
         else:
             sql011=self.if_f(BBQ=yyds[0],all=all,num=num,all_order_no=all_order_no,begin=begin,end=end)
             sort_num = self.my.query_data(sql011, db_name='bfty_credit')
@@ -826,6 +1077,8 @@ class BetController(object):
                                 # if num==0:
                                 #     num_list.clear()
                                 mix_number.append("2-1")
+                                sql_count = sql_count + 1
+                                print(len(sport_report_list), sql_count)
                     else:
                         sql01 = self.if_f(BBQ=yyds[0],all=all,num=num,all_order_no=all_order_no,begin=begin,end=end)
                         sql02 = self.if_f(BBQ=yyds[1],all=all,num=num,all_order_no=all_order_no,begin=begin,end=end)
@@ -835,13 +1088,16 @@ class BetController(object):
                         sort_num_list.append(sort_num02)
                         num_list.append(sort_num_list)
                         mix_number.append("2-2")
+                        sql_count = sql_count + 1
+                        print(len(sport_report_list), sql_count)
                 sort_num = num_list
                 print(sort_num)
 
 
         sport_sql_list = sport_report_dict
         sql_sport_list = []
-        # print(sort_num)
+        # print(sort_num[0:2])
+        # print(options_list)
         # print(f"SQL数据：{sort_num}\n接口数据：{sport_report_list}\n-----------------------------------------------------------------------------")
         print("-------------------------------------------------------------------------------------------------------")
         if report_null==[]:
@@ -851,7 +1107,6 @@ class BetController(object):
 
     def Compared_report(self, sort_num, sport_list, sql_name_list, sql_list, Compared, report_name, excel_report,mix,begin,end):
         global sport_error,sport_all_error,yyds01,correct_list,Prepare_enough_list
-        print(sport_list)
         correct_list=[]
         Prepare_enough_list=[]
         sport_error = []
@@ -862,10 +1117,8 @@ class BetController(object):
             pass
         else:
             print(mix[0])
-        print(sql_name_list)
         if mix[0]==str('1-1'):
             print(sort_num[0])
-            print(len(sql_name_list), len(sort_num[0]))
             # print(sort_num)
             # print(sort_num[0])
             for i in range(0, len(sort_num)):
@@ -903,14 +1156,10 @@ class BetController(object):
                         yy_num = float(sort_num[i][j])
                     sql_dict[sql_name_list[j]] =yy_num
                 sql_list.append(sql_dict)
-            print(sport_list[1])
-            print(sql_list[1])
+            print("sport_list组装数据对比：", sport_list[1])
+            print("sql_list组装数据对比：", sql_list[1])
         if mix[0]==str('2-1'):
             print(sort_num[0][0])
-            print(len(sql_name_list), len(sort_num[0][0]))
-            print(sql_name_list)
-            print(sort_num)
-            print(len(sport_list),len(sort_num[0]))
             # print(sort_num)
             # print(sort_num[0])
             # print(sort_num[0][0])
@@ -921,10 +1170,7 @@ class BetController(object):
                     for g in range(0,len(sort_num[i][j])):
                         if str(type(sort_num[i][j][g]))in type_list:
                             if sql_name_list[g] in int_list:
-                                if excel_report[0]=="盈亏详情-登0-登3-会员-查看订单详情-子查询":
-                                    print(sort_num[i][j][g])
-                                    print(i,j,g)
-                                    print(sql_name_list[g])
+                                if excel_report[0] in ('盈亏详情-登0-登3-会员-查看订单详情-子查询','报表-球类报表-订单查询（根据其盘口查询订单）'):
                                     yy_num = str(sort_num[i][j][g])
                                 else:
                                     yy_num = int(sort_num[i][j][g])
@@ -934,7 +1180,7 @@ class BetController(object):
                                 if excel_report[0] in interface_list:
                                     yy_num = self.wt.Company_winlose(agent_id=sort_num[i][j][1], member_id='', sportId='',marketId='', tournamentId='', matchId='',login_account=Dl_list[pkk], begin=begin, end=end,Duplex='')
                                 elif excel_report[0] in two_report_list:
-                                    if excel_report[0]=="报表-球类报表-子查询（根据其球类查询盘口）":
+                                    if excel_report[0]=='报表-球类报表-子查询（根据其球类查询盘口）':
                                         yy_num = self.wt.Company_winlose(agent_id='', member_id='', sportId=sort_num[i][j][-3],marketId=sort_num[i][j][-8], tournamentId='',matchId='',login_account=Dl_list[pkk], begin=begin, end=end,Duplex='')
                                     else:
                                         yy_num = self.wt.Company_winlose(agent_id='', member_id='', sportId=sort_num[i][j][-3],marketId=sort_num[i][j][-8], tournamentId='',matchId=str(sportId_sql_list[i]),login_account=Dl_list[pkk], begin=begin, end=end,Duplex='')
@@ -954,12 +1200,10 @@ class BetController(object):
                             yy_num = float(sort_num[i][j][g])
                         sql_dict[sql_name_list[g]]=yy_num
                     sql_list.append(sql_dict)
-            print(sport_list[1])
-            print(sql_list[1])
-            print(len(sport_list[1]),len(sql_list[1]))
+            print("sport_list组装数据对比：", sport_list[1])
+            print("sql_list组装数据对比：", sql_list[1])
         if mix[0]==str('2-2'):
             print(sort_num[0][0][0])
-            print(len(sql_name_list), len(sort_num[0][0][0]))
             # print(sort_num)
             # print(sort_num[0])
             # print(sort_num[0][0])
@@ -994,14 +1238,20 @@ class BetController(object):
                                 yy_num = float(sort_num[i][j][l][g])
                             sql_dict[sql_name_list[g]] = yy_num
                         sql_list.append(sql_dict)
-            print(sport_list[1])
-            print(sql_list[1])
-        if len(yyds01)==1:
-            self.report_list_Compared01(sport_list=sport_list, sql_list=sql_list, Compared=Compared,excel_report=excel_report)
-        elif len(yyds01)==2:
-            self.report_list_Compared02(sport_list=sport_list, sql_list=sql_list, Compared=Compared,excel_report=excel_report)
+            print("sport_list组装数据对比：",sport_list[1])
+            print("sql_list组装数据对比：",sql_list[1])
+
+
+        yyts=self.if_error(A=sport_list, B=sql_list)
+        if yyts=='':
+            if len(yyds01)==1:
+                self.report_list_Compared01(sport_list=sport_list, sql_list=sql_list, Compared=Compared,excel_report=excel_report)
+            elif len(yyds01)==2:
+                self.report_list_Compared02(sport_list=sport_list, sql_list=sql_list, Compared=Compared,excel_report=excel_report)
+            else:
+                self.report_list_Compared03(sport_list=sport_list, sql_list=sql_list, Compared=Compared,excel_report=excel_report)
         else:
-            self.report_list_Compared03(sport_list=sport_list, sql_list=sql_list, Compared=Compared,excel_report=excel_report)
+            pass
 
         if len(sport_list) == len(correct_list):
             print(f"\033[32m代理{Dl_list[pkk]}的{report_name}，接口数据比对全部正确：{len(sport_list)}-{len(correct_list)}\033[0m")
@@ -1063,12 +1313,12 @@ if __name__ == "__main__":
 
 
     # mf = MongoFunc(mongo_inf)
-    bc = BetController(mysql_inf, mongo_inf)
+    bc =BetController(mysql_inf, mongo_inf)
     cc=report_data(mysql_inf, mongo_inf)
 
     for pkk in range(0,1):
         #参数化接口数据列表
-        sport_report_list = []
+        # sport_report_list = []
         # 参数化代理账号数据列表
         Dl_list=["d0","d10","d2","d3"]
         # 参数化EXCEL路径列表
@@ -1102,14 +1352,24 @@ if __name__ == "__main__":
         #     #调用本地Exce读取数据
         #     ccds=cc.reading_Excel(excel=excel, save_excel=save_excel,begin="2022-06-15",end="2022-06-21", URL=URL)
         # print(time_new_list)
-        # 调用本地Exce读取数据
-        toten='eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjE1MzE1MTYwMTc4NDc4Njk0NDIiLCJleHAiOjE2NTY0ODg1OTcsInVzZXJuYW1lIjoiZDAifQ.KJg52N64e-cx5sJg5PbsXGGKcY464mtsyrSuT4koCeE'
-        ccds=cc.reading_Excel(excel=excel, save_excel=save_excel,begin="2022-06-22",end="2022-06-28", URL=URL)
 
-        # sport_list=[{'account': 'd0d1d2d30c/fceshi02', 'accountId': '1531519197046415362', 'companyTotal': -54.87, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': -54.85, 'level0WinOrLose': -54.85, 'level1Commission': 0.0, 'level1Total': -54.85, 'level1WinOrLose': -54.85, 'level2Commission': 0.0, 'level2Total': -54.85, 'level2WinOrLose': -54.85, 'level3Commission': 0.0, 'level3Total': -54.85, 'level3WinOrLose': -54.85, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': 274.27, 'memberWinOrLose': 274.27, 'name': '杜鑫test账号ac', 'numberOfBets': 2, 'parentId': '1531517760300163074', 'totalBet': 190.0, 'totalCommission': 0.0, 'totalEfficientAmount': 190.0}, {'account': 'd0d1d2d30m/fceshi012', 'accountId': '1531519243502526466', 'companyTotal': -108.24, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': -108.2, 'level0WinOrLose': -108.2, 'level1Commission': 0.0, 'level1Total': -108.2, 'level1WinOrLose': -108.2, 'level2Commission': 0.0, 'level2Total': -108.2, 'level2WinOrLose': -108.2, 'level3Commission': 0.0, 'level3Total': -108.2, 'level3WinOrLose': -108.2, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': 541.04, 'memberWinOrLose': 541.04, 'name': '杜鑫test账号am', 'numberOfBets': 4, 'parentId': '1531517760300163074', 'totalBet': 320.0, 'totalCommission': 0.0, 'totalEfficientAmount': 320.0}, {'account': 'd0d1d2d30o/fceshi014', 'accountId': '1531519253065539586', 'companyTotal': 8.0, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 8.0, 'level0WinOrLose': 8.0, 'level1Commission': 0.0, 'level1Total': 8.0, 'level1WinOrLose': 8.0, 'level2Commission': 0.0, 'level2Total': 8.0, 'level2WinOrLose': 8.0, 'level3Commission': 0.0, 'level3Total': 8.0, 'level3WinOrLose': 8.0, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': -40.0, 'memberWinOrLose': -40.0, 'name': '杜鑫test账号ao', 'numberOfBets': 2, 'parentId': '1531517760300163074', 'totalBet': 40.0, 'totalCommission': 0.0, 'totalEfficientAmount': 40.0}, {'account': 'd0d1d2d30p/fceshi015', 'accountId': '1531519257226289154', 'companyTotal': -18.0, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': -18.0, 'level0WinOrLose': -18.0, 'level1Commission': 0.0, 'level1Total': -18.0, 'level1WinOrLose': -18.0, 'level2Commission': 0.0, 'level2Total': -18.0, 'level2WinOrLose': -18.0, 'level3Commission': 0.0, 'level3Total': -18.0, 'level3WinOrLose': -18.0, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': 90.0, 'memberWinOrLose': 90.0, 'name': '杜鑫test账号ap', 'numberOfBets': 2, 'parentId': '1531517760300163074', 'totalBet': 70.0, 'totalCommission': 0.0, 'totalEfficientAmount': 30.0}, {'account': 'd0d1d2d30r/fceshi017', 'accountId': '1531519265463902210', 'companyTotal': 7.36, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 7.36, 'level0WinOrLose': 7.36, 'level1Commission': 0.0, 'level1Total': 7.36, 'level1WinOrLose': 7.36, 'level2Commission': 0.0, 'level2Total': 7.36, 'level2WinOrLose': 7.36, 'level3Commission': 0.0, 'level3Total': 7.36, 'level3WinOrLose': 7.36, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': -36.8, 'memberWinOrLose': -36.8, 'name': '杜鑫test账号ar', 'numberOfBets': 2, 'parentId': '1531517760300163074', 'totalBet': 50.0, 'totalCommission': 0.0, 'totalEfficientAmount': 36.8}, {'account': 'd0d1d2d30s/fceshi018', 'accountId': '1531519269557542914', 'companyTotal': 29.3, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 29.3, 'level0WinOrLose': 29.3, 'level1Commission': 0.0, 'level1Total': 29.3, 'level1WinOrLose': 29.3, 'level2Commission': 0.0, 'level2Total': 29.3, 'level2WinOrLose': 29.3, 'level3Commission': 0.0, 'level3Total': 29.3, 'level3WinOrLose': 29.3, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': -146.5, 'memberWinOrLose': -146.5, 'name': '杜鑫test账号as', 'numberOfBets': 1, 'parentId': '1531517760300163074', 'totalBet': 260.0, 'totalCommission': 0.0, 'totalEfficientAmount': 146.5}, {'account': 'd0d1d2d31a/fceshi026', 'accountId': '1531519302432497666', 'companyTotal': -152.15, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': -152.14, 'level0WinOrLose': -152.14, 'level1Commission': 0.0, 'level1Total': -152.14, 'level1WinOrLose': -152.14, 'level2Commission': 0.0, 'level2Total': -152.14, 'level2WinOrLose': -152.14, 'level3Commission': 0.0, 'level3Total': -152.14, 'level3WinOrLose': -152.14, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': 760.71, 'memberWinOrLose': 760.71, 'name': '杜鑫test账号ba', 'numberOfBets': 2, 'parentId': '1531517760300163074', 'totalBet': 160.0, 'totalCommission': 0.0, 'totalEfficientAmount': 160.0}, {'account': 'd0d1d2d31c/fceshi028', 'accountId': '1531519310657527809', 'companyTotal': 30.0, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 30.0, 'level0WinOrLose': 30.0, 'level1Commission': 0.0, 'level1Total': 30.0, 'level1WinOrLose': 30.0, 'level2Commission': 0.0, 'level2Total': 30.0, 'level2WinOrLose': 30.0, 'level3Commission': 0.0, 'level3Total': 30.0, 'level3WinOrLose': 30.0, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': -150.0, 'memberWinOrLose': -150.0, 'name': '杜鑫test账号bc', 'numberOfBets': 2, 'parentId': '1531517760300163074', 'totalBet': 150.0, 'totalCommission': 0.0, 'totalEfficientAmount': 150.0}, {'account': 'd0d1d2d31f/fceshi031', 'accountId': '1531519323030724609', 'companyTotal': 4.0, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 4.0, 'level0WinOrLose': 4.0, 'level1Commission': 0.0, 'level1Total': 4.0, 'level1WinOrLose': 4.0, 'level2Commission': 0.0, 'level2Total': 4.0, 'level2WinOrLose': 4.0, 'level3Commission': 0.0, 'level3Total': 4.0, 'level3WinOrLose': 4.0, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': -20.0, 'memberWinOrLose': -20.0, 'name': '杜鑫test账号bf', 'numberOfBets': 2, 'parentId': '1531517760300163074', 'totalBet': 20.0, 'totalCommission': 0.0, 'totalEfficientAmount': 20.0}, {'account': 'd0d1d2d31o/fceshi040', 'accountId': '1531519360410361857', 'companyTotal': 12.72, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 12.74, 'level0WinOrLose': 12.74, 'level1Commission': 0.0, 'level1Total': 12.74, 'level1WinOrLose': 12.74, 'level2Commission': 0.0, 'level2Total': 12.74, 'level2WinOrLose': 12.74, 'level3Commission': 0.0, 'level3Total': 12.74, 'level3WinOrLose': 12.74, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': -63.68, 'memberWinOrLose': -63.68, 'name': '杜鑫test账号bo', 'numberOfBets': 3, 'parentId': '1531517760300163074', 'totalBet': 290.0, 'totalCommission': 0.0, 'totalEfficientAmount': 146.32}, {'account': 'd0d1d2d31p/fceshi041', 'accountId': '1531519364529168386', 'companyTotal': -146.94, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': -146.92, 'level0WinOrLose': -146.92, 'level1Commission': 0.0, 'level1Total': -146.92, 'level1WinOrLose': -146.92, 'level2Commission': 0.0, 'level2Total': -146.92, 'level2WinOrLose': -146.92, 'level3Commission': 0.0, 'level3Total': -146.92, 'level3WinOrLose': -146.92, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': 734.62, 'memberWinOrLose': 734.62, 'name': '杜鑫test账号bp', 'numberOfBets': 1, 'parentId': '1531517760300163074', 'totalBet': 60.0, 'totalCommission': 0.0, 'totalEfficientAmount': 60.0}, {'account': 'd0d1d2d31r/fceshi043', 'accountId': '1531519378554920961', 'companyTotal': 1.92, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 1.93, 'level0WinOrLose': 1.93, 'level1Commission': 0.0, 'level1Total': 1.93, 'level1WinOrLose': 1.93, 'level2Commission': 0.0, 'level2Total': 1.93, 'level2WinOrLose': 1.93, 'level3Commission': 0.0, 'level3Total': 1.93, 'level3WinOrLose': 1.93, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': -9.64, 'memberWinOrLose': -9.64, 'name': '杜鑫test账号br', 'numberOfBets': 2, 'parentId': '1531517760300163074', 'totalBet': 120.0, 'totalCommission': 0.0, 'totalEfficientAmount': 50.36}, {'account': 'd0d1d2d32a/fceshi044', 'accountId': '1531519635850305537', 'companyTotal': -550.86, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': -550.88, 'level0WinOrLose': -550.88, 'level1Commission': 0.0, 'level1Total': -550.88, 'level1WinOrLose': -550.88, 'level2Commission': 0.0, 'level2Total': -550.88, 'level2WinOrLose': -550.88, 'level3Commission': 0.0, 'level3Total': -550.88, 'level3WinOrLose': -550.88, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': 2754.38, 'memberWinOrLose': 2754.38, 'name': '杜鑫test账号ca', 'numberOfBets': 2, 'parentId': '1531517760300163074', 'totalBet': 1140.0, 'totalCommission': 0.0, 'totalEfficientAmount': 1053.74}, {'account': 'd0d1d2d32i/fceshi052', 'accountId': '1531519668859478017', 'companyTotal': 2.0, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 2.0, 'level0WinOrLose': 2.0, 'level1Commission': 0.0, 'level1Total': 2.0, 'level1WinOrLose': 2.0, 'level2Commission': 0.0, 'level2Total': 2.0, 'level2WinOrLose': 2.0, 'level3Commission': 0.0, 'level3Total': 2.0, 'level3WinOrLose': 2.0, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': -10.0, 'memberWinOrLose': -10.0, 'name': '杜鑫test账号ci', 'numberOfBets': 1, 'parentId': '1531517760300163074', 'totalBet': 10.0, 'totalCommission': 0.0, 'totalEfficientAmount': 10.0}, {'account': 'd0d1d2d32k/fceshi054', 'accountId': '1531519677063536642', 'companyTotal': 8.86, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 8.86, 'level0WinOrLose': 8.86, 'level1Commission': 0.0, 'level1Total': 8.86, 'level1WinOrLose': 8.86, 'level2Commission': 0.0, 'level2Total': 8.86, 'level2WinOrLose': 8.86, 'level3Commission': 0.0, 'level3Total': 8.86, 'level3WinOrLose': 8.86, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': -44.3, 'memberWinOrLose': -44.3, 'name': '杜鑫test账号ck', 'numberOfBets': 3, 'parentId': '1531517760300163074', 'totalBet': 60.0, 'totalCommission': 0.0, 'totalEfficientAmount': 44.3}, {'account': 'd0d1d2d32m/fceshi056', 'accountId': '1531519685234040833', 'companyTotal': 34.7, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 34.7, 'level0WinOrLose': 34.7, 'level1Commission': 0.0, 'level1Total': 34.7, 'level1WinOrLose': 34.7, 'level2Commission': 0.0, 'level2Total': 34.7, 'level2WinOrLose': 34.7, 'level3Commission': 0.0, 'level3Total': 34.7, 'level3WinOrLose': 34.7, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': -173.5, 'memberWinOrLose': -173.5, 'name': '杜鑫test账号cm', 'numberOfBets': 1, 'parentId': '1531517760300163074', 'totalBet': 200.0, 'totalCommission': 0.0, 'totalEfficientAmount': 173.5}, {'account': 'd0d1d2d32p/fceshi059', 'accountId': '1531519697598849026', 'companyTotal': -136.61, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': -136.57, 'level0WinOrLose': -136.57, 'level1Commission': 0.0, 'level1Total': -136.57, 'level1WinOrLose': -136.57, 'level2Commission': 0.0, 'level2Total': -136.57, 'level2WinOrLose': -136.57, 'level3Commission': 0.0, 'level3Total': -136.57, 'level3WinOrLose': -136.57, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': 682.89, 'memberWinOrLose': 682.89, 'name': '杜鑫test账号cp', 'numberOfBets': 2, 'parentId': '1531517760300163074', 'totalBet': 160.0, 'totalCommission': 0.0, 'totalEfficientAmount': 160.0}, {'account': 'd0d1d2d32t/fceshi063', 'accountId': '1531519714225070082', 'companyTotal': 17.88, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 17.88, 'level0WinOrLose': 17.88, 'level1Commission': 0.0, 'level1Total': 17.88, 'level1WinOrLose': 17.88, 'level2Commission': 0.0, 'level2Total': 17.88, 'level2WinOrLose': 17.88, 'level3Commission': 0.0, 'level3Total': 17.88, 'level3WinOrLose': 17.88, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': -89.4, 'memberWinOrLose': -89.4, 'name': '杜鑫test账号ct', 'numberOfBets': 2, 'parentId': '1531517760300163074', 'totalBet': 110.0, 'totalCommission': 0.0, 'totalEfficientAmount': 89.4}, {'account': 'd0d1d2d35e/fceshi0126', 'accountId': '1531520000230465537', 'companyTotal': -1.39, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': -1.38, 'level0WinOrLose': -1.38, 'level1Commission': 0.0, 'level1Total': -1.38, 'level1WinOrLose': -1.38, 'level2Commission': 0.0, 'level2Total': -1.38, 'level2WinOrLose': -1.38, 'level3Commission': 0.01, 'level3Total': -1.37, 'level3WinOrLose': -1.38, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': 6.9, 'memberWinOrLose': 6.9, 'name': '杜鑫test账号fe', 'numberOfBets': 1, 'parentId': '1531517760300163074', 'totalBet': 10.0, 'totalCommission': 0.0, 'totalEfficientAmount': 6.9}, {'account': 'd0d1d2d36x/fceshi0171', 'accountId': '1531520192103096322', 'companyTotal': -19.9, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': -19.9, 'level0WinOrLose': -19.9, 'level1Commission': 0.0, 'level1Total': -19.9, 'level1WinOrLose': -19.9, 'level2Commission': 0.0, 'level2Total': -19.9, 'level2WinOrLose': -19.9, 'level3Commission': 0.0, 'level3Total': -19.9, 'level3WinOrLose': -19.9, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': 99.5, 'memberWinOrLose': 99.5, 'name': '杜鑫test账号gx', 'numberOfBets': 1, 'parentId': '1531517760300163074', 'totalBet': 10.0, 'totalCommission': 0.0, 'totalEfficientAmount': 10.0}, {'account': 'd0d1d2d3ax/fceshi0275', 'accountId': '1531520731645779969', 'companyTotal': 1.99, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 2.0, 'level0WinOrLose': 2.0, 'level1Commission': 0.0, 'level1Total': 2.0, 'level1WinOrLose': 2.0, 'level2Commission': 0.0, 'level2Total': 2.0, 'level2WinOrLose': 2.0, 'level3Commission': 0.01, 'level3Total': 2.01, 'level3WinOrLose': 2.0, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': -10.0, 'memberWinOrLose': -10.0, 'name': '杜鑫test账号ax', 'numberOfBets': 1, 'parentId': '1531517760300163074', 'totalBet': 10.0, 'totalCommission': 0.0, 'totalEfficientAmount': 10.0}, {'account': 'd0d1d2d3bd/fceshi0281', 'accountId': '1531520756333453313', 'companyTotal': 2.0, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 2.0, 'level0WinOrLose': 2.0, 'level1Commission': 0.0, 'level1Total': 2.0, 'level1WinOrLose': 2.0, 'level2Commission': 0.0, 'level2Total': 2.0, 'level2WinOrLose': 2.0, 'level3Commission': 0.0, 'level3Total': 2.0, 'level3WinOrLose': 2.0, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': -10.0, 'memberWinOrLose': -10.0, 'name': '杜鑫test账号bd', 'numberOfBets': 1, 'parentId': '1531517760300163074', 'totalBet': 10.0, 'totalCommission': 0.0, 'totalEfficientAmount': 10.0}, {'account': 'd0d1d2d3bq/fceshi0294', 'accountId': '1531520809617891329', 'companyTotal': 1.99, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 2.0, 'level0WinOrLose': 2.0, 'level1Commission': 0.0, 'level1Total': 2.0, 'level1WinOrLose': 2.0, 'level2Commission': 0.0, 'level2Total': 2.0, 'level2WinOrLose': 2.0, 'level3Commission': 0.01, 'level3Total': 2.01, 'level3WinOrLose': 2.0, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': -10.0, 'memberWinOrLose': -10.0, 'name': '杜鑫test账号bq', 'numberOfBets': 1, 'parentId': '1531517760300163074', 'totalBet': 10.0, 'totalCommission': 0.0, 'totalEfficientAmount': 10.0}, {'account': 'd0d1d2d3gq/fceshi0424', 'accountId': '1531521359801524225', 'companyTotal': -2.77, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': -2.76, 'level0WinOrLose': -2.76, 'level1Commission': 0.0, 'level1Total': -2.76, 'level1WinOrLose': -2.76, 'level2Commission': 0.0, 'level2Total': -2.76, 'level2WinOrLose': -2.76, 'level3Commission': 0.01, 'level3Total': -2.75, 'level3WinOrLose': -2.76, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': 13.8, 'memberWinOrLose': 13.8, 'name': '杜鑫test账号gq', 'numberOfBets': 1, 'parentId': '1531517760300163074', 'totalBet': 10.0, 'totalCommission': 0.0, 'totalEfficientAmount': 10.0}, {'account': 'd0d1d2d3gv/fceshi0429', 'accountId': '1531521380181647362', 'companyTotal': 1.99, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 2.0, 'level0WinOrLose': 2.0, 'level1Commission': 0.0, 'level1Total': 2.0, 'level1WinOrLose': 2.0, 'level2Commission': 0.0, 'level2Total': 2.0, 'level2WinOrLose': 2.0, 'level3Commission': 0.01, 'level3Total': 2.01, 'level3WinOrLose': 2.0, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': -10.0, 'memberWinOrLose': -10.0, 'name': '杜鑫test账号gv', 'numberOfBets': 1, 'parentId': '1531517760300163074', 'totalBet': 10.0, 'totalCommission': 0.0, 'totalEfficientAmount': 10.0}, {'account': 'd0d1d2d3ig/fceshi0466', 'accountId': '1531521538898305025', 'companyTotal': -1.65, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': -1.64, 'level0WinOrLose': -1.64, 'level1Commission': 0.0, 'level1Total': -1.64, 'level1WinOrLose': -1.64, 'level2Commission': 0.0, 'level2Total': -1.64, 'level2WinOrLose': -1.64, 'level3Commission': 0.01, 'level3Total': -1.63, 'level3WinOrLose': -1.64, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': 8.2, 'memberWinOrLose': 8.2, 'name': '杜鑫test账号ig', 'numberOfBets': 1, 'parentId': '1531517760300163074', 'totalBet': 10.0, 'totalCommission': 0.0, 'totalEfficientAmount': 8.2}, {'account': 'd0d1d2d3px/fceshi0665', 'accountId': '1531522376018468866', 'companyTotal': 2.0, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 2.0, 'level0WinOrLose': 2.0, 'level1Commission': 0.0, 'level1Total': 2.0, 'level1WinOrLose': 2.0, 'level2Commission': 0.0, 'level2Total': 2.0, 'level2WinOrLose': 2.0, 'level3Commission': 0.0, 'level3Total': 2.0, 'level3WinOrLose': 2.0, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': -10.0, 'memberWinOrLose': -10.0, 'name': '杜鑫test账号px', 'numberOfBets': 1, 'parentId': '1531517760300163074', 'totalBet': 10.0, 'totalCommission': 0.0, 'totalEfficientAmount': 10.0}, {'account': 'd0d1d2d3tt/fceshi0765', 'accountId': '1531522809348792321', 'companyTotal': 1.99, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 2.0, 'level0WinOrLose': 2.0, 'level1Commission': 0.0, 'level1Total': 2.0, 'level1WinOrLose': 2.0, 'level2Commission': 0.0, 'level2Total': 2.0, 'level2WinOrLose': 2.0, 'level3Commission': 0.0, 'level3Total': 2.0, 'level3WinOrLose': 2.0, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.01, 'memberTotal': -9.99, 'memberWinOrLose': -10.0, 'name': '杜鑫test账号tt', 'numberOfBets': 1, 'parentId': '1531517760300163074', 'totalBet': 10.0, 'totalCommission': 0.01, 'totalEfficientAmount': 10.0}, {'account': 'd0d1d2d30b/fceshi01', 'accountId': '1531519190650101761', 'companyTotal': -44.11, 'currency': 'CNY', 'level0Commission': -0.1, 'level0Total': -44.1, 'level0WinOrLose': -44.0, 'level1Commission': -0.1, 'level1Total': -44.1, 'level1WinOrLose': -44.0, 'level2Commission': -0.09, 'level2Total': -44.09, 'level2WinOrLose': -44.0, 'level3Commission': 0.14, 'level3Total': -43.86, 'level3WinOrLose': -44.0, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.26, 'memberTotal': 220.26, 'memberWinOrLose': 220.0, 'name': '杜鑫test账号ab', 'numberOfBets': 3, 'parentId': '1531517760300163074', 'totalBet': 1020.0, 'totalCommission': 0.26, 'totalEfficientAmount': 260.0}, {'account': 'd0d1d2d32d/fceshi047', 'accountId': '1531519648210919426', 'companyTotal': 15.25, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 15.23, 'level0WinOrLose': 15.23, 'level1Commission': 0.0, 'level1Total': 15.23, 'level1WinOrLose': 15.23, 'level2Commission': 0.0, 'level2Total': 15.23, 'level2WinOrLose': 15.23, 'level3Commission': 0.0, 'level3Total': 15.23, 'level3WinOrLose': 15.23, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': -76.17, 'memberWinOrLose': -76.17, 'name': '杜鑫test账号cd', 'numberOfBets': 1, 'parentId': '1531517760300163074', 'totalBet': 110.0, 'totalCommission': 0.0, 'totalEfficientAmount': 76.17}, {'account': 'd0d1d2d32l/fceshi055', 'accountId': '1531519681106845698', 'companyTotal': 2.0, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 2.0, 'level0WinOrLose': 2.0, 'level1Commission': 0.0, 'level1Total': 2.0, 'level1WinOrLose': 2.0, 'level2Commission': 0.0, 'level2Total': 2.0, 'level2WinOrLose': 2.0, 'level3Commission': 0.0, 'level3Total': 2.0, 'level3WinOrLose': 2.0, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': -10.0, 'memberWinOrLose': -10.0, 'name': '杜鑫test账号cl', 'numberOfBets': 1, 'parentId': '1531517760300163074', 'totalBet': 10.0, 'totalCommission': 0.0, 'totalEfficientAmount': 10.0}, {'account': 'd0d1d2d30g/fceshi06', 'accountId': '1531519218764521474', 'companyTotal': 6.0, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 6.0, 'level0WinOrLose': 6.0, 'level1Commission': 0.0, 'level1Total': 6.0, 'level1WinOrLose': 6.0, 'level2Commission': 0.0, 'level2Total': 6.0, 'level2WinOrLose': 6.0, 'level3Commission': 0.0, 'level3Total': 6.0, 'level3WinOrLose': 6.0, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': -30.0, 'memberWinOrLose': -30.0, 'name': '杜鑫test账号ag', 'numberOfBets': 1, 'parentId': '1531517760300163074', 'totalBet': 30.0, 'totalCommission': 0.0, 'totalEfficientAmount': 30.0}, {'account': 'd0d1d2d31g/fceshi032', 'accountId': '1531519327241805825', 'companyTotal': -4.22, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': -4.21, 'level0WinOrLose': -4.21, 'level1Commission': 0.0, 'level1Total': -4.21, 'level1WinOrLose': -4.21, 'level2Commission': 0.0, 'level2Total': -4.21, 'level2WinOrLose': -4.21, 'level3Commission': 0.0, 'level3Total': -4.21, 'level3WinOrLose': -4.21, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': 21.06, 'memberWinOrLose': 21.06, 'name': '杜鑫test账号bg', 'numberOfBets': 1, 'parentId': '1531517760300163074', 'totalBet': 40.0, 'totalCommission': 0.0, 'totalEfficientAmount': 21.06}, {'account': 'd0d1d2d31j/fceshi035', 'accountId': '1531519339581448193', 'companyTotal': 2.0, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 2.0, 'level0WinOrLose': 2.0, 'level1Commission': 0.0, 'level1Total': 2.0, 'level1WinOrLose': 2.0, 'level2Commission': 0.0, 'level2Total': 2.0, 'level2WinOrLose': 2.0, 'level3Commission': 0.0, 'level3Total': 2.0, 'level3WinOrLose': 2.0, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': -10.0, 'memberWinOrLose': -10.0, 'name': '杜鑫test账号bj', 'numberOfBets': 1, 'parentId': '1531517760300163074', 'totalBet': 10.0, 'totalCommission': 0.0, 'totalEfficientAmount': 10.0}, {'account': 'd0d1d2d32x/fceshi067', 'accountId': '1531519730788376577', 'companyTotal': 31.16, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 31.16, 'level0WinOrLose': 31.16, 'level1Commission': 0.0, 'level1Total': 31.16, 'level1WinOrLose': 31.16, 'level2Commission': 0.0, 'level2Total': 31.16, 'level2WinOrLose': 31.16, 'level3Commission': 0.0, 'level3Total': 31.16, 'level3WinOrLose': 31.16, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': -155.8, 'memberWinOrLose': -155.8, 'name': '杜鑫test账号cx', 'numberOfBets': 2, 'parentId': '1531517760300163074', 'totalBet': 320.0, 'totalCommission': 0.0, 'totalEfficientAmount': 203.2}, {'account': 'd0d1d2d32z/fceshi069', 'accountId': '1531519738950492161', 'companyTotal': 2.0, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 2.0, 'level0WinOrLose': 2.0, 'level1Commission': 0.0, 'level1Total': 2.0, 'level1WinOrLose': 2.0, 'level2Commission': 0.0, 'level2Total': 2.0, 'level2WinOrLose': 2.0, 'level3Commission': 0.0, 'level3Total': 2.0, 'level3WinOrLose': 2.0, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': -10.0, 'memberWinOrLose': -10.0, 'name': '杜鑫test账号cz', 'numberOfBets': 1, 'parentId': '1531517760300163074', 'totalBet': 10.0, 'totalCommission': 0.0, 'totalEfficientAmount': 10.0}, {'account': 'd0d1d2d33b/fceshi071', 'accountId': '1531519747196493826', 'companyTotal': 0.31, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 0.27, 'level0WinOrLose': 0.27, 'level1Commission': 0.0, 'level1Total': 0.27, 'level1WinOrLose': 0.27, 'level2Commission': 0.0, 'level2Total': 0.27, 'level2WinOrLose': 0.27, 'level3Commission': 0.0, 'level3Total': 0.27, 'level3WinOrLose': 0.27, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': -1.39, 'memberWinOrLose': -1.39, 'name': '杜鑫test账号db', 'numberOfBets': 1, 'parentId': '1531517760300163074', 'totalBet': 100.0, 'totalCommission': 0.0, 'totalEfficientAmount': 1.39}, {'account': 'd0d1d2d3kp/fceshi0527', 'accountId': '1531521794973147137', 'companyTotal': -4.6, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': -4.6, 'level0WinOrLose': -4.6, 'level1Commission': 0.0, 'level1Total': -4.6, 'level1WinOrLose': -4.6, 'level2Commission': 0.0, 'level2Total': -4.6, 'level2WinOrLose': -4.6, 'level3Commission': 0.0, 'level3Total': -4.6, 'level3WinOrLose': -4.6, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': 23.0, 'memberWinOrLose': 23.0, 'name': '杜鑫test账号kp', 'numberOfBets': 1, 'parentId': '1531517760300163074', 'totalBet': 10.0, 'totalCommission': 0.0, 'totalEfficientAmount': 10.0}, {'account': 'd0d1d2d3pd/fceshi0645', 'accountId': '1531522293508120578', 'companyTotal': 0.0, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 0.0, 'level0WinOrLose': 0.0, 'level1Commission': 0.0, 'level1Total': 0.0, 'level1WinOrLose': 0.0, 'level2Commission': 0.0, 'level2Total': 0.0, 'level2WinOrLose': 0.0, 'level3Commission': 0.0, 'level3Total': 0.0, 'level3WinOrLose': 0.0, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': 0.0, 'memberWinOrLose': 0.0, 'name': '杜鑫test账号pd', 'numberOfBets': 1, 'parentId': '1531517760300163074', 'totalBet': 10.0, 'totalCommission': 0.0, 'totalEfficientAmount': 0.0}, {'account': 'd0d1d2d30i/fceshi08', 'accountId': '1531519226964385794', 'companyTotal': 14.0, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 14.0, 'level0WinOrLose': 14.0, 'level1Commission': 0.0, 'level1Total': 14.0, 'level1WinOrLose': 14.0, 'level2Commission': 0.0, 'level2Total': 14.0, 'level2WinOrLose': 14.0, 'level3Commission': 0.0, 'level3Total': 14.0, 'level3WinOrLose': 14.0, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': -70.0, 'memberWinOrLose': -70.0, 'name': '杜鑫test账号ai', 'numberOfBets': 1, 'parentId': '1531517760300163074', 'totalBet': 110.0, 'totalCommission': 0.0, 'totalEfficientAmount': 70.0}, {'account': 'd0d1d2d30q/fceshi016', 'accountId': '1531519261340901378', 'companyTotal': 28.13, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 28.13, 'level0WinOrLose': 28.13, 'level1Commission': 0.0, 'level1Total': 28.13, 'level1WinOrLose': 28.13, 'level2Commission': 0.0, 'level2Total': 28.13, 'level2WinOrLose': 28.13, 'level3Commission': 0.0, 'level3Total': 28.13, 'level3WinOrLose': 28.13, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': -140.65, 'memberWinOrLose': -140.65, 'name': '杜鑫test账号aq', 'numberOfBets': 1, 'parentId': '1531517760300163074', 'totalBet': 150.0, 'totalCommission': 0.0, 'totalEfficientAmount': 140.65}, {'account': 'd0d1d2d31q/fceshi042', 'accountId': '1531519368656363522', 'companyTotal': 7.1, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 7.1, 'level0WinOrLose': 7.1, 'level1Commission': 0.0, 'level1Total': 7.1, 'level1WinOrLose': 7.1, 'level2Commission': 0.0, 'level2Total': 7.1, 'level2WinOrLose': 7.1, 'level3Commission': 0.0, 'level3Total': 7.1, 'level3WinOrLose': 7.1, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': -35.5, 'memberWinOrLose': -35.5, 'name': '杜鑫test账号bq', 'numberOfBets': 2, 'parentId': '1531517760300163074', 'totalBet': 70.0, 'totalCommission': 0.0, 'totalEfficientAmount': 44.5}, {'account': 'd0d1d2d32e/fceshi048', 'accountId': '1531519652338114562', 'companyTotal': 12.0, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 12.0, 'level0WinOrLose': 12.0, 'level1Commission': 0.0, 'level1Total': 12.0, 'level1WinOrLose': 12.0, 'level2Commission': 0.0, 'level2Total': 12.0, 'level2WinOrLose': 12.0, 'level3Commission': 0.0, 'level3Total': 12.0, 'level3WinOrLose': 12.0, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': -60.0, 'memberWinOrLose': -60.0, 'name': '杜鑫test账号ce', 'numberOfBets': 1, 'parentId': '1531517760300163074', 'totalBet': 60.0, 'totalCommission': 0.0, 'totalEfficientAmount': 60.0}, {'account': 'd0d1d2d32g/fceshi050', 'accountId': '1531519660558950401', 'companyTotal': 15.74, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 15.74, 'level0WinOrLose': 15.74, 'level1Commission': 0.0, 'level1Total': 15.74, 'level1WinOrLose': 15.74, 'level2Commission': 0.0, 'level2Total': 15.74, 'level2WinOrLose': 15.74, 'level3Commission': 0.0, 'level3Total': 15.74, 'level3WinOrLose': 15.74, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': -78.7, 'memberWinOrLose': -78.7, 'name': '杜鑫test账号cg', 'numberOfBets': 2, 'parentId': '1531517760300163074', 'totalBet': 100.0, 'totalCommission': 0.0, 'totalEfficientAmount': 78.7}, {'account': 'd0d1d2d32v/fceshi065', 'accountId': '1531519722500431873', 'companyTotal': 20.0, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 20.0, 'level0WinOrLose': 20.0, 'level1Commission': 0.0, 'level1Total': 20.0, 'level1WinOrLose': 20.0, 'level2Commission': 0.0, 'level2Total': 20.0, 'level2WinOrLose': 20.0, 'level3Commission': 0.0, 'level3Total': 20.0, 'level3WinOrLose': 20.0, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': -100.0, 'memberWinOrLose': -100.0, 'name': '杜鑫test账号cv', 'numberOfBets': 1, 'parentId': '1531517760300163074', 'totalBet': 110.0, 'totalCommission': 0.0, 'totalEfficientAmount': 100.0}, {'account': 'd0d1d2d33a/fceshi070', 'accountId': '1531519743081881601', 'companyTotal': -2.26, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': -2.26, 'level0WinOrLose': -2.26, 'level1Commission': 0.0, 'level1Total': -2.26, 'level1WinOrLose': -2.26, 'level2Commission': 0.0, 'level2Total': -2.26, 'level2WinOrLose': -2.26, 'level3Commission': 0.0, 'level3Total': -2.26, 'level3WinOrLose': -2.26, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': 11.3, 'memberWinOrLose': 11.3, 'name': '杜鑫test账号da', 'numberOfBets': 1, 'parentId': '1531517760300163074', 'totalBet': 10.0, 'totalCommission': 0.0, 'totalEfficientAmount': 10.0}, {'account': 'd0d1d2d3qt/fceshi0687', 'accountId': '1531522468255408130', 'companyTotal': -4.2, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': -4.2, 'level0WinOrLose': -4.2, 'level1Commission': 0.0, 'level1Total': -4.2, 'level1WinOrLose': -4.2, 'level2Commission': 0.0, 'level2Total': -4.2, 'level2WinOrLose': -4.2, 'level3Commission': 0.0, 'level3Total': -4.2, 'level3WinOrLose': -4.2, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': 21.0, 'memberWinOrLose': 21.0, 'name': '杜鑫test账号qt', 'numberOfBets': 1, 'parentId': '1531517760300163074', 'totalBet': 10.0, 'totalCommission': 0.0, 'totalEfficientAmount': 10.0}]
-        # sql_list=[{'account': 'd0d1d2d30b/fceshi01', 'accountId': '1531519190650101761', 'companyTotal': -44.11, 'currency': 'CNY', 'level0Commission': -0.1, 'level0Total': -44.1, 'level0WinOrLose': -44.0, 'level1Commission': -0.1, 'level1Total': -44.1, 'level1WinOrLose': -44.0, 'level2Commission': -0.09, 'level2Total': -44.09, 'level2WinOrLose': -44.0, 'level3Commission': 0.14, 'level3Total': -43.86, 'level3WinOrLose': -44.0, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.26, 'memberTotal': 220.26, 'memberWinOrLose': 220.0, 'name': '杜鑫test账号ab', 'numberOfBets': 3, 'parentId': '1531517351158390786', 'totalBet': 1020.0, 'totalCommission': 0.26, 'totalEfficientAmount': 260.0}, {'account': 'd0d1d2d30m/fceshi012', 'accountId': '1531519243502526466', 'companyTotal': -108.24, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': -108.2, 'level0WinOrLose': -108.2, 'level1Commission': 0.0, 'level1Total': -108.2, 'level1WinOrLose': -108.2, 'level2Commission': 0.0, 'level2Total': -108.2, 'level2WinOrLose': -108.2, 'level3Commission': 0.0, 'level3Total': -108.2, 'level3WinOrLose': -108.2, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': 541.04, 'memberWinOrLose': 541.04, 'name': '杜鑫test账号am', 'numberOfBets': 4, 'parentId': '1531517351158390786', 'totalBet': 320.0, 'totalCommission': 0.0, 'totalEfficientAmount': 320.0}, {'account': 'd0d1d2d35e/fceshi0126', 'accountId': '1531520000230465537', 'companyTotal': -1.39, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': -1.38, 'level0WinOrLose': -1.38, 'level1Commission': 0.0, 'level1Total': -1.38, 'level1WinOrLose': -1.38, 'level2Commission': 0.0, 'level2Total': -1.38, 'level2WinOrLose': -1.38, 'level3Commission': 0.01, 'level3Total': -1.37, 'level3WinOrLose': -1.38, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': 6.9, 'memberWinOrLose': 6.9, 'name': '杜鑫test账号fe', 'numberOfBets': 1, 'parentId': '1531517351158390786', 'totalBet': 10.0, 'totalCommission': 0.0, 'totalEfficientAmount': 6.9}, {'account': 'd0d1d2d30o/fceshi014', 'accountId': '1531519253065539586', 'companyTotal': 8.0, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 8.0, 'level0WinOrLose': 8.0, 'level1Commission': 0.0, 'level1Total': 8.0, 'level1WinOrLose': 8.0, 'level2Commission': 0.0, 'level2Total': 8.0, 'level2WinOrLose': 8.0, 'level3Commission': 0.0, 'level3Total': 8.0, 'level3WinOrLose': 8.0, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': -40.0, 'memberWinOrLose': -40.0, 'name': '杜鑫test账号ao', 'numberOfBets': 2, 'parentId': '1531517351158390786', 'totalBet': 40.0, 'totalCommission': 0.0, 'totalEfficientAmount': 40.0}, {'account': 'd0d1d2d30p/fceshi015', 'accountId': '1531519257226289154', 'companyTotal': -18.0, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': -18.0, 'level0WinOrLose': -18.0, 'level1Commission': 0.0, 'level1Total': -18.0, 'level1WinOrLose': -18.0, 'level2Commission': 0.0, 'level2Total': -18.0, 'level2WinOrLose': -18.0, 'level3Commission': 0.0, 'level3Total': -18.0, 'level3WinOrLose': -18.0, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': 90.0, 'memberWinOrLose': 90.0, 'name': '杜鑫test账号ap', 'numberOfBets': 2, 'parentId': '1531517351158390786', 'totalBet': 70.0, 'totalCommission': 0.0, 'totalEfficientAmount': 30.0}, {'account': 'd0d1d2d30q/fceshi016', 'accountId': '1531519261340901378', 'companyTotal': 28.13, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 28.13, 'level0WinOrLose': 28.13, 'level1Commission': 0.0, 'level1Total': 28.13, 'level1WinOrLose': 28.13, 'level2Commission': 0.0, 'level2Total': 28.13, 'level2WinOrLose': 28.13, 'level3Commission': 0.0, 'level3Total': 28.13, 'level3WinOrLose': 28.13, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': -140.65, 'memberWinOrLose': -140.65, 'name': '杜鑫test账号aq', 'numberOfBets': 1, 'parentId': '1531517351158390786', 'totalBet': 150.0, 'totalCommission': 0.0, 'totalEfficientAmount': 140.65}, {'account': 'd0d1d2d30r/fceshi017', 'accountId': '1531519265463902210', 'companyTotal': 7.36, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 7.36, 'level0WinOrLose': 7.36, 'level1Commission': 0.0, 'level1Total': 7.36, 'level1WinOrLose': 7.36, 'level2Commission': 0.0, 'level2Total': 7.36, 'level2WinOrLose': 7.36, 'level3Commission': 0.0, 'level3Total': 7.36, 'level3WinOrLose': 7.36, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': -36.8, 'memberWinOrLose': -36.8, 'name': '杜鑫test账号ar', 'numberOfBets': 2, 'parentId': '1531517351158390786', 'totalBet': 50.0, 'totalCommission': 0.0, 'totalEfficientAmount': 36.8}, {'account': 'd0d1d2d36x/fceshi0171', 'accountId': '1531520192103096322', 'companyTotal': -19.9, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': -19.9, 'level0WinOrLose': -19.9, 'level1Commission': 0.0, 'level1Total': -19.9, 'level1WinOrLose': -19.9, 'level2Commission': 0.0, 'level2Total': -19.9, 'level2WinOrLose': -19.9, 'level3Commission': 0.0, 'level3Total': -19.9, 'level3WinOrLose': -19.9, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': 99.5, 'memberWinOrLose': 99.5, 'name': '杜鑫test账号gx', 'numberOfBets': 1, 'parentId': '1531517351158390786', 'totalBet': 10.0, 'totalCommission': 0.0, 'totalEfficientAmount': 10.0}, {'account': 'd0d1d2d30s/fceshi018', 'accountId': '1531519269557542914', 'companyTotal': 29.3, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 29.3, 'level0WinOrLose': 29.3, 'level1Commission': 0.0, 'level1Total': 29.3, 'level1WinOrLose': 29.3, 'level2Commission': 0.0, 'level2Total': 29.3, 'level2WinOrLose': 29.3, 'level3Commission': 0.0, 'level3Total': 29.3, 'level3WinOrLose': 29.3, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': -146.5, 'memberWinOrLose': -146.5, 'name': '杜鑫test账号as', 'numberOfBets': 1, 'parentId': '1531517351158390786', 'totalBet': 260.0, 'totalCommission': 0.0, 'totalEfficientAmount': 146.5}, {'account': 'd0d1d2d30c/fceshi02', 'accountId': '1531519197046415362', 'companyTotal': -54.87, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': -54.85, 'level0WinOrLose': -54.85, 'level1Commission': 0.0, 'level1Total': -54.85, 'level1WinOrLose': -54.85, 'level2Commission': 0.0, 'level2Total': -54.85, 'level2WinOrLose': -54.85, 'level3Commission': 0.0, 'level3Total': -54.85, 'level3WinOrLose': -54.85, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': 274.27, 'memberWinOrLose': 274.27, 'name': '杜鑫test账号ac', 'numberOfBets': 2, 'parentId': '1531517351158390786', 'totalBet': 190.0, 'totalCommission': 0.0, 'totalEfficientAmount': 190.0}, {'account': 'd0d1d2d31a/fceshi026', 'accountId': '1531519302432497666', 'companyTotal': -152.15, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': -152.14, 'level0WinOrLose': -152.14, 'level1Commission': 0.0, 'level1Total': -152.14, 'level1WinOrLose': -152.14, 'level2Commission': 0.0, 'level2Total': -152.14, 'level2WinOrLose': -152.14, 'level3Commission': 0.0, 'level3Total': -152.14, 'level3WinOrLose': -152.14, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': 760.71, 'memberWinOrLose': 760.71, 'name': '杜鑫test账号ba', 'numberOfBets': 2, 'parentId': '1531517351158390786', 'totalBet': 160.0, 'totalCommission': 0.0, 'totalEfficientAmount': 160.0}, {'account': 'd0d1d2d3ax/fceshi0275', 'accountId': '1531520731645779969', 'companyTotal': 1.99, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 2.0, 'level0WinOrLose': 2.0, 'level1Commission': 0.0, 'level1Total': 2.0, 'level1WinOrLose': 2.0, 'level2Commission': 0.0, 'level2Total': 2.0, 'level2WinOrLose': 2.0, 'level3Commission': 0.01, 'level3Total': 2.01, 'level3WinOrLose': 2.0, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': -10.0, 'memberWinOrLose': -10.0, 'name': '杜鑫test账号ax', 'numberOfBets': 1, 'parentId': '1531517351158390786', 'totalBet': 10.0, 'totalCommission': 0.0, 'totalEfficientAmount': 10.0}, {'account': 'd0d1d2d31c/fceshi028', 'accountId': '1531519310657527809', 'companyTotal': 30.0, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 30.0, 'level0WinOrLose': 30.0, 'level1Commission': 0.0, 'level1Total': 30.0, 'level1WinOrLose': 30.0, 'level2Commission': 0.0, 'level2Total': 30.0, 'level2WinOrLose': 30.0, 'level3Commission': 0.0, 'level3Total': 30.0, 'level3WinOrLose': 30.0, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': -150.0, 'memberWinOrLose': -150.0, 'name': '杜鑫test账号bc', 'numberOfBets': 2, 'parentId': '1531517351158390786', 'totalBet': 150.0, 'totalCommission': 0.0, 'totalEfficientAmount': 150.0}, {'account': 'd0d1d2d3bd/fceshi0281', 'accountId': '1531520756333453313', 'companyTotal': 2.0, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 2.0, 'level0WinOrLose': 2.0, 'level1Commission': 0.0, 'level1Total': 2.0, 'level1WinOrLose': 2.0, 'level2Commission': 0.0, 'level2Total': 2.0, 'level2WinOrLose': 2.0, 'level3Commission': 0.0, 'level3Total': 2.0, 'level3WinOrLose': 2.0, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': -10.0, 'memberWinOrLose': -10.0, 'name': '杜鑫test账号bd', 'numberOfBets': 1, 'parentId': '1531517351158390786', 'totalBet': 10.0, 'totalCommission': 0.0, 'totalEfficientAmount': 10.0}, {'account': 'd0d1d2d3bq/fceshi0294', 'accountId': '1531520809617891329', 'companyTotal': 1.99, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 2.0, 'level0WinOrLose': 2.0, 'level1Commission': 0.0, 'level1Total': 2.0, 'level1WinOrLose': 2.0, 'level2Commission': 0.0, 'level2Total': 2.0, 'level2WinOrLose': 2.0, 'level3Commission': 0.01, 'level3Total': 2.01, 'level3WinOrLose': 2.0, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': -10.0, 'memberWinOrLose': -10.0, 'name': '杜鑫test账号bq', 'numberOfBets': 1, 'parentId': '1531517351158390786', 'totalBet': 10.0, 'totalCommission': 0.0, 'totalEfficientAmount': 10.0}, {'account': 'd0d1d2d31f/fceshi031', 'accountId': '1531519323030724609', 'companyTotal': 4.0, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 4.0, 'level0WinOrLose': 4.0, 'level1Commission': 0.0, 'level1Total': 4.0, 'level1WinOrLose': 4.0, 'level2Commission': 0.0, 'level2Total': 4.0, 'level2WinOrLose': 4.0, 'level3Commission': 0.0, 'level3Total': 4.0, 'level3WinOrLose': 4.0, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': -20.0, 'memberWinOrLose': -20.0, 'name': '杜鑫test账号bf', 'numberOfBets': 2, 'parentId': '1531517351158390786', 'totalBet': 20.0, 'totalCommission': 0.0, 'totalEfficientAmount': 20.0}, {'account': 'd0d1d2d31g/fceshi032', 'accountId': '1531519327241805825', 'companyTotal': -4.22, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': -4.21, 'level0WinOrLose': -4.21, 'level1Commission': 0.0, 'level1Total': -4.21, 'level1WinOrLose': -4.21, 'level2Commission': 0.0, 'level2Total': -4.21, 'level2WinOrLose': -4.21, 'level3Commission': 0.0, 'level3Total': -4.21, 'level3WinOrLose': -4.21, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': 21.06, 'memberWinOrLose': 21.06, 'name': '杜鑫test账号bg', 'numberOfBets': 1, 'parentId': '1531517351158390786', 'totalBet': 40.0, 'totalCommission': 0.0, 'totalEfficientAmount': 21.06}, {'account': 'd0d1d2d31j/fceshi035', 'accountId': '1531519339581448193', 'companyTotal': 2.0, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 2.0, 'level0WinOrLose': 2.0, 'level1Commission': 0.0, 'level1Total': 2.0, 'level1WinOrLose': 2.0, 'level2Commission': 0.0, 'level2Total': 2.0, 'level2WinOrLose': 2.0, 'level3Commission': 0.0, 'level3Total': 2.0, 'level3WinOrLose': 2.0, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': -10.0, 'memberWinOrLose': -10.0, 'name': '杜鑫test账号bj', 'numberOfBets': 1, 'parentId': '1531517351158390786', 'totalBet': 10.0, 'totalCommission': 0.0, 'totalEfficientAmount': 10.0}, {'account': 'd0d1d2d31o/fceshi040', 'accountId': '1531519360410361857', 'companyTotal': 12.72, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 12.74, 'level0WinOrLose': 12.74, 'level1Commission': 0.0, 'level1Total': 12.74, 'level1WinOrLose': 12.74, 'level2Commission': 0.0, 'level2Total': 12.74, 'level2WinOrLose': 12.74, 'level3Commission': 0.0, 'level3Total': 12.74, 'level3WinOrLose': 12.74, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': -63.68, 'memberWinOrLose': -63.68, 'name': '杜鑫test账号bo', 'numberOfBets': 3, 'parentId': '1531517351158390786', 'totalBet': 290.0, 'totalCommission': 0.0, 'totalEfficientAmount': 146.32}, {'account': 'd0d1d2d31p/fceshi041', 'accountId': '1531519364529168386', 'companyTotal': -146.94, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': -146.92, 'level0WinOrLose': -146.92, 'level1Commission': 0.0, 'level1Total': -146.92, 'level1WinOrLose': -146.92, 'level2Commission': 0.0, 'level2Total': -146.92, 'level2WinOrLose': -146.92, 'level3Commission': 0.0, 'level3Total': -146.92, 'level3WinOrLose': -146.92, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': 734.62, 'memberWinOrLose': 734.62, 'name': '杜鑫test账号bp', 'numberOfBets': 1, 'parentId': '1531517351158390786', 'totalBet': 60.0, 'totalCommission': 0.0, 'totalEfficientAmount': 60.0}, {'account': 'd0d1d2d31q/fceshi042', 'accountId': '1531519368656363522', 'companyTotal': 7.1, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 7.1, 'level0WinOrLose': 7.1, 'level1Commission': 0.0, 'level1Total': 7.1, 'level1WinOrLose': 7.1, 'level2Commission': 0.0, 'level2Total': 7.1, 'level2WinOrLose': 7.1, 'level3Commission': 0.0, 'level3Total': 7.1, 'level3WinOrLose': 7.1, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': -35.5, 'memberWinOrLose': -35.5, 'name': '杜鑫test账号bq', 'numberOfBets': 2, 'parentId': '1531517351158390786', 'totalBet': 70.0, 'totalCommission': 0.0, 'totalEfficientAmount': 44.5}, {'account': 'd0d1d2d3gq/fceshi0424', 'accountId': '1531521359801524225', 'companyTotal': -2.77, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': -2.76, 'level0WinOrLose': -2.76, 'level1Commission': 0.0, 'level1Total': -2.76, 'level1WinOrLose': -2.76, 'level2Commission': 0.0, 'level2Total': -2.76, 'level2WinOrLose': -2.76, 'level3Commission': 0.01, 'level3Total': -2.75, 'level3WinOrLose': -2.76, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': 13.8, 'memberWinOrLose': 13.8, 'name': '杜鑫test账号gq', 'numberOfBets': 1, 'parentId': '1531517351158390786', 'totalBet': 10.0, 'totalCommission': 0.0, 'totalEfficientAmount': 10.0}, {'account': 'd0d1d2d3gv/fceshi0429', 'accountId': '1531521380181647362', 'companyTotal': 1.99, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 2.0, 'level0WinOrLose': 2.0, 'level1Commission': 0.0, 'level1Total': 2.0, 'level1WinOrLose': 2.0, 'level2Commission': 0.0, 'level2Total': 2.0, 'level2WinOrLose': 2.0, 'level3Commission': 0.01, 'level3Total': 2.01, 'level3WinOrLose': 2.0, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': -10.0, 'memberWinOrLose': -10.0, 'name': '杜鑫test账号gv', 'numberOfBets': 1, 'parentId': '1531517351158390786', 'totalBet': 10.0, 'totalCommission': 0.0, 'totalEfficientAmount': 10.0}, {'account': 'd0d1d2d31r/fceshi043', 'accountId': '1531519378554920961', 'companyTotal': 1.92, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 1.93, 'level0WinOrLose': 1.93, 'level1Commission': 0.0, 'level1Total': 1.93, 'level1WinOrLose': 1.93, 'level2Commission': 0.0, 'level2Total': 1.93, 'level2WinOrLose': 1.93, 'level3Commission': 0.0, 'level3Total': 1.93, 'level3WinOrLose': 1.93, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': -9.64, 'memberWinOrLose': -9.64, 'name': '杜鑫test账号br', 'numberOfBets': 2, 'parentId': '1531517351158390786', 'totalBet': 120.0, 'totalCommission': 0.0, 'totalEfficientAmount': 50.36}, {'account': 'd0d1d2d32a/fceshi044', 'accountId': '1531519635850305537', 'companyTotal': -550.86, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': -550.88, 'level0WinOrLose': -550.88, 'level1Commission': 0.0, 'level1Total': -550.88, 'level1WinOrLose': -550.88, 'level2Commission': 0.0, 'level2Total': -550.88, 'level2WinOrLose': -550.88, 'level3Commission': 0.0, 'level3Total': -550.88, 'level3WinOrLose': -550.88, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': 2754.38, 'memberWinOrLose': 2754.38, 'name': '杜鑫test账号ca', 'numberOfBets': 2, 'parentId': '1531517351158390786', 'totalBet': 1140.0, 'totalCommission': 0.0, 'totalEfficientAmount': 1053.74}, {'account': 'd0d1d2d3ig/fceshi0466', 'accountId': '1531521538898305025', 'companyTotal': -1.65, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': -1.64, 'level0WinOrLose': -1.64, 'level1Commission': 0.0, 'level1Total': -1.64, 'level1WinOrLose': -1.64, 'level2Commission': 0.0, 'level2Total': -1.64, 'level2WinOrLose': -1.64, 'level3Commission': 0.01, 'level3Total': -1.63, 'level3WinOrLose': -1.64, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': 8.2, 'memberWinOrLose': 8.2, 'name': '杜鑫test账号ig', 'numberOfBets': 1, 'parentId': '1531517351158390786', 'totalBet': 10.0, 'totalCommission': 0.0, 'totalEfficientAmount': 8.2}, {'account': 'd0d1d2d32d/fceshi047', 'accountId': '1531519648210919426', 'companyTotal': 15.25, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 15.23, 'level0WinOrLose': 15.23, 'level1Commission': 0.0, 'level1Total': 15.23, 'level1WinOrLose': 15.23, 'level2Commission': 0.0, 'level2Total': 15.23, 'level2WinOrLose': 15.23, 'level3Commission': 0.0, 'level3Total': 15.23, 'level3WinOrLose': 15.23, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': -76.17, 'memberWinOrLose': -76.17, 'name': '杜鑫test账号cd', 'numberOfBets': 1, 'parentId': '1531517351158390786', 'totalBet': 110.0, 'totalCommission': 0.0, 'totalEfficientAmount': 76.17}, {'account': 'd0d1d2d32e/fceshi048', 'accountId': '1531519652338114562', 'companyTotal': 12.0, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 12.0, 'level0WinOrLose': 12.0, 'level1Commission': 0.0, 'level1Total': 12.0, 'level1WinOrLose': 12.0, 'level2Commission': 0.0, 'level2Total': 12.0, 'level2WinOrLose': 12.0, 'level3Commission': 0.0, 'level3Total': 12.0, 'level3WinOrLose': 12.0, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': -60.0, 'memberWinOrLose': -60.0, 'name': '杜鑫test账号ce', 'numberOfBets': 1, 'parentId': '1531517351158390786', 'totalBet': 60.0, 'totalCommission': 0.0, 'totalEfficientAmount': 60.0}, {'account': 'd0d1d2d32g/fceshi050', 'accountId': '1531519660558950401', 'companyTotal': 15.74, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 15.74, 'level0WinOrLose': 15.74, 'level1Commission': 0.0, 'level1Total': 15.74, 'level1WinOrLose': 15.74, 'level2Commission': 0.0, 'level2Total': 15.74, 'level2WinOrLose': 15.74, 'level3Commission': 0.0, 'level3Total': 15.74, 'level3WinOrLose': 15.74, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': -78.7, 'memberWinOrLose': -78.7, 'name': '杜鑫test账号cg', 'numberOfBets': 2, 'parentId': '1531517351158390786', 'totalBet': 100.0, 'totalCommission': 0.0, 'totalEfficientAmount': 78.7}, {'account': 'd0d1d2d32i/fceshi052', 'accountId': '1531519668859478017', 'companyTotal': 2.0, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 2.0, 'level0WinOrLose': 2.0, 'level1Commission': 0.0, 'level1Total': 2.0, 'level1WinOrLose': 2.0, 'level2Commission': 0.0, 'level2Total': 2.0, 'level2WinOrLose': 2.0, 'level3Commission': 0.0, 'level3Total': 2.0, 'level3WinOrLose': 2.0, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': -10.0, 'memberWinOrLose': -10.0, 'name': '杜鑫test账号ci', 'numberOfBets': 1, 'parentId': '1531517351158390786', 'totalBet': 10.0, 'totalCommission': 0.0, 'totalEfficientAmount': 10.0}, {'account': 'd0d1d2d3kp/fceshi0527', 'accountId': '1531521794973147137', 'companyTotal': -4.6, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': -4.6, 'level0WinOrLose': -4.6, 'level1Commission': 0.0, 'level1Total': -4.6, 'level1WinOrLose': -4.6, 'level2Commission': 0.0, 'level2Total': -4.6, 'level2WinOrLose': -4.6, 'level3Commission': 0.0, 'level3Total': -4.6, 'level3WinOrLose': -4.6, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': 23.0, 'memberWinOrLose': 23.0, 'name': '杜鑫test账号kp', 'numberOfBets': 1, 'parentId': '1531517351158390786', 'totalBet': 10.0, 'totalCommission': 0.0, 'totalEfficientAmount': 10.0}, {'account': 'd0d1d2d32k/fceshi054', 'accountId': '1531519677063536642', 'companyTotal': 8.86, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 8.86, 'level0WinOrLose': 8.86, 'level1Commission': 0.0, 'level1Total': 8.86, 'level1WinOrLose': 8.86, 'level2Commission': 0.0, 'level2Total': 8.86, 'level2WinOrLose': 8.86, 'level3Commission': 0.0, 'level3Total': 8.86, 'level3WinOrLose': 8.86, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': -44.3, 'memberWinOrLose': -44.3, 'name': '杜鑫test账号ck', 'numberOfBets': 3, 'parentId': '1531517351158390786', 'totalBet': 60.0, 'totalCommission': 0.0, 'totalEfficientAmount': 44.3}, {'account': 'd0d1d2d32l/fceshi055', 'accountId': '1531519681106845698', 'companyTotal': 2.0, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 2.0, 'level0WinOrLose': 2.0, 'level1Commission': 0.0, 'level1Total': 2.0, 'level1WinOrLose': 2.0, 'level2Commission': 0.0, 'level2Total': 2.0, 'level2WinOrLose': 2.0, 'level3Commission': 0.0, 'level3Total': 2.0, 'level3WinOrLose': 2.0, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': -10.0, 'memberWinOrLose': -10.0, 'name': '杜鑫test账号cl', 'numberOfBets': 1, 'parentId': '1531517351158390786', 'totalBet': 10.0, 'totalCommission': 0.0, 'totalEfficientAmount': 10.0}, {'account': 'd0d1d2d32m/fceshi056', 'accountId': '1531519685234040833', 'companyTotal': 34.7, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 34.7, 'level0WinOrLose': 34.7, 'level1Commission': 0.0, 'level1Total': 34.7, 'level1WinOrLose': 34.7, 'level2Commission': 0.0, 'level2Total': 34.7, 'level2WinOrLose': 34.7, 'level3Commission': 0.0, 'level3Total': 34.7, 'level3WinOrLose': 34.7, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': -173.5, 'memberWinOrLose': -173.5, 'name': '杜鑫test账号cm', 'numberOfBets': 1, 'parentId': '1531517351158390786', 'totalBet': 200.0, 'totalCommission': 0.0, 'totalEfficientAmount': 173.5}, {'account': 'd0d1d2d32p/fceshi059', 'accountId': '1531519697598849026', 'companyTotal': -136.61, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': -136.57, 'level0WinOrLose': -136.57, 'level1Commission': 0.0, 'level1Total': -136.57, 'level1WinOrLose': -136.57, 'level2Commission': 0.0, 'level2Total': -136.57, 'level2WinOrLose': -136.57, 'level3Commission': 0.0, 'level3Total': -136.57, 'level3WinOrLose': -136.57, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': 682.89, 'memberWinOrLose': 682.89, 'name': '杜鑫test账号cp', 'numberOfBets': 2, 'parentId': '1531517351158390786', 'totalBet': 160.0, 'totalCommission': 0.0, 'totalEfficientAmount': 160.0}, {'account': 'd0d1d2d30g/fceshi06', 'accountId': '1531519218764521474', 'companyTotal': 6.0, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 6.0, 'level0WinOrLose': 6.0, 'level1Commission': 0.0, 'level1Total': 6.0, 'level1WinOrLose': 6.0, 'level2Commission': 0.0, 'level2Total': 6.0, 'level2WinOrLose': 6.0, 'level3Commission': 0.0, 'level3Total': 6.0, 'level3WinOrLose': 6.0, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': -30.0, 'memberWinOrLose': -30.0, 'name': '杜鑫test账号ag', 'numberOfBets': 1, 'parentId': '1531517351158390786', 'totalBet': 30.0, 'totalCommission': 0.0, 'totalEfficientAmount': 30.0}, {'account': 'd0d1d2d32t/fceshi063', 'accountId': '1531519714225070082', 'companyTotal': 17.88, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 17.88, 'level0WinOrLose': 17.88, 'level1Commission': 0.0, 'level1Total': 17.88, 'level1WinOrLose': 17.88, 'level2Commission': 0.0, 'level2Total': 17.88, 'level2WinOrLose': 17.88, 'level3Commission': 0.0, 'level3Total': 17.88, 'level3WinOrLose': 17.88, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': -89.4, 'memberWinOrLose': -89.4, 'name': '杜鑫test账号ct', 'numberOfBets': 2, 'parentId': '1531517351158390786', 'totalBet': 110.0, 'totalCommission': 0.0, 'totalEfficientAmount': 89.4}, {'account': 'd0d1d2d3pd/fceshi0645', 'accountId': '1531522293508120578', 'companyTotal': 0.0, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 0.0, 'level0WinOrLose': 0.0, 'level1Commission': 0.0, 'level1Total': 0.0, 'level1WinOrLose': 0.0, 'level2Commission': 0.0, 'level2Total': 0.0, 'level2WinOrLose': 0.0, 'level3Commission': 0.0, 'level3Total': 0.0, 'level3WinOrLose': 0.0, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': 0.0, 'memberWinOrLose': 0.0, 'name': '杜鑫test账号pd', 'numberOfBets': 1, 'parentId': '1531517351158390786', 'totalBet': 10.0, 'totalCommission': 0.0, 'totalEfficientAmount': 0.0}, {'account': 'd0d1d2d32v/fceshi065', 'accountId': '1531519722500431873', 'companyTotal': 20.0, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 20.0, 'level0WinOrLose': 20.0, 'level1Commission': 0.0, 'level1Total': 20.0, 'level1WinOrLose': 20.0, 'level2Commission': 0.0, 'level2Total': 20.0, 'level2WinOrLose': 20.0, 'level3Commission': 0.0, 'level3Total': 20.0, 'level3WinOrLose': 20.0, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': -100.0, 'memberWinOrLose': -100.0, 'name': '杜鑫test账号cv', 'numberOfBets': 1, 'parentId': '1531517351158390786', 'totalBet': 110.0, 'totalCommission': 0.0, 'totalEfficientAmount': 100.0}, {'account': 'd0d1d2d3px/fceshi0665', 'accountId': '1531522376018468866', 'companyTotal': 2.0, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 2.0, 'level0WinOrLose': 2.0, 'level1Commission': 0.0, 'level1Total': 2.0, 'level1WinOrLose': 2.0, 'level2Commission': 0.0, 'level2Total': 2.0, 'level2WinOrLose': 2.0, 'level3Commission': 0.0, 'level3Total': 2.0, 'level3WinOrLose': 2.0, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': -10.0, 'memberWinOrLose': -10.0, 'name': '杜鑫test账号px', 'numberOfBets': 1, 'parentId': '1531517351158390786', 'totalBet': 10.0, 'totalCommission': 0.0, 'totalEfficientAmount': 10.0}, {'account': 'd0d1d2d32x/fceshi067', 'accountId': '1531519730788376577', 'companyTotal': 31.16, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 31.16, 'level0WinOrLose': 31.16, 'level1Commission': 0.0, 'level1Total': 31.16, 'level1WinOrLose': 31.16, 'level2Commission': 0.0, 'level2Total': 31.16, 'level2WinOrLose': 31.16, 'level3Commission': 0.0, 'level3Total': 31.16, 'level3WinOrLose': 31.16, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': -155.8, 'memberWinOrLose': -155.8, 'name': '杜鑫test账号cx', 'numberOfBets': 2, 'parentId': '1531517351158390786', 'totalBet': 320.0, 'totalCommission': 0.0, 'totalEfficientAmount': 203.2}, {'account': 'd0d1d2d3qt/fceshi0687', 'accountId': '1531522468255408130', 'companyTotal': -4.2, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': -4.2, 'level0WinOrLose': -4.2, 'level1Commission': 0.0, 'level1Total': -4.2, 'level1WinOrLose': -4.2, 'level2Commission': 0.0, 'level2Total': -4.2, 'level2WinOrLose': -4.2, 'level3Commission': 0.0, 'level3Total': -4.2, 'level3WinOrLose': -4.2, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': 21.0, 'memberWinOrLose': 21.0, 'name': '杜鑫test账号qt', 'numberOfBets': 1, 'parentId': '1531517351158390786', 'totalBet': 10.0, 'totalCommission': 0.0, 'totalEfficientAmount': 10.0}, {'account': 'd0d1d2d32z/fceshi069', 'accountId': '1531519738950492161', 'companyTotal': 2.0, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 2.0, 'level0WinOrLose': 2.0, 'level1Commission': 0.0, 'level1Total': 2.0, 'level1WinOrLose': 2.0, 'level2Commission': 0.0, 'level2Total': 2.0, 'level2WinOrLose': 2.0, 'level3Commission': 0.0, 'level3Total': 2.0, 'level3WinOrLose': 2.0, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': -10.0, 'memberWinOrLose': -10.0, 'name': '杜鑫test账号cz', 'numberOfBets': 1, 'parentId': '1531517351158390786', 'totalBet': 10.0, 'totalCommission': 0.0, 'totalEfficientAmount': 10.0}, {'account': 'd0d1d2d33a/fceshi070', 'accountId': '1531519743081881601', 'companyTotal': -2.26, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': -2.26, 'level0WinOrLose': -2.26, 'level1Commission': 0.0, 'level1Total': -2.26, 'level1WinOrLose': -2.26, 'level2Commission': 0.0, 'level2Total': -2.26, 'level2WinOrLose': -2.26, 'level3Commission': 0.0, 'level3Total': -2.26, 'level3WinOrLose': -2.26, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': 11.3, 'memberWinOrLose': 11.3, 'name': '杜鑫test账号da', 'numberOfBets': 1, 'parentId': '1531517351158390786', 'totalBet': 10.0, 'totalCommission': 0.0, 'totalEfficientAmount': 10.0}, {'account': 'd0d1d2d33b/fceshi071', 'accountId': '1531519747196493826', 'companyTotal': 0.31, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 0.27, 'level0WinOrLose': 0.27, 'level1Commission': 0.0, 'level1Total': 0.27, 'level1WinOrLose': 0.27, 'level2Commission': 0.0, 'level2Total': 0.27, 'level2WinOrLose': 0.27, 'level3Commission': 0.0, 'level3Total': 0.27, 'level3WinOrLose': 0.27, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': -1.39, 'memberWinOrLose': -1.39, 'name': '杜鑫test账号db', 'numberOfBets': 1, 'parentId': '1531517351158390786', 'totalBet': 100.0, 'totalCommission': 0.0, 'totalEfficientAmount': 1.39}, {'account': 'd0d1d2d3tt/fceshi0765', 'accountId': '1531522809348792321', 'companyTotal': 1.99, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 2.0, 'level0WinOrLose': 2.0, 'level1Commission': 0.0, 'level1Total': 2.0, 'level1WinOrLose': 2.0, 'level2Commission': 0.0, 'level2Total': 2.0, 'level2WinOrLose': 2.0, 'level3Commission': 0.0, 'level3Total': 2.0, 'level3WinOrLose': 2.0, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.01, 'memberTotal': -9.99, 'memberWinOrLose': -10.0, 'name': '杜鑫test账号tt', 'numberOfBets': 1, 'parentId': '1531517351158390786', 'totalBet': 10.0, 'totalCommission': 0.01, 'totalEfficientAmount': 10.0}, {'account': 'd0d1d2d30i/fceshi08', 'accountId': '1531519226964385794', 'companyTotal': 14.0, 'currency': 'CNY', 'level0Commission': 0.0, 'level0Total': 14.0, 'level0WinOrLose': 14.0, 'level1Commission': 0.0, 'level1Total': 14.0, 'level1WinOrLose': 14.0, 'level2Commission': 0.0, 'level2Total': 14.0, 'level2WinOrLose': 14.0, 'level3Commission': 0.0, 'level3Total': 14.0, 'level3WinOrLose': 14.0, 'levelId': 4, 'levelName': '会员', 'memberCommission': 0.0, 'memberTotal': -70.0, 'memberWinOrLose': -70.0, 'name': '杜鑫test账号ai', 'numberOfBets': 1, 'parentId': '1531517351158390786', 'totalBet': 110.0, 'totalCommission': 0.0, 'totalEfficientAmount': 70.0}]
-        # Compared="account,parentId"
-        # excel_report=['盈亏详情-登0-登3-会员-子查询', '/agentBackground/profitAndLoss/queryProxyProfitAndLossList', 'companyCommission,companyWinOrLose,id,payout,settlementDate,updateTime', 1, "{\n        'Content-Type': 'application/json;charset=UTF-8',\n        'LoginDiv': '555666',\n        'Account_Login_Identify': token\n    }", '[{"page":1,"limit":50,"account":"","parentId":"1531517760300163074","startTime":begin,"endTime":end}]', None, 'post', '@f"SELECT CONCAT(c.user_name,\'/\',c.login_account) AS \'账号/登入账号\',c.user_id \'下级代理ID\',\'公司总计\' AS \'公司总计\',c.currency \'货币\',SUM(c.level0_backwater_amount) \'总代佣金\',SUM(c.level0_win_or_lose) \'总代总计\',(SUM(c.level0_win_or_lose)-SUM(c.level0_backwater_amount)) \'总代输/赢\',SUM(c.level1_backwater_amount) \'一级代理佣金\',SUM(c.level1_win_or_lose) \'一级代理总计\',(SUM(c.level1_win_or_lose)-SUM(c.level1_backwater_amount)) \'一级代理输/赢\',SUM(c.level2_backwater_amount) \'二级代理佣金\',SUM(c.level2_win_or_lose) \'二级代理总计\',(SUM(c.level2_win_or_lose)-SUM(c.level2_backwater_amount)) \'二级代理输/赢\',SUM(c.level3_backwater_amount) \'三级代理佣金\',SUM(c.level3_win_or_lose) \'三级代理总计\',(SUM(c.level3_win_or_lose)-SUM(c.level3_backwater_amount)) \'三级代理输/赢\',a.role_id \'代理角色ID\',\'会员\' AS \'代理级别\',SUM(c.backwater_amount) \'会员佣金\',(SUM(c.handicap_win_or_lose)+SUM(c.backwater_amount)) \'会员总计\',SUM(c.handicap_win_or_lose) \'会员输/赢\',b.NAME \'名称\',COUNT(c.order_no) \'注单数量\',a.parent_id \'本级代理ID\',SUM(c.bet_amount)as \'总投注额\',\'总佣金\' as \'总佣金\',SUM(c.efficient_amount)as \'总有效金额\' FROM o_account_order as c left join u_user as b ON b.id=c.user_id LEFT JOIN m_account as a ON a.id=c.proxy3_id WHERE c.STATUS=2 AND c.proxy3_id=1531517760300163074 AND c.award_time IS NOT NULL AND c.settlement_time>=\'{begin}\' AND c.settlement_time<=\'{end}\' GROUP BY c.user_name,c.login_account,a.role_id,b.currency,c.user_id,c.currency ORDER BY c.login_account ASC"', 'account,parentId']
-        # print(len(sport_list),len(sql_list))
-        # yy=bc.report_list_Compared02(sport_list=sport_list,sql_list=sql_list, Compared=Compared,excel_report=excel_report)
+        # 调用本地Exce读取数据
+        # toten='eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjE1MzE1MTYwMTc4NDc4Njk0NDIiLCJleHAiOjE2NTY3NzMxMzMsInVzZXJuYW1lIjoiZDAifQ.L9lyGj3R8UafesdblbplhHrw5OxXyrmDmBvx_PXHEX4'
+        # # toten=''
+        # ccds=cc.reading_Excel(excel=excel, save_excel=save_excel,begin="2022-06-22",end="2022-06-28", URL=URL)
+
+
+
+
+        #调试SQL数据:
+        excel_report=['报表-球类报表-订单查询（根据其盘口查询订单）', '"/winOrLost/sport","/winOrLost/market","/winOrLost/order/details"', 'companyCommission,companyCommissionRatio,companyPercentage,companyTotal,companyWinOrLose,mixNum', 2, "{\n        'Content-Type': 'application/json;charset=UTF-8',\n        'LoginDiv': '555666',\n        'Account_Login_Identify': token\n    }", '[{"matchId":"", "sportId":"","queryDateType":3, "begin":begin,"end":end,"searchAccount":"", "page":1,"limit":50},{"sportId":"sr:sport:1","queryDateType":3,"begin":begin,"end":end},{"begin":begin,"end":end,"dateType":3,"page":1,"limit":500,"sportId":"sr:sport:1","marketId":"1","account":"","queryDateType":3,"tournamentId":""}]', 'sportId', 'post', '@f"SELECT c.sport_id FROM o_account_order AS c LEFT JOIN m_account AS e ON e.id=c.proxy0_id WHERE c.STATUS=2 AND c.award_time IS NOT NULL AND c.award_time>=\'{begin}\' AND c.award_time<=\'{end}\' AND c.proxy0_id=(SELECT id FROM m_account WHERE login_account=\'d0\') GROUP BY c.sport_id"\n@f"SELECT CONCAT(c.user_name,\'/\',c.login_account) AS \'账号/登入账号\',any_value (c.bet_amount) \'投注额\',any_value (c.bet_ip),any_value (c.ip_address),(CASE any_value (c.settlement_result) WHEN \'1\' THEN \'赢\' WHEN \'2\' THEN \'输\' WHEN \'5\' THEN \'平局走水\' WHEN \'6\' THEN \'注单取消\' END) AS \'注单状态\',any_value (c.create_time),CASE any_value(c.bet_type) WHEN \'1\' THEN \'单注\' WHEN \'2\' THEN \'串关\' WHEN \'3\' THEN \'复式串关\' END \'注单状态\',any_value (c.level0_backwater_amount) \'总代佣金\',c.company_retreat_proportion \'总代佣金比例\',c.level0_actual_percentage \'总代占成数\',any_value (c.level0_win_or_lose) \'总代总计\',(any_value (c.level0_win_or_lose)-any_value (c.level0_backwater_amount)) \'总代输/赢\',any_value (c.level1_backwater_amount) \'一级代理佣金\',c.level0_retreat_proportion \'一级代理佣金比例\',c.level1_actual_percentage \'一级代理占成数\',any_value (c.level1_win_or_lose) \'一级代理总计\',(any_value (c.level1_win_or_lose)-any_value (c.level1_backwater_amount)) \'一级代理输/赢\',any_value (c.level2_backwater_amount) \'二级代理佣金\',c.level1_retreat_proportion \'二级代理佣金比例\',c.level2_actual_percentage \'二级代理占成数\',any_value (c.level2_win_or_lose) \'二级代理总计\',(any_value (c.level2_win_or_lose)-any_value (c.level2_backwater_amount)) \'二级代理输/赢\',any_value (c.level3_backwater_amount) \'三级代理佣金\',c.level2_retreat_proportion \'三级代理佣金比例\',c.level3_actual_percentage \'三级代理占成数\',any_value (c.level3_win_or_lose) \'三级代理总计\',(any_value (c.level3_win_or_lose)-any_value (c.level3_backwater_amount)) \'三级代理输/赢\',any_value (c.backwater_amount) \'会员佣金\',c.level3_retreat_proportion \'会员佣金比例\',(any_value (c.handicap_win_or_lose)+any_value (c.backwater_amount)) \'会员总计\',any_value (c.handicap_win_or_lose) \'会员输/赢\',any_value (b.NAME) \'名称\',any_value (a.credit_odds) \'赔率\',any_value (a.odds_type) \'赔率类型\',\'options\' AS \'比赛\',c.order_no,c.award_time,c.sport_id,CASE c.sport_id WHEN \'sr:sport:1\' THEN \'足球\' WHEN \'sr:sport:20\' THEN \'乒乓球\' WHEN \'sr:sport:5\' THEN \'网球\' WHEN \'sr:sport:3\' THEN \'棒球\' WHEN \'sr:sport:2\' THEN \'篮球\' WHEN \'sr:sport:31\' THEN \'羽毛球\' WHEN \'sr:sport:4\' THEN \'冰球\' WHEN \'sr:sport:23\' THEN \'排球\' END AS \'球类\',c.efficient_amount,any_value (c.handicap_win_or_lose) \'会员输/赢\' FROM o_account_order AS c LEFT JOIN u_user AS b ON b.id=c.user_id LEFT JOIN o_account_order_match AS a ON a.order_no=c.order_no WHERE c.STATUS=2 AND c.award_time IS NOT NULL  AND c.award_time>=\'{begin}\' AND c.award_time<=\'{end}\' AND c.bet_type=1 AND c.proxy0_id=(SELECT id FROM m_account WHERE login_account=\'d0\') AND c.sport_id=\'{all}\' GROUP BY c.user_name,c.login_account,c.user_id,c.currency,sport_id,c.order_no,c.sport_id,c.company_retreat_proportion,c.level0_actual_percentage,c.level1_actual_percentage,c.level2_actual_percentage,c.level3_actual_percentage,c.level0_retreat_proportion,c.level1_retreat_proportion,c.level2_retreat_proportion,c.level3_retreat_proportion,c.award_time,c.efficient_amount,c.create_time"\n@f"SELECT CONCAT(c.user_name,\'/\',c.login_account) AS \'账号/登入账号\',any_value (c.bet_amount) \'投注额\',any_value (c.bet_ip),any_value (c.ip_address),(CASE any_value (c.settlement_result) WHEN \'1\' THEN \'赢\' WHEN \'2\' THEN \'输\' WHEN \'5\' THEN \'平局走水\' WHEN \'6\' THEN \'注单取消\' END) AS \'注单状态\',any_value (c.create_time),CASE any_value(c.bet_type) WHEN \'1\' THEN \'单注\' WHEN \'2\' THEN \'串关\' WHEN \'3\' THEN \'复式串关\' END \'注单状态\',any_value (c.level0_backwater_amount) \'总代佣金\',c.company_retreat_proportion \'总代佣金比例\',c.level0_actual_percentage \'总代占成数\',any_value (c.level0_win_or_lose) \'总代总计\',(any_value (c.level0_win_or_lose)-any_value (c.level0_backwater_amount)) \'总代输/赢\',any_value (c.level1_backwater_amount) \'一级代理佣金\',c.level0_retreat_proportion \'一级代理佣金比例\',c.level1_actual_percentage \'一级代理占成数\',any_value (c.level1_win_or_lose) \'一级代理总计\',(any_value (c.level1_win_or_lose)-any_value (c.level1_backwater_amount)) \'一级代理输/赢\',any_value (c.level2_backwater_amount) \'二级代理佣金\',c.level1_retreat_proportion \'二级代理佣金比例\',c.level2_actual_percentage \'二级代理占成数\',any_value (c.level2_win_or_lose) \'二级代理总计\',(any_value (c.level2_win_or_lose)-any_value (c.level2_backwater_amount)) \'二级代理输/赢\',any_value (c.level3_backwater_amount) \'三级代理佣金\',c.level2_retreat_proportion \'三级代理佣金比例\',c.level3_actual_percentage \'三级代理占成数\',any_value (c.level3_win_or_lose) \'三级代理总计\',(any_value (c.level3_win_or_lose)-any_value (c.level3_backwater_amount)) \'三级代理输/赢\',any_value (c.backwater_amount) \'会员佣金\',c.level3_retreat_proportion \'会员佣金比例\',(any_value (c.handicap_win_or_lose)+any_value (c.backwater_amount)) \'会员总计\',any_value (c.handicap_win_or_lose) \'会员输/赢\',any_value (b.NAME) \'名称\',any_value (a.credit_odds) \'赔率\',any_value (a.odds_type) \'赔率类型\',\'options\' AS \'比赛\',c.order_no,c.award_time,c.sport_id,CASE c.sport_id WHEN \'sr:sport:1\' THEN \'足球\' WHEN \'sr:sport:20\' THEN \'乒乓球\' WHEN \'sr:sport:5\' THEN \'网球\' WHEN \'sr:sport:3\' THEN \'棒球\' WHEN \'sr:sport:2\' THEN \'篮球\' WHEN \'sr:sport:31\' THEN \'羽毛球\' WHEN \'sr:sport:4\' THEN \'冰球\' WHEN \'sr:sport:23\' THEN \'排球\' END AS \'球类\',c.efficient_amount,any_value (c.handicap_win_or_lose) \'会员输/赢\' FROM o_account_order AS c LEFT JOIN u_user AS b ON b.id=c.user_id LEFT JOIN o_account_order_match AS a ON a.order_no=c.order_no WHERE c.STATUS=2 AND c.award_time IS NOT NULL  AND c.award_time>=\'{begin}\' AND c.award_time<=\'{end}\' AND c.bet_type!=1 AND c.proxy0_id=(SELECT id FROM m_account WHERE login_account=\'d0\') AND c.sport_id=\'{all}\' GROUP BY c.user_name,c.login_account,c.user_id,c.currency,sport_id,c.order_no,c.sport_id,c.company_retreat_proportion,c.level0_actual_percentage,c.level1_actual_percentage,c.level2_actual_percentage,c.level3_actual_percentage,c.level0_retreat_proportion,c.level1_retreat_proportion,c.level2_retreat_proportion,c.level3_retreat_proportion,c.award_time,c.efficient_amount,c.create_time"\n@f"SELECT away_team_name,bet_score,home_team_name,market_name,match_time,CASE is_live WHEN \'1\' THEN \'滚球盘\' WHEN \'3\' THEN \'早盘\' END \'盘口类型\',credit_odds,odds_type AS \'赔率类型\',order_no,outcome_name,specifier,tournament_name FROM o_account_order_match WHERE order_no in (SELECT c.order_no FROM o_account_order AS c LEFT JOIN u_user AS b ON b.id=c.user_id LEFT JOIN o_account_order_match AS a ON a.order_no=c.order_no WHERE c.STATUS=2 AND c.award_time IS NOT NULL  AND c.award_time>=\'{begin}\' AND c.award_time<=\'{end}\' AND c.bet_type=1 AND c.proxy0_id=(SELECT id FROM m_account WHERE login_account=\'d0\') AND c.sport_id=\'{all}\' GROUP BY c.order_no)"\n@f"SELECT away_team_name,bet_score,home_team_name,market_name,match_time,CASE is_live WHEN \'1\' THEN \'滚球盘\' WHEN \'3\' THEN \'早盘\' END \'盘口类型\',credit_odds,odds_type AS \'赔率类型\',order_no,outcome_name,specifier,tournament_name FROM o_account_order_match WHERE order_no in (SELECT c.order_no FROM o_account_order AS c LEFT JOIN u_user AS b ON b.id=c.user_id LEFT JOIN o_account_order_match AS a ON a.order_no=c.order_no WHERE c.STATUS=2 AND c.award_time IS NOT NULL  AND c.award_time>=\'{begin}\' AND c.award_time<=\'{end}\' AND c.bet_type!=1 AND c.proxy0_id=(SELECT id FROM m_account WHERE login_account=\'d0\') AND c.sport_id=\'{all}\' GROUP BY c.order_no) GROUP BY order_no,away_team_name,bet_score,home_team_name,market_name,match_time,is_live,credit_odds,odds_type,outcome_name,specifier,tournament_name"', 'account,orderNo', '测试不通过\n2022-06-30 18:41:39']
+        sport_report_list = [{'account': 'd0d1d2d38y/fceshi0224', 'betAmount': 10.0, 'betIp': '192.168.10.120', 'betIpAddress': '局域网', 'betMix': '', 'betResult': '输', 'betTime': '2022-06-24 08:57:04', 'betType': '单注', 'level0Commission': 0.0, 'level0CommissionRatio': 0.0, 'level0Percentage': 0.2, 'level0Total': 2.0, 'level0WinOrLose': 2.0, 'level1Commission': 0.0, 'level1CommissionRatio': 0.0, 'level1Percentage': 0.2, 'level1Total': 2.0, 'level1WinOrLose': 2.0, 'level2Commission': 0.0, 'level2CommissionRatio': 0.0, 'level2Percentage': 0.2, 'level2Total': 2.0, 'level2WinOrLose': 2.0, 'level3Commission': 0.0, 'level3CommissionRatio': 0.0, 'level3Percentage': 0.2, 'level3Total': 2.0, 'level3WinOrLose': 2.0, 'memberCommission': 0.0, 'memberCommissionRatio': 0.0, 'memberTotal': -10.0, 'memberWinOrLose': -10.0, 'name': '杜鑫test账号iy', 'odds': 1.69, 'oddsType': '1', 'options': [{'awayTeamName': '芹苴', 'betScore': None, 'homeTeamName': 'QNK广南足球俱乐部', 'marketName': '独赢', 'matchTime': '2022-06-25 06:00:00', 'matchType': '早盘', 'odds': 1.69, 'oddsType': '1', 'orderNo': 'XH4ydmPbRncK', 'outcomeName': 'QNK广南足球俱乐部', 'specifier': '', 'tournamentName': '越南职业足球乙级联赛'}], 'orderNo': 'XH4ydmPbRncK', 'settlementTime': '2022-06-25 08:01:45', 'sportId': 'sr:sport:1', 'sportType': '足球', 'validAmount': 10.0, 'winOrLose': -10.0}]
+        sport_report_dict = ['调试SQL类容']
+        yyds=bc.sport_report_sql(begin="2022-06-22 00:00:00",end="2022-06-28 23:59:59", excel_report=excel_report, sport_report_dict=sport_report_dict,sport_report_list=sport_report_list)
+
+
+
+
+
+
 

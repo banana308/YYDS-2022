@@ -740,7 +740,6 @@ class water_ammount(BetController):
                     bet_type = bet_type_list[1]
                     sql02 = f"SELECT {water_SQL_list[num_new]} as '总佣金',any_value(c.login_account) as '登入账号' FROM o_account_order as c WHERE {proxy_id_list[num]}='{member_id}' AND c.settlement_time>='{begin}' AND c.settlement_time<='{end}' AND c.bet_type{bet_type}1"
                 sum02 = self.my.query_data(sql02, db_name='bfty_credit')
-                print(sql02)
                 username = (sum02[0][1])
                 sum02 = float(sum02[0][0])
                 print(f"\033[34m会员{username}-{member_id}的总佣金为{sum02}\033[0m")
