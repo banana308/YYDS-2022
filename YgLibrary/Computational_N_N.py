@@ -948,9 +948,30 @@ class water_ammount(BetController):
                 print(f"\033[32m{username}-{marketId}的总公司输赢为{sum02}\033[0m")
         return sum02
 
+    #查询代理登0是否存在
+    def DL_D0(self,account,login_account):
+        """
+        @根据传参去查登0，返回没有创建的参数
+        """
+        if login_account=='':
+            sql02 = f"SELECT account FROM m_account WHERE account='{account}'"
+            sum02 = self.my.query_data(sql02, db_name='bfty_credit')
 
-
-
+            #判断SQL返回是否为空
+            # print(sum02)
+            if sum02==():
+                NEW_account.append(account)
+            else:
+                pass
+        else:
+            sql01 = f"SELECT account FROM m_account WHERE account='{login_account}'"
+            sum01 = self.my.query_data(sql01, db_name='bfty_credit')
+            # 判断SQL返回是否为空
+            # print(sum02)
+            if sum01 == ():
+                print(f"\33[32m{login_account}登入账号不存在\33[0m")
+            else:
+                print(f"\33[31m{login_account}登入账号已存在\33[0m")
 
 
 
@@ -964,6 +985,10 @@ if __name__ == "__main__":
 
     AB_list = ["A", "B", "C", "D", "E", "F", ]
     dict = {'A': [], 'B': [], 'C': [], 'D': [], 'E': [], 'F': []}
+    account_list = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    NEW_account=[]
+    z_m_list = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u",
+                "v", "w", "x", "y", "z"]
     # mf = MongoFunc(mongo_inf)
     # bc = BetController(mysql_inf, mongo_inf,AB_list,dict)
 
@@ -974,8 +999,23 @@ if __name__ == "__main__":
 
     bc=SQL_report_ods(mysql_inf, mongo_inf, AB_list,dict)
     tt = water_ammount(mysql_inf, mongo_inf)
+    # 代理相关:
+    # account=''
+    # for i in z_m_list:
+    #     for j in account_list:
+    #         account=i+str(j)
+    #     ppds = tt.DL_D0(account=account,login_account='')
+    # print(NEW_account)
+    loginAccount_list = ['test00', 'test01', 'test02', 'test03']
+    for login_account in loginAccount_list:
+        ppds = tt.DL_D0(account='', login_account=login_account)
+
+
+
+
+
+
     # yyds=bc.Type_odd()
-    # yyds=bc.bet_type(order_no="XEP93LkShTT3",AB_list=AB_list,dict=dict)
     # yydt=bc.order_no(bet_type=0, status=1, AB_list=AB_list,dict=dict,proxy3_id=1531517760300163074)
 
     # yybt=bc.credit_odds(order_no="XFBa6SNxq5xS",bet_type="",AB_list=AB_list,dict=dict)
@@ -999,8 +1039,8 @@ if __name__ == "__main__":
     agent_id_list=['1531516017847869442','1531517033355976705','1531517351158390786','1531517760300163074']
     member_id_list=['fceshi04','fceshi056','fceshi0126','fceshi0190','fceshi0223','fceshi0280','fceshi0315','fceshi0362','fceshi0418','fceshi0444','fceshi0480','fceshi0551','fceshi0572','fceshi0623','fceshi0661','fceshi0735']
 
-    for member_id in member_id_list:
-        yy_num = tt.total_commission(agent_id='', member_id=member_id, sportId='', marketId='',tournamentId='', matchId='', login_account=login_account, begin=begin, end=end, Duplex='')
+    # for member_id in member_id_list:
+    #     yy_num = tt.total_commission(agent_id='', member_id=member_id, sportId='', marketId='',tournamentId='', matchId='', login_account=login_account, begin=begin, end=end, Duplex='')
 
     # for agent_id in range(len(agent_id_list)+len(member_id_list)):
     #     if agent_id<=len(agent_id_list)-1:
@@ -1018,3 +1058,7 @@ if __name__ == "__main__":
     # for agent_id in agent_id_list:
     #     yybt = tt.total_commission(agent_id='', member_id='', sportId='', marketId='',tournamentId='', matchId='sr:match:33725427', login_account=login_account,begin=begin,end=end,Duplex='')
     #     yyds=tt.Company_winlose(agent_id=agent_id, member_id='', sportId='', marketId='', tournamentId='',matchId='', login_account=login_account,begin=begin,end=end,Duplex='')
+
+
+
+

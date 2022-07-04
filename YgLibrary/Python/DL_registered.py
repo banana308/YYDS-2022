@@ -434,11 +434,17 @@ def client_password(URL,token,id_list,password_list,content_list,all_user_new,al
     code = results['code']
     if code==0:
         print(f"\033[32m登{i}的用户：{userName_list[i]}，修改密码:{password_list[i]}成功\033[0m\n")
-        all_user_new[i][f"登{i}的密码"] = password_list[i]
+        all_user_new[i][f"登{i}的密码"] = content_list[i]
         all_user_new[i][f"登{i}的安全码"] = securityCode_list[i]
 
-        all_user_old[i][f"登{i}的密码"] = password_list[i]
+        all_user_old[i][f"登{i}的密码"] = content_list[i]
         all_user_old[i][f"登{i}的安全码"] =securityCode_list[i]
+
+        # DL_name_lsit={}
+        # DL_name_lsit[f"登{i}的账号"] =account_list[i]
+        # DL_name_lsit[f"登{i}的密码"]=content_list[i]
+        # DL_name_lsit[f"登{i}的安全码"] =securityCode_list[i]
+        # print(DL_name_lsit)
     else:
         # print(f"用户：{userName_list[i]}，修改密码的接口日志：{results}")
         print(f"\033[31m{results}\033[0m")
@@ -475,30 +481,36 @@ if __name__=='__main__':
     password_list=[]
     securityCode_list=[]
     #账号界面的新账号设置列表
-    loginAccount_list=['yyds01','yyds02','yyds03','yyds04']
+    tts=['d9', 'e9', 'g9', 'h9', 'i9', 'j9', 'k9', 'l9', 'n9', 'o9', 'p9', 'q9', 'r9', 's9', 'u9', 'v9', 'w9', 'y9', 'z9']
+    loginAccount_list=['tesc00','tesc01','tesc02','tesc03']
+    account_list=['d9','d9y1','d9y1y2','d9y1y2y3']
     #修改密码界面的新密码设置列表
-    content_list=['Bfta123456','Bfty123456','Bfty123456','Bfty123456']
 
+    # content_list=['Bfty123456','Bfty123456','Bfty123456','Bfty123456']
+    # securityCode_new_list = ['Bf123456', 'Bf123456''Bf123456''Bf123456']
+    content_list = ['Ab123456', 'Ab123456', 'Ab123456', 'Ab123456']
+    securityCode_new_list = ['Ab123456', 'Ab123456', 'Ab123456', 'Ab123456']
+    DL_name_lsit={}
     ZD_list = [
-              {0:{"credits": 100000000, "account": 'x8',
-                  "name": '测试总代', "password": 'Bfty123456', "securityCode": 'Bf123456',
+              {0:{"credits": 100000000, "account": account_list[0],
+                  "name": '测试总代', "password": 'Bfty123456', "securityCode": securityCode_new_list[0],
                   "maxProfitLossPercentage": 90, "minProfitLossPercentage": 80,
                   "singleHighest": 100000, "singleBetMax": 50000}},
 
-              {1:{"credits": 40000000, "account": 'x8y1',
-                  "name": '测试登1', "password": 'Bfty123456', "securityCode": 'Bf123456',
+              {1:{"credits": 40000000, "account": account_list[1],
+                  "name": '测试登1', "password": 'Bfty123456', "securityCode": securityCode_new_list[0],
                   "maxProfitLossPercentage": 70, "minProfitLossPercentage": 60,
                   "parentProfitLossPercentage": 20,
                   "singleHighest": 100000, "singleBetMax": 50000}},
 
-              {2: {"credits": 35000000, "account": 'x8y1y2',
-                   "name": '测试登2', "password": 'Bfty123456', "securityCode": 'Bf123456',
+              {2: {"credits": 35000000, "account": account_list[2],
+                   "name": '测试登2', "password": 'Bfty123456', "securityCode": securityCode_new_list[0],
                    "maxProfitLossPercentage": 50, "minProfitLossPercentage": 40,
                    "parentProfitLossPercentage": 20,
                    "singleHighest": 100000, "singleBetMax": 50000}},
 
-              {3: {"credits": 30000000, "account": 'x8y1y2y3',
-                   "name": '测试登3', "password": 'Bfty123456', "securityCode": 'Bf123456',
+              {3: {"credits": 30000000, "account": account_list[3],
+                   "name": '测试登3', "password": 'Bfty123456', "securityCode": securityCode_new_list[0],
                    "maxProfitLossPercentage": 30, "minProfitLossPercentage": 20,
                    "parentProfitLossPercentage":20,
                    "singleHighest": 100000, "singleBetMax": 50000}}
@@ -513,6 +525,7 @@ if __name__=='__main__':
             login(URL, userName_list, password_list, securityCode_list,all_user_old)
             if i==3:
                 get_for()
+    print()
 
 
 
