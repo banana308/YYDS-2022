@@ -698,15 +698,15 @@ if __name__ == '__main__':
 
     # user_num = 0
     # j="篮球"
-    j_lsit = ["足球", "篮球", "网球", "排球", "羽毛球", "乒乓球", "棒球", "冰球"]
-    # j_lsit=["篮球","网球","排球","羽毛球","乒乓球","棒球","冰球"]
+    # j_lsit = ["足球", "篮球", "网球", "排球", "羽毛球", "乒乓球", "棒球", "冰球"]
+    j_lsit=["篮球","网球","排球","羽毛球","乒乓球","棒球","冰球"]
     # j_lsit=["乒乓球",  "冰球"]
     for j in j_lsit:
         sprot_yyds(j)
         get_toten_00()
         # 赔率类型随机：1代表：欧洲盘，2代表：香港盘
         oddsType = random.randint(1, 2)
-        get_today_odds(nub=3, oddsType=oddsType)
+        get_today_odds(nub=3,oddsType=oddsType)
         if (len(sort_list_null)) == 0:
             print(f"{yyds}没有赛事,无法下注,已跳过\n-------------------------------------------------------")
             sport_lsit_null.append(yyds)

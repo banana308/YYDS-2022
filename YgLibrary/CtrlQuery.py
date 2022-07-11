@@ -878,13 +878,13 @@ if __name__ == "__main__":
     #MDE环境
     mongo_inf = ['sport_test', 'BB#gCmqf3gTO5777', '35.194.233.30', '27017']
     mysql_inf = ['35.194.233.30', 'root', 'BB#gCmqf3gTO5b*', '3306']
-    bc_host = "http://35.234.4.41:31101/mock/message"
+    bc_host = "http://35.185.159.184:31101/mock/message"
     bc = BetController(mysql_inf, mongo_inf, bc_host)
 
     # MDE:proxy3_id="1531517760300163074"
     # 120:proxy3_id="1531193388241375234"
     # time.sleep(180)
-    order_list=bc.generate_settlement_str_by_orderNo_number_type(proxy3_id="1531517760300163074", bet_type="4")
+    order_list=bc.generate_settlement_str_by_orderNo_number_type(proxy3_id="1531517760300163074", bet_type="1")
     # order_list=['XGwi26WFH3mk']
 
     # time.sleep(120)

@@ -83,7 +83,7 @@ class report_data(object):
         time01 = datetime.datetime.strptime(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),'%Y-%m-%d %H:%M:%S')
 
         #循环Excel所有表
-        for gg in range(0,1):
+        for gg in range(1,3):
             gg = shenames[gg]
         # for gg in shenames:
             # 获取该表相应的行数和列数
@@ -102,43 +102,49 @@ class report_data(object):
             content_A2 = worksheet.cell(2, 1).value
             if content_A2!=None:
                 # 循环行数
-                # for i in range(5, 6):
+                qqt=100
+                # for i in range(4,5):
                 for i in range(2, rows+1):
-                    excel_report = []
-                    # 循环列数
-                    for j in range(2, int(columns)-2):
-                        report=worksheet.cell(i,j).value
-                        #获取到的数据写入列表
-                        excel_report.append(report)
-                    #调用登录接口，获取token，访问接口，获取数据
-                    # print(excel_report)
-                    # exit()
-                    self.login(URL=URL, begin=begin, end=end, excel_report=excel_report)
-
-                    '''
-                    #调试SQL数据
-                    # print(excel_report)
-                    # sport_report_list={'account': 'd0d1d2d38y/fceshi0224', 'betAmount': 10.0, 'betIp': '192.168.10.120', 'betIpAddress': '局域网', 'betResult': '输', 'betTime': '2022-06-24 08:57:04', 'betType': '单注', 'level0Commission': 0.0, 'level0CommissionRatio': 0.0, 'level0Percentage': 0.2, 'level0Total': 2.0, 'level0WinOrLose': 2.0, 'level1Commission': 0.0, 'level1CommissionRatio': 0.0, 'level1Percentage': 0.2, 'level1Total': 2.0, 'level1WinOrLose': 2.0, 'level2Commission': 0.0, 'level2CommissionRatio': 0.0, 'level2Percentage': 0.2, 'level2Total': 2.0, 'level2WinOrLose': 2.0, 'level3Commission': 0.0, 'level3CommissionRatio': 0.0, 'level3Percentage': 0.2, 'level3Total': 2.0, 'level3WinOrLose': 2.0, 'memberCommission': 0.0, 'memberCommissionRatio': 0.0, 'memberTotal': -10.0, 'memberWinOrLose': -10.0, 'name': '杜鑫test账号iy', 'odds': 1.69, 'oddsType': '1', 'options': [{'awayTeamName': '芹苴', 'betScore': None, 'homeTeamName': 'QNK广南足球俱乐部', 'marketName': '独赢', 'matchTime': '2022-06-25 06:00:00', 'matchType': '早盘', 'odds': 1.69, 'oddsType': '1', 'orderNo': 'XH4ydmPbRncK', 'outcomeName': 'QNK广南足球俱乐部', 'specifier': '', 'tournamentName': '越南职业足球乙级联赛'}], 'orderNo': 'XH4ydmPbRncK', 'settlementTime': '2022-06-25 08:01:45', 'sportId': 'sr:sport:1', 'sportType': '足球', 'validAmount': 10.0, 'winOrLose': -10.0}
-                    # sport_report_dict=['account', 'betAmount', 'betIp', 'betIpAddress', 'betResult', 'betTime', 'betType', 'level0Commission', 'level0CommissionRatio', 'level0Percentage', 'level0Total', 'level0WinOrLose', 'level1Commission', 'level1CommissionRatio', 'level1Percentage', 'level1Total', 'level1WinOrLose', 'level2Commission', 'level2CommissionRatio', 'level2Percentage', 'level2Total', 'level2WinOrLose', 'level3Commission', 'level3CommissionRatio', 'level3Percentage', 'level3Total', 'level3WinOrLose', 'memberCommission', 'memberCommissionRatio', 'memberTotal', 'memberWinOrLose', 'name', 'odds', 'oddsType', 'options', 'orderNo', 'settlementTime', 'sportId', 'sportType', 'validAmount', 'winOrLose']
-                    # self.tt.sport_report_sql(begin=begin, end=end, excel_report=excel_report, sport_report_dict=sport_report_list, sport_report_list=sport_report_dict)
-                    '''
-
-                    now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                    #判断用例是否通过
-                    if sport_error==[]:
-                        execute=execute+1
-                        worksheet.cell(i,12,("测试通过"+"\n"+now))
-                        worksheet.cell(i,13, "")
-                        worksheet.cell(i,14, "")
-                        worksheet.cell(i,15, "")
-                        # worksheet.cell(i, int(columns)-1, str(Prepare_enough_list))
+                    if i==qqt:
+                        pass
                     else:
-                        Failed=Failed+1
-                        worksheet.cell(i,12, ("测试不通过"+"\n"+now))
-                        worksheet.cell(i,13, str(sport_error))
-                        worksheet.cell(i,14, str(sport_all_error))
-                        worksheet.cell(i,15, str(Prepare_enough_list))
-                    workbook.save(filename=save_excel[0])
+                        excel_report = []
+                        # 循环列数
+                        for j in range(2, int(columns)-2):
+                            report=worksheet.cell(i,j).value
+                            #获取到的数据写入列表
+                            excel_report.append(report)
+                        #调用登录接口，获取token，访问接口，获取数据
+                        if print_num==1:
+                            print(excel_report)
+                            exit()
+                        self.login(URL=URL,excel_report=excel_report,data=1)
+                        self.Excel_method(URL=URL,token=token,excel_report=excel_report,begin=begin,end=end)
+
+                        '''
+                        #调试SQL数据
+                        # print(excel_report)
+                        # sport_report_list={'account': 'd0d1d2d38y/fceshi0224', 'betAmount': 10.0, 'betIp': '192.168.10.120', 'betIpAddress': '局域网', 'betResult': '输', 'betTime': '2022-06-24 08:57:04', 'betType': '单注', 'level0Commission': 0.0, 'level0CommissionRatio': 0.0, 'level0Percentage': 0.2, 'level0Total': 2.0, 'level0WinOrLose': 2.0, 'level1Commission': 0.0, 'level1CommissionRatio': 0.0, 'level1Percentage': 0.2, 'level1Total': 2.0, 'level1WinOrLose': 2.0, 'level2Commission': 0.0, 'level2CommissionRatio': 0.0, 'level2Percentage': 0.2, 'level2Total': 2.0, 'level2WinOrLose': 2.0, 'level3Commission': 0.0, 'level3CommissionRatio': 0.0, 'level3Percentage': 0.2, 'level3Total': 2.0, 'level3WinOrLose': 2.0, 'memberCommission': 0.0, 'memberCommissionRatio': 0.0, 'memberTotal': -10.0, 'memberWinOrLose': -10.0, 'name': '杜鑫test账号iy', 'odds': 1.69, 'oddsType': '1', 'options': [{'awayTeamName': '芹苴', 'betScore': None, 'homeTeamName': 'QNK广南足球俱乐部', 'marketName': '独赢', 'matchTime': '2022-06-25 06:00:00', 'matchType': '早盘', 'odds': 1.69, 'oddsType': '1', 'orderNo': 'XH4ydmPbRncK', 'outcomeName': 'QNK广南足球俱乐部', 'specifier': '', 'tournamentName': '越南职业足球乙级联赛'}], 'orderNo': 'XH4ydmPbRncK', 'settlementTime': '2022-06-25 08:01:45', 'sportId': 'sr:sport:1', 'sportType': '足球', 'validAmount': 10.0, 'winOrLose': -10.0}
+                        # sport_report_dict=['account', 'betAmount', 'betIp', 'betIpAddress', 'betResult', 'betTime', 'betType', 'level0Commission', 'level0CommissionRatio', 'level0Percentage', 'level0Total', 'level0WinOrLose', 'level1Commission', 'level1CommissionRatio', 'level1Percentage', 'level1Total', 'level1WinOrLose', 'level2Commission', 'level2CommissionRatio', 'level2Percentage', 'level2Total', 'level2WinOrLose', 'level3Commission', 'level3CommissionRatio', 'level3Percentage', 'level3Total', 'level3WinOrLose', 'memberCommission', 'memberCommissionRatio', 'memberTotal', 'memberWinOrLose', 'name', 'odds', 'oddsType', 'options', 'orderNo', 'settlementTime', 'sportId', 'sportType', 'validAmount', 'winOrLose']
+                        # self.tt.sport_report_sql(begin=begin, end=end, excel_report=excel_report, sport_report_dict=sport_report_list, sport_report_list=sport_report_dict)
+                        '''
+
+                        now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                        #判断用例是否通过
+                        if sport_error==[]:
+                            execute=execute+1
+                            worksheet.cell(i,12,("测试通过"+"\n"+now))
+                            worksheet.cell(i,13, "")
+                            worksheet.cell(i,14, "")
+                            worksheet.cell(i,15, "")
+                            # worksheet.cell(i, int(columns)-1, str(Prepare_enough_list))
+                        else:
+                            Failed=Failed+1
+                            worksheet.cell(i,12, ("测试不通过"+"\n"+now))
+                            worksheet.cell(i,13, str(sport_error))
+                            worksheet.cell(i,14, str(sport_all_error))
+                            worksheet.cell(i,15, str(Prepare_enough_list))
+                        workbook.save(filename=save_excel[0])
             else:
                 continue
         time02=datetime.datetime.strptime(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),'%Y-%m-%d %H:%M:%S')
@@ -146,13 +152,43 @@ class report_data(object):
         print(f"\033[32m\n\n执行通过用例共计{execute}条,\033[0m未通过用例共计\033[31m{Failed}条\033[0m,共计消耗时间{date_time}")
         workbook.close()
 
-    def login(self,URL, begin, end,excel_report):
+    def bf_request(self,url,headers,data,excel_report):
+        for loop in range(0,3):
+            try:
+                session = requests.session()
+                #判断请求方式
+                request_method=['post']
+                if excel_report[7]==request_method[0]:
+                    response = session.post(url=url, headers=headers, json=data)
+                else:
+                    response = session.get(url=url, headers=headers, params=data)
+                #判断接口返回code,是否为：200
+                interface_returns_data=response.json()
+                if interface_returns_data['message']=="签名处理异常! 可能原因: 系统维护中，请稍后再试" or interface_returns_data['message']=='登录状态已过期，请重新登录':
+                    self.login(URL=URL,excel_report=excel_report,data=0)
+                else:
+                    if response.status_code != 200:
+                        print(f'{response}请求超时:{loop + 1}次,{interface_returns_data}')
+                    else:
+                        # print(f"接口{url}，请求{data}成功")
+                        return response
+            #请求异常判断
+            except ConnectionError:
+                time.sleep(2)
+                continue
+            #其他报错信息
+            except Exception as e:
+              print(f"\33[31m当前接口接口调用失败，请求检查接口,失败信息：{e}\33[0m")
+
+
+
+    def login(self,URL,excel_report,data):
         """
         @第一次获取token，并保持token连接中，便于后面其他接口访问
         """
         global token
 
-        if toten=='':
+        if data==0:
             # 登0~登3登录获取token
             count = 0
             if count==0:
@@ -164,8 +200,7 @@ class report_data(object):
                         "password": self.rsa_encrypt(data="Bfty123456"),
                         "securityCode": "Bf123456",
                         "loginDiv": 555666}
-                session = requests.session()
-                response = session.post(url=url, headers=headers, json=data)
+                response = self.bf_request(url=url,headers=headers,data=data,excel_report=excel_report)
                 # 返回结果json转化
                 results = json.loads(response.text)
                 if results['code'] == 0:
@@ -176,7 +211,6 @@ class report_data(object):
 
                 token = results['data']['token']
                 id = results['data']['id']
-
 
 
                 # 过渡调用函数：
@@ -190,8 +224,7 @@ class report_data(object):
                     "token": token,
                     "accountId": id
                 }
-                session = requests.session()
-                response01 = session.get(url=url01, headers=headers01, params=data01)
+                response01 = self.bf_request(url=url,headers=headers,data=data,excel_report=excel_report)
                 # 返回结果json转化
                 results01=json.loads(response01.text)
                 # print(results01)
@@ -199,19 +232,22 @@ class report_data(object):
             else:
                 pass
         else:
-            token=toten
+            token=token
 
-        if excel_report[3]==1:
+        return token
+
+    #根据Excel类型，去调用对应的接口方法
+    def Excel_method(self,URL,token,excel_report,begin,end):
+        if excel_report[3] == 1:
             self.sport_report01(URL=URL, token=token, excel_report=excel_report, begin=begin, end=end)
-        elif  excel_report[3]==2:
+        elif excel_report[3] == 2:
             self.sport_report02(URL=URL, token=token, excel_report=excel_report, begin=begin, end=end)
         else:
             self.sport_report03(URL=URL, token=token, excel_report=excel_report, begin=begin, end=end)
 
-
-
     def sport_report01(self,URL, token, excel_report, begin, end):
         global sportId_list
+        print(f"\33[34m正在执行接口数据{excel_report[0]}-{excel_report[1]}\33[0m")
 
         sport_report_dict = []
         sport_report_list = []
@@ -226,11 +262,8 @@ class report_data(object):
         # print(headers)
         # print(data)
 
-        method_list=["post"]
-        if excel_report[7]==method_list[0]:
-            response = session.post(url=url, headers=headers, json=data)
-        else:
-            response = session.get(url=url, headers=headers, params=data)
+        #获取接口数据，获取失败try3次
+        response= self.bf_request(url=url,headers=headers,data=data,excel_report=excel_report)
         results = json.loads(response.text)
 
         if excel_report[0] in module_list:
@@ -254,7 +287,7 @@ class report_data(object):
 
             for key,value in yyds[0].items():
                 sport_report_dict.append(key)
-            # print(sport_report_dict)
+            print(sport_report_dict)
 
         time_list=[" 00:00:00"," 23:59:59"]
         print(sport_report_list[1])
@@ -264,6 +297,7 @@ class report_data(object):
 
     def sport_report02(self,URL, token, excel_report, begin, end):
         global sportId_list,sportId_yyds_lsit
+        print(f"\33[34m正在执行接口数据{excel_report[0]}-{excel_report[1]}\33[0m")
 
         sportId_list = []
         marketID_list=[]
@@ -277,13 +311,8 @@ class report_data(object):
             if eval(excel_report[1]).index(url) == 0:
                 url = str(URL) + url
                 data = eval(excel_report[5])[0]
-                session = requests.session()
-                method_list = ["post"]
-
-                if excel_report[7] == method_list[0]:
-                    response = session.post(url=url, headers=headers, json=data)
-                else:
-                    response = session.get(url=url, headers=headers, params=data)
+                # 获取接口数据，获取失败try3次
+                response = self.bf_request(url=url, headers=headers, data=data, excel_report=excel_report)
                 results = json.loads(response.text)
 
                 if excel_report[0] in module_list:
@@ -303,6 +332,7 @@ class report_data(object):
                 if yyds == []:
                     break
                 else:
+                    #判断接口数量是否大于2，或小于2
                     if len(eval(excel_report[1]))>2:
                         index=2
                         if eval(excel_report[1]).index(url)==1:
@@ -312,13 +342,9 @@ class report_data(object):
                                 for sportId in sportId_list:
                                     data = eval(excel_report[5])[1]
                                     data[excel_report[6]] = sportId
-                                    session = requests.session()
-                                    method_list = ["post"]
-
-                                    if excel_report[7] == method_list[0]:
-                                        response = session.post(url=url, headers=headers, json=data)
-                                    else:
-                                        response = session.get(url=url, headers=headers, params=data)
+                                    # 获取接口数据，获取失败try3次
+                                    response = self.bf_request(url=url, headers=headers, data=data,excel_report=excel_report)
+                                    results = json.loads(response.text)
                                     results = json.loads(response.text)
                                     yyds = results['data']['data']
 
@@ -326,10 +352,7 @@ class report_data(object):
                                         pass
                                     else:
                                         for i in yyds:
-                                            if i['marketId'] == '串关':
-                                                pass
-                                            else:
-                                                market_id_list.append(i['marketId'])
+                                            market_id_list.append(i['marketId'])
                                     marketID_list.append(market_id_list)
                         else:
                             url = str(URL) + url
@@ -338,13 +361,8 @@ class report_data(object):
                                     data = eval(excel_report[5])[2]
                                     data[excel_report[6]] = sportId
                                     data['marketId'] = marketID
-                                    session = requests.session()
-                                    method_list = ["post"]
-
-                                    if excel_report[7] == method_list[0]:
-                                        response = session.post(url=url, headers=headers, json=data)
-                                    else:
-                                        response = session.get(url=url, headers=headers, params=data)
+                                    # 获取接口数据，获取失败try3次
+                                    response = self.bf_request(url=url, headers=headers, data=data,excel_report=excel_report)
                                     results = json.loads(response.text)
                                     yyds = results['data']['data']['data']
                                     sportId_yyds_lsit.append(yyds)
@@ -356,13 +374,8 @@ class report_data(object):
                                 data['parentId']=sportId
                             else:
                                 data[excel_report[6]] = sportId
-                            session = requests.session()
-                            method_list = ["post"]
-
-                            if excel_report[7] == method_list[0]:
-                                response = session.post(url=url, headers=headers, json=data)
-                            else:
-                                response = session.get(url=url, headers=headers, params=data)
+                            # 获取接口数据，获取失败try3次
+                            response = self.bf_request(url=url, headers=headers, data=data,excel_report=excel_report)
                             results = json.loads(response.text)
 
                             if excel_report[0] in module_list:
@@ -401,7 +414,6 @@ class report_data(object):
                         # print(sportId_yyds_lsit)
 
         report02_list = []
-        print(sportId_yyds_lsit[0:2])
         for gg in range(0, len(sportId_yyds_lsit)):
             for yy in range(0, len(sportId_yyds_lsit[gg])):
                 report02_list.append(sportId_yyds_lsit[gg][yy])
@@ -422,15 +434,18 @@ class report_data(object):
 
         for key, value in sportId_yyds_lsit[0][0].items():
             sport_report_dict.append(key)
-        # print(sport_report_dict)
+        print(sport_report_dict)
 
         time_list = [" 00:00:00", " 23:59:59"]
+        # print(sport_report_list)
         print(sport_report_list[1])
+        # exit(print(sport_report_list))
         self.tt.sport_report_sql(begin=begin + time_list[0], end=end + time_list[1], excel_report=excel_report,sport_report_dict=sport_report_dict, sport_report_list=sport_report_list)
         return sportId_list
 
     def sport_report03(self, URL, token, excel_report, begin, end):
         global sportId_list, sportId_yyds_lsit
+        print(f"\33[34m正在执行接口数据{excel_report[0]}-{excel_report[1]}\33[0m")
 
         sportId_list = []
         sportId_yyds_lsit=[]
@@ -440,13 +455,8 @@ class report_data(object):
             if yytt==0:
                 url = str(URL) + excel_report[1]
                 data = eval(excel_report[5])[0]
-                session = requests.session()
-                method_list = ["post"]
-
-                if excel_report[7] == method_list[0]:
-                    response = session.post(url=url, headers=headers, json=data)
-                else:
-                    response = session.get(url=url, headers=headers, params=data)
+                # 获取接口数据，获取失败try3次
+                response = self.bf_request(url=url, headers=headers, data=data, excel_report=excel_report)
                 results = json.loads(response.text)
 
                 if excel_report[0] in module_list:
@@ -480,13 +490,8 @@ class report_data(object):
                         data[excel_report[6]]=sportId_list[yytt]
                     else:
                         data = eval(excel_report[5])[0]
-                    session = requests.session()
-                    method_list = ["post"]
-
-                    if excel_report[7] == method_list[0]:
-                        response = session.post(url=url, headers=headers, json=data)
-                    else:
-                        response = session.get(url=url, headers=headers, params=data)
+                    # 获取接口数据，获取失败try3次
+                    response = self.bf_request(url=url, headers=headers, data=data, excel_report=excel_report)
                     results = json.loads(response.text)
 
                     if excel_report[0] in module_list:
@@ -528,7 +533,7 @@ class report_data(object):
             sport_report_dict = []
             for key, value in sportId_yyds_lsit[0][0].items():
                 sport_report_dict.append(key)
-            # print(sport_report_dict)
+            print(sport_report_dict)
 
             print(sport_report_list[1])
             time_list = [" 00:00:00", " 23:59:59"]
@@ -553,24 +558,25 @@ class BetController(object):
         self.wt=water_ammount(mysql_info, mongo_info)
 
     def report_list_Compared01(self,sport_list,sql_list,Compared,excel_report):
+        print(f"\033[33m{excel_report[0]}-{excel_report[1]}：数据对比开始----------------------------------------------------------------------------------------------\033[0m")
         if sport_list!= [] and sql_list!= []:
             yyds_list = []
             for key, value in sport_list[0].items():
                 yyds_list.append(key)
             for i in range(0, len(sport_list)):
                 for j in range(0, len(sql_list)):
-                    print(sport_list[i][Compared],sql_list[j][Compared])
+                    # print(sport_list[i][Compared],sql_list[j][Compared])
                     if sport_list[i][Compared] == sql_list[j][Compared]:
                         if sport_list[i] == sql_list[j]:
                             correct_list.append(sql_list[j])
                             # print(correct_list[-1])
-                            print(sport_list[i][Compared],"数据对比正确：" + str(sport_list[i]) + "/" + str(sql_list[j]))
+                            # print(sport_list[i][Compared],"数据对比正确：" + str(sport_list[i]) + "/" + str(sql_list[j]))
                             break
                         else:
                             for report in range(0, len(sql_list[j])):
                                 if sport_list[i][yyds_list[report]] == sql_list[j][yyds_list[report]]:
-                                    # pass
-                                    print(sport_list[i][Compared], str(yyds_list[report]),"数据对比正确：" + str(sport_list[i][yyds_list[report]]) + "/" + str(sql_list[j][yyds_list[report]]))
+                                    pass
+                                    # print(sport_list[i][Compared], str(yyds_list[report]),"数据对比正确：" + str(sport_list[i][yyds_list[report]]) + "/" + str(sql_list[j][yyds_list[report]]))
                                 else:
                                     sport_all_error.append(str(sport_list[i][Compared]) + "/" + str(yyds_list[report]) + "的数据对比错误,请检查SQL查询的字段与接口字段数据是否一致,数据对比：" + str({sport_list[i][Compared]}) + "/" + (str({sql_list[j][Compared]})))
                                     print("\033[31m" + sport_list[i][Compared], str(yyds_list[report]),"数据对比错误：" + str(sport_list[i][yyds_list[report]]) + "/" + str(sql_list[j][yyds_list[report]]) + "\033[0m",type(sport_list[i][yyds_list[report]]),type(sql_list[j][yyds_list[report]]))
@@ -581,14 +587,21 @@ class BetController(object):
                 sport_all_error.append("SQL数据为空")
 
     def report_list_Compared02(self, sport_list,sql_list, Compared,excel_report):
+        print(f"\033[33m{excel_report[0]}-{excel_report[1]}：数据对比开始----------------------------------------------------------------------------------------------\033[0m")
+        # print(len(sport_list),len(sql_list))
         # print(sport_list)
         # print(sql_list)
         # print(Compared)
         # print(excel_report)
+
         if sport_list!=[] and sql_list!=[] :
             yyds_list = []
-            for key, value in sport_list[0].items():
-                yyds_list.append(key)
+            if excel_report[0]=='总投注-混合串关-子查询(查询其注单号，包含的比赛)':
+                for key, value in sport_list[0][0].items():
+                    yyds_list.append(key)
+            else:
+                for key, value in sport_list[0].items():
+                    yyds_list.append(key)
             for i in range(0, len(sport_list)):
                 for j in range(0, len(sql_list)):
                     ppxt_lsit =Compared.split(",")
@@ -596,14 +609,14 @@ class BetController(object):
                         if sport_list[i][ppxt_lsit[1]] == sql_list[j][ppxt_lsit[1]]:
                             if sport_list[i] == sql_list[j]:
                                 correct_list.append(sql_list[j])
-                                print(str(sport_list[i][ppxt_lsit[0]])+"-"+str(sport_list[i][ppxt_lsit[1]]),"数据对比正确：" + str(sport_list[i]) + "/" + str(sql_list[j]))
+                                # print(str(sport_list[i][ppxt_lsit[0]])+"-"+str(sport_list[i][ppxt_lsit[1]]),"数据对比正确：" + str(sport_list[i]) + "/" + str(sql_list[j]))
                                 break
                             else:
-                                print(sport_list[i],"\n",sql_list[j])
+                                # print(sport_list[i],"\n",sql_list[j])
                                 for report in range(0, len(sql_list[j])):
                                     if sport_list[i][yyds_list[report]] == sql_list[j][yyds_list[report]]:
-                                        # pass
-                                        print(str(sport_list[i][ppxt_lsit[0]])+"-"+str(sport_list[i][ppxt_lsit[1]]), str(yyds_list[report]),"数据对比正确：" + str(sport_list[i][yyds_list[report]]) + "/" + str(sql_list[j][yyds_list[report]]))
+                                        pass
+                                        # print(str(sport_list[i][ppxt_lsit[0]])+"-"+str(sport_list[i][ppxt_lsit[1]]), str(yyds_list[report]),"数据对比正确：" + str(sport_list[i][yyds_list[report]]) + "/" + str(sql_list[j][yyds_list[report]]))
                                     else:
                                         if i<len(sportId_list):
                                             yyth = sportId_list[i]
@@ -619,17 +632,14 @@ class BetController(object):
                                             print("\033[31m" + str(sport_list[i][ppxt_lsit[0]])+"-"+str(sport_list[i][ppxt_lsit[1]]+"-"+yyth), str(yyds_list[report]),"数据对比错误：" + str(sport_list[i][yyds_list[report]]) + "/" + str( sql_list[j][yyds_list[report]]) +"\033[0m",type(sport_list[i][yyds_list[report]]),type(sql_list[j][yyds_list[report]]))
                                             if yyds_list[report]=='options':
                                                 self.options_report(A=sport_list[i][ppxt_lsit[0]],B=sport_list[i][ppxt_lsit[1]], C=yyds_list[report],D=sport_list[i][yyds_list[report]], E=sql_list[j][yyds_list[report]])
-                    #     else:
-                    #         print(f"数据对比错误：{sport_list[i][ppxt_lsit[1]]}/{sql_list[j][ppxt_lsit[1]]}，{type(sport_list[i][ppxt_lsit[1]])}/{type(sport_list[i][ppxt_lsit[1]])}")
-                    # else:
-                    #     print(f"数据对比错误：{sport_list[i][ppxt_lsit[0]]}/{sql_list[j][ppxt_lsit[0]]}，{type(sport_list[i][ppxt_lsit[0]])}/{type(sport_list[i][ppxt_lsit[0]])}")
-        else:
+
             if sport_list== []:
                 sport_all_error.append("接口数据为空")
             if sql_list== []:
                 sport_all_error.append("SQL数据为空")
 
     def report_list_Compared03(self, sport_list,sql_list, Compared,excel_report):
+        print(f"\033[33m{excel_report[0]}-{excel_report[1]}：数据对比开始----------------------------------------------------------------------------------------------\033[0m")
         if sport_list!= [] and sql_list!= []:
             yyds_list = []
             for key, value in sport_list[0].items():
@@ -644,13 +654,13 @@ class BetController(object):
                             if sport_list[i][ppxt_lsit[2]] == sql_list[j][ppxt_lsit[2]]:
                                 if sport_list[i] == sql_list[j]:
                                     correct_list.append(sql_list[j])
-                                    print(str(sport_list[i][ppxt_lsit[0]])+"-"+str(sport_list[i][ppxt_lsit[1]])+"-"+str(sport_list[i][ppxt_lsit[2]]),"数据对比正确：" + str(sport_list[i]) + "/" + str(sql_list[j]))
+                                    # print(str(sport_list[i][ppxt_lsit[0]])+"-"+str(sport_list[i][ppxt_lsit[1]])+"-"+str(sport_list[i][ppxt_lsit[2]]),"数据对比正确：" + str(sport_list[i]) + "/" + str(sql_list[j]))
                                     break
                                 else:
                                     for report in range(0, len(sql_list[j])):
                                         if sport_list[i][yyds_list[report]] == sql_list[j][yyds_list[report]]:
-                                            # pass
-                                            print(str(sport_list[i][ppxt_lsit[0]])+"-"+str(sport_list[i][ppxt_lsit[1]])+"-"+str(sport_list[i][ppxt_lsit[2]]), str(yyds_list[report]),"数据对比正确：" + str(sport_list[i][yyds_list[report]]) + "/" + str(sql_list[j][yyds_list[report]]))
+                                            pass
+                                            # print(str(sport_list[i][ppxt_lsit[0]])+"-"+str(sport_list[i][ppxt_lsit[1]])+"-"+str(sport_list[i][ppxt_lsit[2]]), str(yyds_list[report]),"数据对比正确：" + str(sport_list[i][yyds_list[report]]) + "/" + str(sql_list[j][yyds_list[report]]))
                                         else:
                                             if i < len(sportId_list):
                                                 yyth = sportId_list[i]
@@ -670,50 +680,56 @@ class BetController(object):
 
     def options_report(self,A, B, C,D,E):
         options_yyds=0
-        print(f"\033[32m{A}-{B},{C}：数据对比开始---------------------------------------------------------------------------\033[0m")
+        print(f"\033[32m{A}-{B},{C}：options字典数据对比开始---------------------------------------------------------------------------\033[0m")
         aa_list = []
         print(D[0])
         print(E[0])
         for key, value in D[0].items():
             aa_list.append(key)
         if D==E:
-            print("数据对比正确")
+            print("options字典数据对比正确")
         else:
-            for ykk in range(0, len(D)):
-                for i in aa_list:
-                    if D[ykk][i] == E[ykk][i]:
-                        print(f"{A}-{B},{C}数据对比正确：{D[ykk][i]}/{E[ykk][i]}")
-                    else:
-                        print(f"\033[31m{A}-{B},{C}数据对比错误：{D[ykk][i]}/{E[ykk][i]}\033[0m{type(D[ykk][i])}/{type(E[ykk][i])}-")
-                        options_yyds = 1
-        print(f"\033[32m{A}-{B},{C}：数据对比结束----------------------------------------------------------------------------------------------\033[0m")
+            if len(D)==len(E):
+                for ykk in range(0, len(D)):
+                    for i in aa_list:
+                        if D[ykk][i] == E[ykk][i]:
+                            print(f"{A}-{B},{C}options数据对比正确：{D[ykk][i]}/{E[ykk][i]}")
+                            options_yyds=0
+                        else:
+                            print(f"\033[31m{A}-{B},{C}options数据对比错误：{D[ykk][i]}/{E[ykk][i]}\033[0m{type(D[ykk][i])}/{type(E[ykk][i])}-")
+                            options_yyds=1
+            else:
+                print(f"\033[31m{A}-{B},{C}数据字典数量不一致错误:{len(D)}/{len(E)}")
+        print(f"\033[32m{A}-{B},{C}：options字典数据对比结束----------------------------------------------------------------------------------------------\033[0m")
         return options_yyds
 
 
-    def if_error(self, A,B):
+    def if_error(self, A,B,correct_list):
         key01=[]
         key02 = []
         error=''
-        number_num = random.randint(0, len(A))
+        number_num = random.randint(0, len(A)-1)
         if number_num>len(B):
-            number_num=':'
+            number_num=0
         else:
             if len(A[number_num])==len(B[number_num]):
-                # if A['options']
-                for key,value in A[0].items():
+                for key,value in A[number_num].items():
                     key01.append(key)
                 if 'options' in key01:
-                    if len(A['options'].keys)==len(B['options'].keys):
-                        yytr=self.options_report(A=A[key01[0]], B=A[key01[-1]], C='options',D=A['options'],E=B['options'])
+                    if len((A[number_num]['options'][0]).keys())==len((B[number_num]['options'][0]).keys()):
+                        yytr=self.options_report(A=A[number_num][key01[0]], B=A[number_num][key01[-1]], C='options',D=A[number_num]['options'],E=B[number_num]['options'])
                         if yytr==0:
                             if A==B:
-                                print(f"\33[31m数据预校验通过\33[0m")
-                                A=correct_list
+                                print(f"\33[32m接口数据数据预校验通过\33[0m")
+                                correct_list=B
                             else:
                                 print("\33[31m数据预校验不通过\33[0m")
                                 error = '错误'
+                        else:
+                            print(f"\33[31m字典value的值不相等\33[0m")
+                            error = '错误'
                     else:
-                        print(f"A与B，key值不一致{len(A['options'].keys)}/{len(B['options'].keys)}")
+                        print(f"A与B，key值不一致{len((A[number_num]['options'][0]).keys())}/{len((B[number_num]['options'][0]).keys())}")
                         for key, value in B[0]['options'].items():
                             key02.append(key)
                         for key_value in key02:
@@ -724,15 +740,15 @@ class BetController(object):
                         print(f"\33[31mA与B，options字典数量不相等,他们相差{key01}\33[0m")
                 else:
                     if A==B:
-                        print(f"\33[31m数据预校验通过\33[0m")
-                        A=correct_list
+                        print(f"\33[32m数据预校验通过\33[0m")
+                        correct_list=B
                     else:
-                        print(f"\33[32m数据预校验不通过\33[0m")
+                        print(f"\33[31m数据预校验不通过\33[0m")
                         error='错误'
             else:
-                print(f"\33[32m接口数据与SQL数据字段比对错误,A:{len(A[number_num])}/B:{len(A[number_num])}\33[0m")
+                print(f"\33[31m接口数据与SQL数据字段比对错误,A:{len(A[number_num])}/B:{len(B[number_num])}\33[0m")
                 error = '错误'
-        return error
+        return error,correct_list
 
 
 
@@ -765,6 +781,7 @@ class BetController(object):
             sport_error.append(sport_report_list)
             sport_error.append(sql_report_list)
 
+    #判断读取的SQL内容，是否要写入数据
     def if_f(self,BBQ,all,num,all_order_no,begin,end):
         if BBQ[0] == "f":
             sql=eval(BBQ)
@@ -772,66 +789,49 @@ class BetController(object):
             sql=BBQ
         return sql
 
+    #对已经组装好的比赛数据，对于相同订单号组装在一起，不同订单号分开组装
     def order_no_new(self,yyds_list):
+        global orderNo_list
         orderNo_list = []
-        count_i = 0
-        count_j = 1
-        count = 0
-        for i in range(0, len(yyds_list)):
-            print("i循环:", i, count_i)
-            orderNo_tuple = ()
-            if i == count_i:
-                # new_list.append(yyds_list[i])
-                for j in range(count_j, len(yyds_list)):
-                    print("j循环:", j, count_j)
-                    if j == count_j:
-                        # print(yyds_list[i][8],yyds_list[j][8])
-                        if yyds_list[i][8] == yyds_list[j][8]:
-                            orderNo_tuple = yyds_list[i] + yyds_list[j]
-                            print(yyds_list[i][8], yyds_list[j][8])
-                            count_j = count_j + 1
-                            count_i = count_i + 1
-                            if j == len(yyds_list) - 1:
-                                orderNo_list.append(orderNo_tuple)
-                                print(f"第{count}次,{count_i},{count_j}")
-                            else:
-                                for k in range(count_j, len(yyds_list)):
-                                    print(yyds_list[i][8], yyds_list[k][8])
-                                    if yyds_list[i][8] == yyds_list[k][8]:
-                                        if k == len(yyds_list) - 1:
-                                            count = count + 1
-                                            count_j = count_j + 1
-                                            count_i = count_i + 1
-                                            orderNo_list.append(orderNo_tuple)
-                                            print(f"第{count}次,{count_i},{count_j}")
-                                        else:
-                                            orderNo_tuple = orderNo_tuple + yyds_list[k]
-                                            count_j = count_j + 1
-                                            count_i = count_i + 1
-                                    else:
-                                        orderNo_list.append(orderNo_tuple)
-                                        count_j = count_j + 1
-                                        count_i = count_i + 1
-                                        count = count + 1
-                                        print(f"第{count}次,{count_i},{count_j}")
-                                        break
-                        else:
-                            count_i = count_i + 1
-                            count_j = count_j + 1
-                            count = count + 1
-                            break
-                    else:
-                        break
+        for i in yyds_list:
+            orderNo_tuple = []
+            #p判断订单号是否在列表中，在的，直接在原列表中添加元素，不在直接添加新的元素
+            if i['orderNo'] in orderNo_list:
+                index_number = orderNo_list.index(i['orderNo'])
+                options_list[index_number].append(i)
             else:
-                continue
-        return orderNo_list
+                orderNo_list.append(i['orderNo'])
+                orderNo_tuple.append(i)
+                options_list.append(orderNo_tuple)
+        return options_list
 
+    #对多个数据的订单号，单独进行组装
+    def order_no_orderno(self,yyds_list,excel_report):
+
+        # new_orderNo_list = []
+        orderNo_list = []
+        for i in yyds_list:
+            orderNo_tuple = []
+            index_i=0
+            #p判断订单号是否在列表中，在的，直接在原列表中添加元素，不在直接添加新的元素
+            if i[index_i] in orderNo_list:
+                index_number = orderNo_list.index(i[index_i])
+                if excel_report[0]=="总投注-混合串关-子查询(查询其注单号，包含的比赛)":
+                    i=i[1:]
+                options_list[index_number].append(i)
+            else:
+                orderNo_list.append(i[index_i])
+                if excel_report[0]=="总投注-混合串关-子查询(查询其注单号，包含的比赛)":
+                    i=i[1:]
+                orderNo_tuple.append(i)
+                options_list.append(orderNo_tuple)
+        return options_list
 
 
 
     def sport_report_sql(self,begin,end,excel_report,sport_report_dict,sport_report_list):
         global options_list,sportId_sql_list
-        print(f"\33[34m正在执行{excel_report[0]}-{excel_report[1]}\33[0m")
+        print(f"\33[35m正在执行SQL{excel_report[0]}-{excel_report[1]}\33[0m")
 
         num_list = []
         sort_num_list = []
@@ -840,6 +840,7 @@ class BetController(object):
         sportId_sql_list = []
         sport_num_sql_list=[]
         sql_yyds =[]
+        sort_num_list=[]
         marketID_sql_list = []
         marketID_sql_dict={}
 
@@ -883,101 +884,103 @@ class BetController(object):
                 else:
                     pass
         elif excel_report[3] == 2:
-            sql011=self.if_f(BBQ=yyds[0],all=all,num=num,all_order_no=all_order_no,begin=begin,end=end)
-            sort_num = self.my.query_data(sql011, db_name='bfty_credit')
-            del yyds[0]
-            report_null = self.null_data_processing(sort_num=sort_num, mix_number=mix_number, excel_report=excel_report)
-            if report_null == []:
-                self.null_report(sport_report_list=sport_report_list, sql_report_list=report_null,excel_report=excel_report)
+            if excel_report[0] in ('总投注-混合串关-子查询(查询其注单号，包含的比赛',"未完成交易-登0-登3-会员-查看订单详情-子查询","盈亏详情-登0-登3-会员-查看订单详情-子查询"):
+                if excel_report[0]=='总投注-混合串关-子查询(查询其注单号，包含的比赛)':
+                    sql = self.if_f(BBQ=yyds[0], all=all, num=num, all_order_no=all_order_no, begin=begin, end=end)
+                    sort_num = self.my.query_data(sql, db_name='bfty_credit')
+                    sort_num =self.order_no_orderno(yyds_list=sort_num, excel_report=excel_report)
+                    mix_number.append("2-1")
+                elif excel_report[0] in ('未完成交易-登0-登3-会员-查看订单详情-子查询',"盈亏详情-登0-登3-会员-查看订单详情-子查询"):
+                    sql01 = self.if_f(BBQ=yyds[0], all=all, num=num, all_order_no=all_order_no, begin=begin, end=end)
+                    sql02 = self.if_f(BBQ=yyds[1], all=all, num=num, all_order_no=all_order_no, begin=begin, end=end)
+                    sql03 = self.if_f(BBQ=yyds[2], all=all, num=num, all_order_no=all_order_no, begin=begin, end=end)
+                    print(sql01)
+                    print(sql02)
+                    print(sql03)
+                    sort_num01 = self.my.query_data(sql01, db_name='bfty_credit')
+                    sort_num02 = self.my.query_data(sql02, db_name='bfty_credit')
+                    sort_num03 = self.my.query_data(sql03, db_name='bfty_credit')
+                    #把sort_num01的总金额数据，组装进sort_num02的里
+                    user_name01=[]
+                    user_money=[]
+                    #先把总金额数据，登入账号和金额取出来，分别放入user_name01，user_money
+                    for j in sort_num01:
+                        user_name01.append(j[0])
+                        if excel_report[0]=='未完成交易-登0-登3-会员-查看订单详情-子查询':
+                            user_money.append(float(j[1]))
+                        else:
+                            user_money.append((j[1:]))
+                    #写入信息中
+                    for i in range(0,len(sort_num02)):
+                        ppt_list=[]
+                        if sort_num02[i][0] in user_name01:
+                            if excel_report[0] == '未完成交易-登0-登3-会员-查看订单详情-子查询':
+                                new_report=sort_num02[i]+((user_money[user_name01.index(sort_num02[i][0])]),)
+                            else:
+                                new_report=sort_num02[i]
+                                for jj in (user_money[user_name01.index(sort_num02[i][0])]):
+                                    new_report = new_report + ((jj),)
+                            ppt_list.append(new_report)
+                            num_list.append(ppt_list)
+                    # 单独获取options列表的数据，然后组装回去
+                    aa_list = []
+                    jkk_list = []
+                    for key, value in sport_report_list[0]['options'][0].items():
+                        aa_list.append(key)
+                    for jkk in sort_num03:
+                        jkk_dict = {}
+                        for jkk_2 in range(0, len(jkk)):
+                            if str(type(jkk[jkk_2])) in type_list:
+                                if jkk[jkk_2] == None:
+                                    new_jkk = None
+                                else:
+                                    new_jkk = str(jkk[jkk_2])
+                            else:
+                                new_jkk = float(jkk[jkk_2])
+                            jkk_dict[aa_list[jkk_2]] = new_jkk
+                        jkk_list.append(jkk_dict)
+                    self.order_no_new(yyds_list=jkk_list)
+                mix_number.append("2-1")
+                sort_num = num_list
+                #判断是SQL内容是否为空
+                if report_null == []:
+                    self.null_report(sport_report_list=sport_report_list, sql_report_list=report_null, excel_report=excel_report)
+                else:
+                    pass
             else:
-                for sportId in sort_num:
-                    sportId_sql_list.append(sportId[0])
-                for all in sportId_sql_list:
-                    sort_num_list = []
-                    if len(yyds) == 1:
-                        sql=self.if_f(BBQ=yyds[0],all=all,num=num,all_order_no=all_order_no,begin=begin,end=end)
-                        sort_num = self.my.query_data(sql, db_name='bfty_credit')
-                        num_list.append(sort_num)
-                        if num_list[0] ==():
-                            del num_list[0]
-                        sort_num = num_list
-                        mix_number.append("2-1")
-                        sql_count = sql_count + 1
-                        print(len(sport_report_list), sql_count)
-                    elif len(yyds) == 2:
-                        sql01 = self.if_f(BBQ=yyds[0],all=all,num=num,all_order_no=all_order_no,begin=begin,end=end)
-                        sql02 = self.if_f(BBQ=yyds[1],all=all,num=num,all_order_no=all_order_no,begin=begin,end=end)
-                        sort_num01 = self.my.query_data(sql01, db_name='bfty_credit')
-                        sort_num02 = self.my.query_data(sql02, db_name='bfty_credit')
-                        sort_num_list.append(sort_num01)
-                        sort_num_list.append(sort_num02)
-                        num_list.append(sort_num_list)
-                        sort_num = num_list
-                        mix_number.append("2-2")
-                        sql_count = sql_count + 1
-                        print(len(sport_report_list), sql_count)
-                    else:
-                        if excel_report[0] in ("未完成交易-登0-登3-会员-查看订单详情-子查询","盈亏详情-登0-登3-会员-查看订单详情-子查询"):
-                            order_list=[]
-                            sql01=self.if_f(BBQ=yyds[1],all=all,num=num,all_order_no=all_order_no,begin=begin,end=end)
+                sql011=self.if_f(BBQ=yyds[0],all=all,num=num,all_order_no=all_order_no,begin=begin,end=end)
+                sort_num = self.my.query_data(sql011, db_name='bfty_credit')
+                del yyds[0]
+                report_null = self.null_data_processing(sort_num=sort_num, mix_number=mix_number, excel_report=excel_report)
+                if report_null == []:
+                    self.null_report(sport_report_list=sport_report_list, sql_report_list=report_null,excel_report=excel_report)
+                else:
+                    for sportId in sort_num:
+                        sportId_sql_list.append(sportId[0])
+                    for all in sportId_sql_list:
+                        sort_num_list = []
+                        if len(yyds) == 1:
                             sql=self.if_f(BBQ=yyds[0],all=all,num=num,all_order_no=all_order_no,begin=begin,end=end)
-                            sort_num01 = self.my.query_data(sql01, db_name='bfty_credit')
-                            sort_num=self.my.query_data(sql, db_name='bfty_credit')
-                            for i in sort_num01:
-                                order_list.append(i[0])
-                            # print(order_list)
-                            for all_order_no in order_list:
-                                yyrt_list = []
-                                sql02 = self.if_f(BBQ=yyds[2],all=all,num=num,all_order_no=all_order_no,begin=begin,end=end)
-                                sql03 = self.if_f(BBQ=yyds[3],all=all,num=num,all_order_no=all_order_no,begin=begin,end=end)
-                                sort_num02 = self.my.query_data(sql02, db_name='bfty_credit')
-                                sort_num03 = self.my.query_data(sql03, db_name='bfty_credit')
-                                #拼接元祖参数
-                                # print(sort_num)
-                                # print(sort_num01)
-                                # print(sort_num02)
-                                # print(sort_num03)
-                                # print("拼接打印sort_num[0]：", sort_num[0])
-                                yyrt_list.append(sort_num02[0])
-                                ggg = yyrt_list[0] + sort_num[0]
-                                yyrt_list[0]=ggg
-
-                                #单独获取options列表的数据，然后组装回去
-                                aa_list = []
-                                jkk_list = []
-                                for key, value in sport_report_list[0]['options'][0].items():
-                                    aa_list.append(key)
-                                # print(sort_num03)
-                                for jkk in sort_num03:
-                                    jkk_dict = {}
-                                    for jkk_2 in range(0, len(jkk)):
-                                        if str(type(jkk[jkk_2])) in type_list:
-                                            if jkk[jkk_2]==None:
-                                                new_jkk=None
-                                            else:
-                                                new_jkk=str(jkk[jkk_2])
-                                        else:
-                                            new_jkk = float(jkk[jkk_2])
-                                        jkk_dict[aa_list[jkk_2]]=new_jkk
-                                    jkk_list.append(jkk_dict)
-                                options_list.append(jkk_list)
-                                num_list.append(yyrt_list)
-                                sql_count = sql_count + 1
-                                print(len(sport_report_list), sql_count)
-                            mix_number.append("2-1")
+                            sort_num = self.my.query_data(sql, db_name='bfty_credit')
+                            num_list.append(sort_num)
+                            if num_list[0] ==():
+                                del num_list[0]
                             sort_num = num_list
+                            mix_number.append("2-1")
+                            print(len(sport_report_list), sql_count)
+                        elif len(yyds) == 2:
+                            sql01 = self.if_f(BBQ=yyds[0],all=all,num=num,all_order_no=all_order_no,begin=begin,end=end)
+                            sql02 = self.if_f(BBQ=yyds[1],all=all,num=num,all_order_no=all_order_no,begin=begin,end=end)
+                            sort_num01 = self.my.query_data(sql01, db_name='bfty_credit')
+                            sort_num02 = self.my.query_data(sql02, db_name='bfty_credit')
+                            sort_num_list.append(sort_num01)
+                            sort_num_list.append(sort_num02)
+                            num_list.append(sort_num_list)
+                            sort_num = num_list
+                            mix_number.append("2-2")
+                            sql_count = sql_count + 1
+                            print(len(sport_report_list), sql_count)
                         elif excel_report[0] in ("报表-球类报表-订单查询（根据其盘口查询订单）"):
-                            marketID_sql_new_list=[]
-                            # sql = self.if_f(BBQ=yyds[0], all=all, num=num, all_order_no=all_order_no, begin=begin,end=end)
-                            # sort_num = self.my.query_data(sql, db_name='bfty_credit')
-                            # for marketID in sort_num:
-                            #     marketID_sql_new_list.append(marketID[0])
-                            # marketID_sql_dict[all]=marketID_sql_new_list
-                            #
-                            # for all_order_no in marketID_sql_dict[all]:
-                            #     print(all,all_order_no)
-                            #     order_list=[]
-                            #     order_list_Duplex=[]
                             yyrt_list=[]
                             #获取球类的单注盘口的会员数据
                             sql01 = self.if_f(BBQ=yyds[0], all=all, num=num, all_order_no=all_order_no,begin=begin, end=end)
@@ -989,15 +992,17 @@ class BetController(object):
                             #for循环单注和串关的会员数据
                             for member in (sort_num01,sort_num02):
                                 for num in range(0,len(member)):
-                                    tuple_new=()
+                                    tuple_new_01=[]
                                     tuple_new=member[num]
-                                    num_list.append(tuple_new)
+                                    tuple_new_01.append(tuple_new)
+                                    num_list.append(tuple_new_01)
+                                    # exit("调试一次就结束")
 
                             # 遍历options里的键值对，方便写入组装数据
                             aa_list = []
                             for key, value in sport_report_list[0]['options'][0].items():
                                 aa_list.append(key)
-                            print(aa_list)
+                            # print(aa_list)
                             # 获取单注赛事选项
                             sql03 = self.if_f(BBQ=yyds[2], all=all, num=num, all_order_no=all_order_no, begin=begin,end=end)
                             sort_num03 = self.my.query_data(sql03, db_name='bfty_credit')
@@ -1005,47 +1010,43 @@ class BetController(object):
                             jkk_list = []
                             jkk_dict = {}
                             for single in sort_num03:
-                                for jkk in range(0, len(single[0])):
-                                    print()
-                                    if str(type(single[0][jkk])) in type_list:
-                                        if single[0][jkk] == None:
+                                jkk_dict = {}
+                                for jkk in range(0, len(single)):
+                                    if str(type(single[jkk])) in type_list:
+                                        if single[jkk] == None:
                                             new_jkk = None
                                         else:
-                                            new_jkk = str(single[0][jkk])
+                                            new_jkk = str(single[jkk])
                                     else:
-                                        new_jkk = float(single[0][jkk])
-                                    print(new_jkk)
-                                    print(aa_list[jkk])
-                                    print(jkk)
+                                        new_jkk = float(single[jkk])
                                     jkk_dict[aa_list[jkk]] = new_jkk
                                 jkk_list.append(jkk_dict)
-                                options_list.append(jkk_list)
+                                #去比对数据订单后，然后相同的组装在一起，不同的分开组装
+                            self.order_no_new(yyds_list=jkk_list)
 
                             #获取串关options的数据
                             sql04 = self.if_f(BBQ=yyds[3], all=all, num=num, all_order_no=all_order_no, begin=begin,end=end)
                             sort_num04 = self.my.query_data(sql04, db_name='bfty_credit')
-                            Duplex=self.order_no_new(yyds_list=sort_num04)
                             # 单独获取options列表的数据，然后组装回去
                             jkk_list = []
-                            for Duplex_report in Duplex:
-                                for jkk in range(0,len(Duplex_report)):
-                                    jkk_dict = {}
-                                    for jkk_2 in range(0, len(Duplex[jkk])):
-                                        if str(type(Duplex[jkk][jkk_2])) in type_list:
-                                            if Duplex[jkk][jkk_2]== None:
-                                                new_jkk = None
-                                            else:
-                                                new_jkk = str(Duplex[jkk][jkk_2])
+                            jkk_dict = {}
+                            for Duplex in sort_num04:
+                                jkk_dict = {}
+                                for jkk in range(0, len(Duplex)):
+                                    if str(type(Duplex[jkk])) in type_list:
+                                        if Duplex[jkk] == None:
+                                            new_jkk = None
                                         else:
-                                            new_jkk = float(Duplex[jkk][jkk_2])
-                                        jkk_dict[aa_list[jkk_2]] = new_jkk
-                                    jkk_list.append(jkk_dict)
-                                options_list.append(jkk_list)
-                            mix_number.append("2-1")
-                            sort_num = num_list
-                            print(sort_num[0],sort_num[-1])
-                            print(options_list[0],options_list[-1])
-                            exit()
+                                            new_jkk = str(Duplex[jkk])
+                                    else:
+                                        new_jkk = float(Duplex[jkk])
+                                    jkk_dict[aa_list[jkk]] = new_jkk
+                                jkk_list.append(jkk_dict)
+                                # 去比对数据订单后，然后相同的组装在一起，不同的分开组装
+                            self.order_no_new(yyds_list=jkk_list)
+                            print(len(num_list),len(options_list),all)
+                    mix_number.append("2-1")
+                    sort_num= num_list
 
         else:
             sql011=self.if_f(BBQ=yyds[0],all=all,num=num,all_order_no=all_order_no,begin=begin,end=end)
@@ -1078,7 +1079,7 @@ class BetController(object):
                                 #     num_list.clear()
                                 mix_number.append("2-1")
                                 sql_count = sql_count + 1
-                                print(len(sport_report_list), sql_count)
+                                # print(len(sport_report_list), sql_count)
                     else:
                         sql01 = self.if_f(BBQ=yyds[0],all=all,num=num,all_order_no=all_order_no,begin=begin,end=end)
                         sql02 = self.if_f(BBQ=yyds[1],all=all,num=num,all_order_no=all_order_no,begin=begin,end=end)
@@ -1089,7 +1090,7 @@ class BetController(object):
                         num_list.append(sort_num_list)
                         mix_number.append("2-2")
                         sql_count = sql_count + 1
-                        print(len(sport_report_list), sql_count)
+                        # print(len(sport_report_list), sql_count)
                 sort_num = num_list
                 print(sort_num)
 
@@ -1107,6 +1108,9 @@ class BetController(object):
 
     def Compared_report(self, sort_num, sport_list, sql_name_list, sql_list, Compared, report_name, excel_report,mix,begin,end):
         global sport_error,sport_all_error,yyds01,correct_list,Prepare_enough_list
+        #调试
+        # print(sort_num[0])
+        # exit()
         correct_list=[]
         Prepare_enough_list=[]
         sport_error = []
@@ -1128,7 +1132,7 @@ class BetController(object):
                         if sort_num[i][j]=="odds":
                             yy_num =self.sr.credit_odds(order_no=sort_num[i][j+1],bet_type="",AB_list=AB_list,dict=dict)
                         elif sql_name_list[j]=="oddType":
-                            yy_num = self.sr.total_odds(order_no=sort_num[i][j+1],number='')
+                            yy_num = self.sr.total_odds(order_no=sort_num[i][j+2],number='str')
                         elif sql_name_list[j] in int_list:
                             if sql_name_list[j]=="levelId":
                                 yy_num = int(sort_num[i][j])+1
@@ -1149,7 +1153,7 @@ class BetController(object):
                                 if excel_report[0]=="报表-球类报表-主查询":
                                     yy_num = self.wt.total_commission(agent_id='',member_id='',sportId=sort_num[i][-2],marketId='',tournamentId='',matchId='',login_account=Dl_list[pkk],begin=begin,end=end,Duplex='')
                                 elif excel_report[0] == "报表-混合串关-主查询":
-                                    yy_num = self.wt.total_commission(agent_id='', member_id=sort_num[i][-1],sportId='', marketId='', tournamentId='',matchId='', login_account=Dl_list[pkk],begin=begin, end=end,Duplex=1)
+                                    yy_num = self.wt.total_commission(agent_id='', member_id=sort_num[i][-5],sportId='', marketId='', tournamentId='',matchId='', login_account=Dl_list[pkk],begin=begin, end=end,Duplex=1)
                         else:
                             yy_num=str(sort_num[i][j])
                     else:
@@ -1159,23 +1163,41 @@ class BetController(object):
             print("sport_list组装数据对比：", sport_list[1])
             print("sql_list组装数据对比：", sql_list[1])
         if mix[0]==str('2-1'):
-            print(sort_num[0][0])
             # print(sort_num)
-            # print(sort_num[0])
-            # print(sort_num[0][0])
+            print(sort_num[0])
+            print(sort_num[0][0])
+            print(len(sort_num),len(options_list))
             count = 0
             for i in range(0, len(sort_num)):
                 for j in range(0,len(sort_num[i])):
                     sql_dict = {}
                     for g in range(0,len(sort_num[i][j])):
+                        # exit(f"{len(sort_num)},{len(options_list)}")
                         if str(type(sort_num[i][j][g]))in type_list:
                             if sql_name_list[g] in int_list:
                                 if excel_report[0] in ('盈亏详情-登0-登3-会员-查看订单详情-子查询','报表-球类报表-订单查询（根据其盘口查询订单）'):
                                     yy_num = str(sort_num[i][j][g])
                                 else:
-                                    yy_num = int(sort_num[i][j][g])
+                                    if str(type(sort_num[i][j][g]))=="<class 'datetime.datetime'>":
+                                        yy_num = str(sort_num[i][j][g])
+                                    else:
+                                        yy_num = int(sort_num[i][j][g])
+                            elif sort_num[i][j][g]=="odds":
+                                if excel_report[0]=='报表-球类报表-订单查询（根据其盘口查询订单）':
+                                    yy_num =self.sr.credit_odds(order_no=sort_num[i][j][35],bet_type="",AB_list=AB_list,dict=dict)
+                                elif excel_report[0]=='未完成交易-登0-登3-会员-查看订单详情-子查询':
+                                        yy_num =float(self.sr.credit_odds(order_no=sort_num[i][j][-3], bet_type="",AB_list=AB_list, dict=dict))
                             elif sort_num[i][j][g] == "options":
-                                yy_num = options_list[i]
+                                if excel_report[0]=="未完成交易-登0-登3-会员-查看订单详情-子查询":
+                                    if sort_num[i][j][-3] in orderNo_list:
+                                        yy_num = options_list[orderNo_list.index(sort_num[i][j][-3])]
+                                else:
+                                    yy_num = options_list[i]
+                            elif sort_num[i][j][g] == "odds_type":
+                                if excel_report[0] == '报表-球类报表-订单查询（根据其盘口查询订单）':
+                                    yy_num =str(self.sr.total_odds(order_no=sort_num[i][j][35], number=' '))
+                                elif excel_report[0] == '未完成交易-登0-登3-会员-查看订单详情-子查询':
+                                    yy_num = self.sr.total_odds(order_no=sort_num[i][j][-3], number=' ')
                             elif sort_num[i][j][g] == "公司总计":
                                 if excel_report[0] in interface_list:
                                     yy_num = self.wt.Company_winlose(agent_id=sort_num[i][j][1], member_id='', sportId='',marketId='', tournamentId='', matchId='',login_account=Dl_list[pkk], begin=begin, end=end,Duplex='')
@@ -1200,8 +1222,9 @@ class BetController(object):
                             yy_num = float(sort_num[i][j][g])
                         sql_dict[sql_name_list[g]]=yy_num
                     sql_list.append(sql_dict)
-            print("sport_list组装数据对比：", sport_list[1])
-            print("sql_list组装数据对比：", sql_list[1])
+            print("sport_list组装数据对比：", sport_list[0])
+            print("sql_list组装数据对比：", sql_list[0])
+            # exit(print(sport_list[10],sql_list[10]))
         if mix[0]==str('2-2'):
             print(sort_num[0][0][0])
             # print(sort_num)
@@ -1242,8 +1265,10 @@ class BetController(object):
             print("sql_list组装数据对比：",sql_list[1])
 
 
-        yyts=self.if_error(A=sport_list, B=sql_list)
-        if yyts=='':
+        yyts=self.if_error(A=sport_list, B=sql_list,correct_list=correct_list)
+        # yyts='调试'
+        correct_list=yyts[1]
+        if yyts[0]=='错误':
             if len(yyds01)==1:
                 self.report_list_Compared01(sport_list=sport_list, sql_list=sql_list, Compared=Compared,excel_report=excel_report)
             elif len(yyds01)==2:
@@ -1253,9 +1278,10 @@ class BetController(object):
         else:
             pass
 
+
         if len(sport_list) == len(correct_list):
             print(f"\033[32m代理{Dl_list[pkk]}的{report_name}，接口数据比对全部正确：{len(sport_list)}-{len(correct_list)}\033[0m")
-            Prepare_enough_list.append(f"\033[32m代理{Dl_list[pkk]}的{report_name}，接口数据比对全部正确\033[0m")
+            Prepare_enough_list.append(f"\033[32m代理{Dl_list[pkk]}的{report_name}，接口数据比对全部正确\n\n\033[0m")
         else:
             print(f"\033[31m代理{Dl_list[pkk]}的{report_name}，数据错误，需要比对,{len(sport_list)},{len(correct_list)}\033[0m")
             Prepare_enough_list.append(f"\033[31m代理{Dl_list[pkk]}的{report_name}，数据错误，需要比对,{len(sport_list)},{len(correct_list)}\033[0m")
@@ -1265,6 +1291,10 @@ class BetController(object):
             # print(sql_list)
             sport_error.append(sport_list)
             sport_error.append(sql_list)
+        if yyts[0]=='错误':
+            print(f"\033[33m{excel_report[0]}-{excel_report[1]}：数据对比结束----------------------------------------------------------------------------------------------\n\n\033[0m")
+        else:
+            print("\n","\n")
             # print(f"\033[34m部分数据：{sport_error}\033[0m")
             # print(f"\033[34m全部数据：{sport_all_error}\033[0m")
 
@@ -1354,22 +1384,21 @@ if __name__ == "__main__":
         # print(time_new_list)
 
         # 调用本地Exce读取数据
-        # toten='eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjE1MzE1MTYwMTc4NDc4Njk0NDIiLCJleHAiOjE2NTY3NzMxMzMsInVzZXJuYW1lIjoiZDAifQ.L9lyGj3R8UafesdblbplhHrw5OxXyrmDmBvx_PXHEX4'
-        # # toten=''
-        # ccds=cc.reading_Excel(excel=excel, save_excel=save_excel,begin="2022-06-22",end="2022-06-28", URL=URL)
-
-
+        print_num=0
+        token='eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjE1MzE1MTYwMTc4NDc4Njk0NDIiLCJleHAiOjE2NTc1MjQwMjAsInVzZXJuYW1lIjoiZDAifQ.QVmqJ8Nhs-bwpL3WueOB1BTLrRF4IMOKR7ua395reAo'
+        ccds=cc.reading_Excel(excel=excel, save_excel=save_excel,begin="2022-07-01",end="2022-07-07", URL=URL)
 
 
         #调试SQL数据:
-        excel_report=['报表-球类报表-订单查询（根据其盘口查询订单）', '"/winOrLost/sport","/winOrLost/market","/winOrLost/order/details"', 'companyCommission,companyCommissionRatio,companyPercentage,companyTotal,companyWinOrLose,mixNum', 2, "{\n        'Content-Type': 'application/json;charset=UTF-8',\n        'LoginDiv': '555666',\n        'Account_Login_Identify': token\n    }", '[{"matchId":"", "sportId":"","queryDateType":3, "begin":begin,"end":end,"searchAccount":"", "page":1,"limit":50},{"sportId":"sr:sport:1","queryDateType":3,"begin":begin,"end":end},{"begin":begin,"end":end,"dateType":3,"page":1,"limit":500,"sportId":"sr:sport:1","marketId":"1","account":"","queryDateType":3,"tournamentId":""}]', 'sportId', 'post', '@f"SELECT c.sport_id FROM o_account_order AS c LEFT JOIN m_account AS e ON e.id=c.proxy0_id WHERE c.STATUS=2 AND c.award_time IS NOT NULL AND c.award_time>=\'{begin}\' AND c.award_time<=\'{end}\' AND c.proxy0_id=(SELECT id FROM m_account WHERE login_account=\'d0\') GROUP BY c.sport_id"\n@f"SELECT CONCAT(c.user_name,\'/\',c.login_account) AS \'账号/登入账号\',any_value (c.bet_amount) \'投注额\',any_value (c.bet_ip),any_value (c.ip_address),(CASE any_value (c.settlement_result) WHEN \'1\' THEN \'赢\' WHEN \'2\' THEN \'输\' WHEN \'5\' THEN \'平局走水\' WHEN \'6\' THEN \'注单取消\' END) AS \'注单状态\',any_value (c.create_time),CASE any_value(c.bet_type) WHEN \'1\' THEN \'单注\' WHEN \'2\' THEN \'串关\' WHEN \'3\' THEN \'复式串关\' END \'注单状态\',any_value (c.level0_backwater_amount) \'总代佣金\',c.company_retreat_proportion \'总代佣金比例\',c.level0_actual_percentage \'总代占成数\',any_value (c.level0_win_or_lose) \'总代总计\',(any_value (c.level0_win_or_lose)-any_value (c.level0_backwater_amount)) \'总代输/赢\',any_value (c.level1_backwater_amount) \'一级代理佣金\',c.level0_retreat_proportion \'一级代理佣金比例\',c.level1_actual_percentage \'一级代理占成数\',any_value (c.level1_win_or_lose) \'一级代理总计\',(any_value (c.level1_win_or_lose)-any_value (c.level1_backwater_amount)) \'一级代理输/赢\',any_value (c.level2_backwater_amount) \'二级代理佣金\',c.level1_retreat_proportion \'二级代理佣金比例\',c.level2_actual_percentage \'二级代理占成数\',any_value (c.level2_win_or_lose) \'二级代理总计\',(any_value (c.level2_win_or_lose)-any_value (c.level2_backwater_amount)) \'二级代理输/赢\',any_value (c.level3_backwater_amount) \'三级代理佣金\',c.level2_retreat_proportion \'三级代理佣金比例\',c.level3_actual_percentage \'三级代理占成数\',any_value (c.level3_win_or_lose) \'三级代理总计\',(any_value (c.level3_win_or_lose)-any_value (c.level3_backwater_amount)) \'三级代理输/赢\',any_value (c.backwater_amount) \'会员佣金\',c.level3_retreat_proportion \'会员佣金比例\',(any_value (c.handicap_win_or_lose)+any_value (c.backwater_amount)) \'会员总计\',any_value (c.handicap_win_or_lose) \'会员输/赢\',any_value (b.NAME) \'名称\',any_value (a.credit_odds) \'赔率\',any_value (a.odds_type) \'赔率类型\',\'options\' AS \'比赛\',c.order_no,c.award_time,c.sport_id,CASE c.sport_id WHEN \'sr:sport:1\' THEN \'足球\' WHEN \'sr:sport:20\' THEN \'乒乓球\' WHEN \'sr:sport:5\' THEN \'网球\' WHEN \'sr:sport:3\' THEN \'棒球\' WHEN \'sr:sport:2\' THEN \'篮球\' WHEN \'sr:sport:31\' THEN \'羽毛球\' WHEN \'sr:sport:4\' THEN \'冰球\' WHEN \'sr:sport:23\' THEN \'排球\' END AS \'球类\',c.efficient_amount,any_value (c.handicap_win_or_lose) \'会员输/赢\' FROM o_account_order AS c LEFT JOIN u_user AS b ON b.id=c.user_id LEFT JOIN o_account_order_match AS a ON a.order_no=c.order_no WHERE c.STATUS=2 AND c.award_time IS NOT NULL  AND c.award_time>=\'{begin}\' AND c.award_time<=\'{end}\' AND c.bet_type=1 AND c.proxy0_id=(SELECT id FROM m_account WHERE login_account=\'d0\') AND c.sport_id=\'{all}\' GROUP BY c.user_name,c.login_account,c.user_id,c.currency,sport_id,c.order_no,c.sport_id,c.company_retreat_proportion,c.level0_actual_percentage,c.level1_actual_percentage,c.level2_actual_percentage,c.level3_actual_percentage,c.level0_retreat_proportion,c.level1_retreat_proportion,c.level2_retreat_proportion,c.level3_retreat_proportion,c.award_time,c.efficient_amount,c.create_time"\n@f"SELECT CONCAT(c.user_name,\'/\',c.login_account) AS \'账号/登入账号\',any_value (c.bet_amount) \'投注额\',any_value (c.bet_ip),any_value (c.ip_address),(CASE any_value (c.settlement_result) WHEN \'1\' THEN \'赢\' WHEN \'2\' THEN \'输\' WHEN \'5\' THEN \'平局走水\' WHEN \'6\' THEN \'注单取消\' END) AS \'注单状态\',any_value (c.create_time),CASE any_value(c.bet_type) WHEN \'1\' THEN \'单注\' WHEN \'2\' THEN \'串关\' WHEN \'3\' THEN \'复式串关\' END \'注单状态\',any_value (c.level0_backwater_amount) \'总代佣金\',c.company_retreat_proportion \'总代佣金比例\',c.level0_actual_percentage \'总代占成数\',any_value (c.level0_win_or_lose) \'总代总计\',(any_value (c.level0_win_or_lose)-any_value (c.level0_backwater_amount)) \'总代输/赢\',any_value (c.level1_backwater_amount) \'一级代理佣金\',c.level0_retreat_proportion \'一级代理佣金比例\',c.level1_actual_percentage \'一级代理占成数\',any_value (c.level1_win_or_lose) \'一级代理总计\',(any_value (c.level1_win_or_lose)-any_value (c.level1_backwater_amount)) \'一级代理输/赢\',any_value (c.level2_backwater_amount) \'二级代理佣金\',c.level1_retreat_proportion \'二级代理佣金比例\',c.level2_actual_percentage \'二级代理占成数\',any_value (c.level2_win_or_lose) \'二级代理总计\',(any_value (c.level2_win_or_lose)-any_value (c.level2_backwater_amount)) \'二级代理输/赢\',any_value (c.level3_backwater_amount) \'三级代理佣金\',c.level2_retreat_proportion \'三级代理佣金比例\',c.level3_actual_percentage \'三级代理占成数\',any_value (c.level3_win_or_lose) \'三级代理总计\',(any_value (c.level3_win_or_lose)-any_value (c.level3_backwater_amount)) \'三级代理输/赢\',any_value (c.backwater_amount) \'会员佣金\',c.level3_retreat_proportion \'会员佣金比例\',(any_value (c.handicap_win_or_lose)+any_value (c.backwater_amount)) \'会员总计\',any_value (c.handicap_win_or_lose) \'会员输/赢\',any_value (b.NAME) \'名称\',any_value (a.credit_odds) \'赔率\',any_value (a.odds_type) \'赔率类型\',\'options\' AS \'比赛\',c.order_no,c.award_time,c.sport_id,CASE c.sport_id WHEN \'sr:sport:1\' THEN \'足球\' WHEN \'sr:sport:20\' THEN \'乒乓球\' WHEN \'sr:sport:5\' THEN \'网球\' WHEN \'sr:sport:3\' THEN \'棒球\' WHEN \'sr:sport:2\' THEN \'篮球\' WHEN \'sr:sport:31\' THEN \'羽毛球\' WHEN \'sr:sport:4\' THEN \'冰球\' WHEN \'sr:sport:23\' THEN \'排球\' END AS \'球类\',c.efficient_amount,any_value (c.handicap_win_or_lose) \'会员输/赢\' FROM o_account_order AS c LEFT JOIN u_user AS b ON b.id=c.user_id LEFT JOIN o_account_order_match AS a ON a.order_no=c.order_no WHERE c.STATUS=2 AND c.award_time IS NOT NULL  AND c.award_time>=\'{begin}\' AND c.award_time<=\'{end}\' AND c.bet_type!=1 AND c.proxy0_id=(SELECT id FROM m_account WHERE login_account=\'d0\') AND c.sport_id=\'{all}\' GROUP BY c.user_name,c.login_account,c.user_id,c.currency,sport_id,c.order_no,c.sport_id,c.company_retreat_proportion,c.level0_actual_percentage,c.level1_actual_percentage,c.level2_actual_percentage,c.level3_actual_percentage,c.level0_retreat_proportion,c.level1_retreat_proportion,c.level2_retreat_proportion,c.level3_retreat_proportion,c.award_time,c.efficient_amount,c.create_time"\n@f"SELECT away_team_name,bet_score,home_team_name,market_name,match_time,CASE is_live WHEN \'1\' THEN \'滚球盘\' WHEN \'3\' THEN \'早盘\' END \'盘口类型\',credit_odds,odds_type AS \'赔率类型\',order_no,outcome_name,specifier,tournament_name FROM o_account_order_match WHERE order_no in (SELECT c.order_no FROM o_account_order AS c LEFT JOIN u_user AS b ON b.id=c.user_id LEFT JOIN o_account_order_match AS a ON a.order_no=c.order_no WHERE c.STATUS=2 AND c.award_time IS NOT NULL  AND c.award_time>=\'{begin}\' AND c.award_time<=\'{end}\' AND c.bet_type=1 AND c.proxy0_id=(SELECT id FROM m_account WHERE login_account=\'d0\') AND c.sport_id=\'{all}\' GROUP BY c.order_no)"\n@f"SELECT away_team_name,bet_score,home_team_name,market_name,match_time,CASE is_live WHEN \'1\' THEN \'滚球盘\' WHEN \'3\' THEN \'早盘\' END \'盘口类型\',credit_odds,odds_type AS \'赔率类型\',order_no,outcome_name,specifier,tournament_name FROM o_account_order_match WHERE order_no in (SELECT c.order_no FROM o_account_order AS c LEFT JOIN u_user AS b ON b.id=c.user_id LEFT JOIN o_account_order_match AS a ON a.order_no=c.order_no WHERE c.STATUS=2 AND c.award_time IS NOT NULL  AND c.award_time>=\'{begin}\' AND c.award_time<=\'{end}\' AND c.bet_type!=1 AND c.proxy0_id=(SELECT id FROM m_account WHERE login_account=\'d0\') AND c.sport_id=\'{all}\' GROUP BY c.order_no) GROUP BY order_no,away_team_name,bet_score,home_team_name,market_name,match_time,is_live,credit_odds,odds_type,outcome_name,specifier,tournament_name"', 'account,orderNo', '测试不通过\n2022-06-30 18:41:39']
-        sport_report_list = [{'account': 'd0d1d2d38y/fceshi0224', 'betAmount': 10.0, 'betIp': '192.168.10.120', 'betIpAddress': '局域网', 'betMix': '', 'betResult': '输', 'betTime': '2022-06-24 08:57:04', 'betType': '单注', 'level0Commission': 0.0, 'level0CommissionRatio': 0.0, 'level0Percentage': 0.2, 'level0Total': 2.0, 'level0WinOrLose': 2.0, 'level1Commission': 0.0, 'level1CommissionRatio': 0.0, 'level1Percentage': 0.2, 'level1Total': 2.0, 'level1WinOrLose': 2.0, 'level2Commission': 0.0, 'level2CommissionRatio': 0.0, 'level2Percentage': 0.2, 'level2Total': 2.0, 'level2WinOrLose': 2.0, 'level3Commission': 0.0, 'level3CommissionRatio': 0.0, 'level3Percentage': 0.2, 'level3Total': 2.0, 'level3WinOrLose': 2.0, 'memberCommission': 0.0, 'memberCommissionRatio': 0.0, 'memberTotal': -10.0, 'memberWinOrLose': -10.0, 'name': '杜鑫test账号iy', 'odds': 1.69, 'oddsType': '1', 'options': [{'awayTeamName': '芹苴', 'betScore': None, 'homeTeamName': 'QNK广南足球俱乐部', 'marketName': '独赢', 'matchTime': '2022-06-25 06:00:00', 'matchType': '早盘', 'odds': 1.69, 'oddsType': '1', 'orderNo': 'XH4ydmPbRncK', 'outcomeName': 'QNK广南足球俱乐部', 'specifier': '', 'tournamentName': '越南职业足球乙级联赛'}], 'orderNo': 'XH4ydmPbRncK', 'settlementTime': '2022-06-25 08:01:45', 'sportId': 'sr:sport:1', 'sportType': '足球', 'validAmount': 10.0, 'winOrLose': -10.0}]
-        sport_report_dict = ['调试SQL类容']
-        yyds=bc.sport_report_sql(begin="2022-06-22 00:00:00",end="2022-06-28 23:59:59", excel_report=excel_report, sport_report_dict=sport_report_dict,sport_report_list=sport_report_list)
+        # excel_report=['未完成交易-登0-登3-会员-查看订单详情-子查询', '"/agentBackground/UndoneTransaction/queryProxyUndoneTransactionList","/agentBackground/UndoneTransaction/queryMemberUndoneOrderList"', 'companyCommissionRatio,companyPercentage,betMix', 2, "{\n        'Content-Type': 'application/json;charset=UTF-8',\n        'LoginDiv': '555666',\n        'Account_Login_Identify': token\n    }", '[{"page":1,"limit":50,"account":"","parentId":"1531517760300163074"},{"page":1,"limit":50,"account":"","parentId":"jnj"}]', 'accountId', 'post', "@SELECT CONCAT(user_name,'/',login_account),SUM(bet_amount) FROM o_account_order WHERE user_id IN(SELECT c.user_id '下级代理ID' FROM o_account_order AS c LEFT JOIN u_user AS b ON b.id=c.user_id LEFT JOIN m_account AS a ON a.id=c.proxy3_id WHERE c.STATUS IN (1,2) AND c.proxy3_id=(SELECT b.proxy3_id FROM o_account_order AS b LEFT JOIN m_account AS a ON a.id=b.proxy0_id  WHERE a.id=(SELECT id FROM m_account WHERE login_account='d0') AND b.STATUS IN (1,2) AND b.award_time IS NULL GROUP BY b.proxy3_id) AND c.award_time IS NULL GROUP BY c.user_id) AND STATUS IN (1,2)  AND award_time IS NULL \nGROUP BY user_name,login_account\n@SELECT CONCAT(c.user_name,'/',c.login_account) AS '账号/登入账号',any_value (c.bet_amount) '投注额',any_value (c.bet_ip),any_value (c.ip_address),(CASE any_value (c.STATUS) WHEN '0' THEN '待确认' WHEN '1' THEN '未结算' WHEN '2' THEN '已结算' WHEN '3' THEN '已取消' END) AS '注单状态',any_value (c.bet_type) '注单状态',any_value (c.create_time),any_value (c.company_retreat_proportion) '总代理佣金比例',any_value (c.level0_actual_percentage) '总代理占成',any_value (c.level0_retreat_proportion) '一级代理佣金',any_value (c.level1_actual_percentage) '一级代理占成',any_value (c.level1_retreat_proportion) '二级代理佣金',any_value (c.level2_actual_percentage) '二级代理占成',any_value (c.level2_retreat_proportion) '三级代理佣金',SUM(c.level3_actual_percentage) '三级代理占成',any_value (c.level3_retreat_proportion) '会员佣金',any_value (b.NAME) '名称',c.mix_num,'odds' as '总赔率','oddsType'as '赔率类型','options' AS '比赛',order_no,CASE sport_id WHEN 'sr:sport:1' THEN '足球' WHEN 'sr:sport:20' THEN '乒乓球' WHEN 'sr:sport:5' THEN '网球' WHEN 'sr:sport:3' THEN '棒球' WHEN 'sr:sport:2' THEN '篮球' WHEN 'sr:sport:31' THEN '羽毛球' WHEN 'sr:sport:4' THEN '冰球' WHEN 'sr:sport:23' THEN '排球' END AS '球类' FROM o_account_order AS c LEFT JOIN u_user AS b ON b.id=c.user_id WHERE c.STATUS IN (1,2) AND order_no IN(SELECT order_no FROM o_account_order WHERE user_id IN(SELECT c.user_id '下级代理ID' FROM o_account_order AS c LEFT JOIN u_user AS b ON b.id=c.user_id LEFT JOIN m_account AS a ON a.id=c.proxy3_id LEFT JOIN o_account_order_match AS d ON d.order_no=c.order_no WHERE c.STATUS IN (1,2) AND c.proxy3_id=(SELECT b.proxy3_id FROM o_account_order AS b LEFT JOIN m_account AS a ON a.id=b.proxy0_id  WHERE a.id=(SELECT id FROM m_account WHERE login_account='d0') AND b.STATUS IN (1,2) AND b.award_time IS NULL GROUP BY b.proxy3_id) AND c.award_time IS NULL)) AND c.award_time IS NULL GROUP BY c.user_name,c.login_account,c.user_id,c.currency,sport_id,c.order_no,c.mix_num\n@SELECT b.away_team_name,b.bet_score,b.home_team_name,b.market_name,b.match_time,CASE b.is_live WHEN '1' THEN '滚球盘' WHEN '3' THEN '早盘' END '盘口类型',b.credit_odds,b.odds_type AS '赔率类型',b.order_no,b.outcome_name,b.specifier,b.tournament_name FROM o_account_order_match as b WHERE b.order_no IN(SELECT order_no FROM o_account_order WHERE user_id IN(SELECT c.user_id '下级代理ID' FROM o_account_order AS c LEFT JOIN u_user AS b ON b.id=c.user_id LEFT JOIN m_account AS a ON a.id=c.proxy3_id WHERE c.STATUS IN (1,2) AND c.proxy3_id=(SELECT b.proxy3_id FROM o_account_order AS b LEFT JOIN m_account AS a ON a.id=b.proxy0_id  WHERE a.id=(SELECT id FROM m_account WHERE login_account='d0') AND b.STATUS IN (1,2) AND b.award_time IS NULL GROUP BY b.proxy3_id) AND c.award_time IS NULL))", 'account,orderNo', '测试不通过\n2022-07-11 18:35:55', "[[{'account': 'd0d1d2d30c/fceshi02', 'betAmount': 10.0, 'betIp': '192.168.10.120', 'betIpAddress': '局域网', 'betResult': '未结算', 'betType': 2, 'bettingTime': '2022-06-27 08:44:19', 'level0CommissionRatio': 0.0, 'level0Percentage': 0.2, 'level1CommissionRatio': 0.0, 'level1Percentage': 0.2, 'level2CommissionRatio': 0.0, 'level2Percentage': 0.2, 'level3CommissionRatio': 0.0, 'level3Percentage': 0.2, 'memberCommissionRatio': 0.0, 'memberName': '杜鑫test账号ac', 'mixNum': '9_1_0', 'odds': 564.84, 'oddsType': '2', 'options': [{'awayTeamName': '莫尔德', 'betScore': None, 'homeTeamName': '汉坎', 'marketName': '汉坎 大/小', 'matchTimeStr': '2022-07-03 12:00:00', 'matchType': '早盘', 'odds': 1.3, 'oddsType': '2', 'orderNo': 'XHwPNuS9cRJz', 'outcomeName': '大1.5', 'specifier': 'total=1.5', 'tournamentName': '挪威超级联赛'}, {'awayTeamName': 'Torino FC', 'betScore': None, 'homeTeamName': 'AC Monza', 'marketName': '上半场 - 让球', 'matchTimeStr': '2022-08-14 13:00:00', 'matchType': '早盘', 'odds': 1.02, 'oddsType': '2', 'orderNo': 'XHwPNuS9cRJz', 'outcomeName': '蒙扎 ', 'specifier': 'hcp=0', 'tournamentName': '意大利甲级联赛'}, {'awayTeamName': '奥地利', 'betScore': None, 'homeTeamName': '英格兰', 'marketName': '奥地利 大/小', 'matchTimeStr': '2022-07-06 15:00:00', 'matchType': '早盘', 'odds': 1.11, 'oddsType': '2', 'orderNo': 'XHwPNuS9cRJz', 'outcomeName': '大0.5', 'specifier': 'total=0.5', 'tournamentName': '国际欧洲锦标赛，女子'}, {'awayTeamName': '伊斯梅利', 'betScore': None, 'homeTeamName': '马哈拉加斯', 'marketName': '伊斯梅利 大/小', 'matchTimeStr': '2022-06-28 13:00:00', 'matchType': '早盘', 'odds': 0.42, 'oddsType': '2', 'orderNo': 'XHwPNuS9cRJz', 'outcomeName': '大0.5', 'specifier': 'total=0.5', 'tournamentName': '埃及足球甲级联赛'}, {'awayTeamName': 'Lillestrom SK', 'betScore': None, 'homeTeamName': 'Kristiansund BK', 'marketName': '大/小', 'matchTimeStr': '2022-07-03 12:00:00', 'matchType': '早盘', 'odds': 1.14, 'oddsType': '2', 'orderNo': 'XHwPNuS9cRJz', 'outcomeName': '大3', 'specifier': 'total=3', 'tournamentName': '挪威超级联赛'}, {'awayTeamName': '丹德农迅雷', 'betScore': None, 'homeTeamName': '埃文代尔', 'marketName': '埃文代尔 大/小', 'matchTimeStr': '2022-07-02 01:00:00', 'matchType': '早盘', 'odds': 0.48, 'oddsType': '2', 'orderNo': 'XHwPNuS9cRJz', 'outcomeName': '大1.5', 'specifier': 'total=1.5', 'tournamentName': '澳大利亚全国超级联赛,维多利亚'}, {'awayTeamName': '海德堡联', 'betScore': None, 'homeTeamName': '墨尔本港鲨鱼', 'marketName': '让球', 'matchTimeStr': '2022-07-09 03:30:00', 'matchType': '早盘', 'odds': 1.19, 'oddsType': '2', 'orderNo': 'XHwPNuS9cRJz', 'outcomeName': '墨尔本港鲨鱼 ', 'specifier': 'hcp=-0.75', 'tournamentName': '澳大利亚全国超级联赛,维多利亚'}, {'awayTeamName': '欧克莱卡诺', 'betScore': None, 'homeTeamName': '埃文代尔', 'marketName': '欧克莱卡诺 大/小', 'matchTimeStr': '2022-07-09 01:00:00', 'matchType': '早盘', 'odds': 1.5, 'oddsType': '2', 'orderNo': 'XHwPNuS9cRJz', 'outcomeName': '大1.5', 'specifier': 'total=1.5', 'tournamentName': '澳大利亚全国超级联赛,维多利亚'}, {'awayTeamName': 'Odds BK', 'betScore': None, 'homeTeamName': 'Stroemsgodset IF', 'marketName': 'Odds BK 大/小', 'matchTimeStr': '2022-07-09 12:00:00', 'matchType': '早盘', 'odds': 1.34, 'oddsType': '2', 'orderNo': 'XHwPNuS9cRJz', 'outcomeName': '大1.5', 'specifier': 'total=1.5', 'tournamentName': '挪威超级联赛'}], 'orderNo': 'XHwPNuS9cRJz', 'sportsType': '足球', 'Total_Amount': 10.0}, {'account': 'd0d1d2d30d/fceshi03', 'betAmount': 10.0, 'betIp': '192.168.10.120', 'betIpAddress': '局域网', 'betResult': '未结算', 'betType': 1, 'bettingTime': '2022-07-11 03:33:57', 'level0CommissionRatio': 0.0021, 'level0Percentage': 0.2, 'level1CommissionRatio': 0.0021, 'level1Percentage': 0.2, 'level2CommissionRatio': 0.0021, 'level2Percentage': 0.2, 'level3CommissionRatio': 0.0021, 'level3Percentage': 0.2, 'memberCommissionRatio': 0.0011, 'memberName': '杜鑫test账号ad', 'mixNum': '1_1_0', 'odds': 1.44, 'oddsType': '1', 'options': [{'awayTeamName': 'Cerezo Osaka', 'betScore': None, 'homeTeamName': '名古屋鲸鱼', 'marketName': '名古屋鲸鱼 大/小', 'matchTimeStr': '2022-07-13 05:30:00', 'matchType': '早盘', 'odds': 1.44, 'oddsType': '1', 'orderNo': 'XKFVwSWDkcXz', 'outcomeName': '大0.5', 'specifier': 'total=0.5', 'tournamentName': '日本天皇杯'}], 'orderNo': 'XKFVwSWDkcXz', 'sportsType': '足球', 'Total_Amount': 120.0}, {'account': 'd0d1d2d30d/fceshi03', 'betAmount': 110.0, 'betIp': '192.168.10.120', 'betIpAddress': '局域网', 'betResult': '未结算', 'betType': 3, 'bettingTime': '2022-06-27 08:06:04', 'level0CommissionRatio': 0.0, 'level0Percentage': 0.2, 'level1CommissionRatio': 0.0, 'level1Percentage': 0.2, 'level2CommissionRatio': 0.0, 'level2Percentage': 0.2, 'level3CommissionRatio': 0.0, 'level3Percentage': 0.2, 'memberCommissionRatio': 0.0, 'memberName': '杜鑫test账号ad', 'mixNum': '4_11_1', 'odds': 224.84, 'oddsType': '1', 'options': [{'awayTeamName': '坎贝尔市体育馆', 'betScore': None, 'homeTeamName': '斯图特狮子', 'marketName': '坎贝尔市体育馆 进球数', 'matchTimeStr': '2022-07-02 01:30:00', 'matchType': '早盘', 'odds': 3.35, 'oddsType': '1', 'orderNo': 'XHwAJFRitPU9', 'outcomeName': '1', 'specifier': 'variant=sr:exact_goals:3+', 'tournamentName': '澳大利亚全国超级联赛,南澳大利亚'}, {'awayTeamName': '瑞士', 'betScore': None, 'homeTeamName': '葡萄牙', 'marketName': '葡萄牙 单/双', 'matchTimeStr': '2022-07-09 12:00:00', 'matchType': '早盘', 'odds': 1.64, 'oddsType': '1', 'orderNo': 'XHwAJFRitPU9', 'outcomeName': '双', 'specifier': '', 'tournamentName': '国际欧洲锦标赛，女子'}, {'awayTeamName': '沃罗涅日火炬II队', 'betScore': None, 'homeTeamName': 'FK Krasnodar', 'marketName': 'FK Krasnodar 最高进球数半场', 'matchTimeStr': '2022-07-17 13:00:00', 'matchType': '早盘', 'odds': 2.27, 'oddsType': '1', 'orderNo': 'XHwAJFRitPU9', 'outcomeName': '下半场', 'specifier': '', 'tournamentName': '俄罗斯足球超级联赛'}, {'awayTeamName': '海德堡联', 'betScore': None, 'homeTeamName': '墨尔本港鲨鱼', 'marketName': '独赢 & 大/小', 'matchTimeStr': '2022-07-09 03:30:00', 'matchType': '早盘', 'odds': 5.35, 'oddsType': '1', 'orderNo': 'XHwAJFRitPU9', 'outcomeName': '墨尔本港鲨鱼 & 小 2.5', 'specifier': 'total=2.5', 'tournamentName': '澳大利亚全国超级联赛,维多利亚'}], 'orderNo': 'XHwAJFRitPU9', 'sportsType': '足球', 'Total_Amount': 120.0}, {'account': 'd0d1d2d30h/fceshi07', 'betAmount': 10.0, 'betIp': '192.168.10.120', 'betIpAddress': '局域网', 'betResult': '未结算', 'betType': 2, 'bettingTime': '2022-06-27 08:14:16', 'level0CommissionRatio': 0.0, 'level0Percentage': 0.2, 'level1CommissionRatio': 0.0, 'level1Percentage': 0.2, 'level2CommissionRatio': 0.0, 'level2Percentage': 0.2, 'level3CommissionRatio': 0.0, 'level3Percentage': 0.2, 'memberCommissionRatio': 0.0, 'memberName': '杜鑫test账号ah', 'mixNum': '3_1_0', 'odds': 96.19, 'oddsType': '1', 'options': [{'awayTeamName': '以色列', 'betScore': None, 'homeTeamName': '法国', 'marketName': '以色列 不失球获胜', 'matchTimeStr': '2022-06-28 14:00:00', 'matchType': '早盘', 'odds': 8.15, 'oddsType': '1', 'orderNo': 'XHwDxNJWmMuj', 'outcomeName': '是', 'specifier': '', 'tournamentName': '国际青年U19欧洲锦标赛'}, {'awayTeamName': 'IK Brage', 'betScore': None, 'homeTeamName': 'Vasteras SK', 'marketName': 'Vasteras SK 两个半场都进球', 'matchTimeStr': '2022-07-03 07:00:00', 'matchType': '早盘', 'odds': 1.29, 'oddsType': '1', 'orderNo': 'XHwDxNJWmMuj', 'outcomeName': '不是', 'specifier': '', 'tournamentName': '瑞典超甲级联赛'}, {'awayTeamName': 'Kristiansund BK', 'betScore': None, 'homeTeamName': '瓦勒伦加', 'marketName': '上半场 - 波胆', 'matchTimeStr': '2022-07-10 12:00:00', 'matchType': '早盘', 'odds': 9.15, 'oddsType': '1', 'orderNo': 'XHwDxNJWmMuj', 'outcomeName': '2:0', 'specifier': '', 'tournamentName': '挪威超级联赛'}], 'orderNo': 'XHwDxNJWmMuj', 'sportsType': '足球', 'Total_Amount': 10.0}, {'account': 'd0d1d2d30i/fceshi08', 'betAmount': 10.0, 'betIp': '192.168.10.120', 'betIpAddress': '局域网', 'betResult': '未结算', 'betType': 1, 'bettingTime': '2022-06-24 08:55:59', 'level0CommissionRatio': 0.0, 'level0Percentage': 0.2, 'level1CommissionRatio': 0.0, 'level1Percentage': 0.2, 'level2CommissionRatio': 0.0, 'level2Percentage': 0.2, 'level3CommissionRatio': 0.0, 'level3Percentage': 0.2, 'memberCommissionRatio': 0.0, 'memberName': '杜鑫test账号ai', 'mixNum': '1_1_0', 'odds': 1.87, 'oddsType': '1', 'options': [{'awayTeamName': 'Poland', 'betScore': None, 'homeTeamName': '墨西哥', 'marketName': '平局退款', 'matchTimeStr': '2022-11-22 12:00:00', 'matchType': '早盘', 'odds': 1.87, 'oddsType': '1', 'orderNo': 'XH4xQGFavgbV', 'outcomeName': '墨西哥', 'specifier': '', 'tournamentName': '国际世界杯'}], 'orderNo': 'XH4xQGFavgbV', 'sportsType': '足球', 'Total_Amount': 10.0}, {'account': 'd0d1d2d30j/fceshi09', 'betAmount': 150.0, 'betIp': '192.168.10.120', 'betIpAddress': '局域网', 'betResult': '未结算', 'betType': 3, 'bettingTime': '2022-06-27 08:43:41', 'level0CommissionRatio': 0.0, 'level0Percentage': 0.2, 'level1CommissionRatio': 0.0, 'level1Percentage': 0.2, 'level2CommissionRatio': 0.0, 'level2Percentage': 0.2, 'level3CommissionRatio': 0.0, 'level3Percentage': 0.2, 'memberCommissionRatio': 0.0, 'memberName': '杜鑫test账号aj', 'mixNum': '2_15_0', 'odds': 74.51, 'oddsType': '2', 'options': [{'awayTeamName': '湾水市', 'betScore': None, 'homeTeamName': '戈维拉普克罗地亚', 'marketName': '大/小', 'matchTimeStr': '2022-07-02 03:00:00', 'matchType': '早盘', 'odds': 1.42, 'oddsType': '2', 'orderNo': 'XHwPAxhj928p', 'outcomeName': '大4', 'specifier': 'total=4', 'tournamentName': '澳大利亚全国超级联赛,西澳大利亚'}, {'awayTeamName': '富山胜利', 'betScore': None, 'homeTeamName': '福岛联队', 'marketName': '大/小', 'matchTimeStr': '2022-07-02 04:00:00', 'matchType': '早盘', 'odds': 1.02, 'oddsType': '2', 'orderNo': 'XHwPAxhj928p', 'outcomeName': '大2.5', 'specifier': 'total=2.5', 'tournamentName': '日本丙级联赛'}, {'awayTeamName': 'Odds BK', 'betScore': None, 'homeTeamName': 'Stroemsgodset IF', 'marketName': '上半场 - 大/小', 'matchTimeStr': '2022-07-09 12:00:00', 'matchType': '早盘', 'odds': 1.39, 'oddsType': '2', 'orderNo': 'XHwPAxhj928p', 'outcomeName': '大1.5', 'specifier': 'total=1.5', 'tournamentName': '挪威超级联赛'}, {'awayTeamName': 'Torino FC', 'betScore': None, 'homeTeamName': 'AC Monza', 'marketName': '让球', 'matchTimeStr': '2022-08-14 13:00:00', 'matchType': '早盘', 'odds': 1.04, 'oddsType': '2', 'orderNo': 'XHwPAxhj928p', 'outcomeName': '蒙扎 ', 'specifier': 'hcp=0', 'tournamentName': '意大利甲级联赛'}, {'awayTeamName': '黄昏', 'betScore': None, 'homeTeamName': '费基尔', 'marketName': '费基尔 大/小', 'matchTimeStr': '2022-07-01 15:15:00', 'matchType': '早盘', 'odds': 1.33, 'oddsType': '2', 'orderNo': 'XHwPAxhj928p', 'outcomeName': '大2.5', 'specifier': 'total=2.5', 'tournamentName': '冰岛甲级联赛'}, {'awayTeamName': '萨马拉苏维埃之翼足球俱乐部', 'betScore': None, 'homeTeamName': '喀山鲁宾', 'marketName': '上半场 - 喀山鲁宾 大/小', 'matchTimeStr': '2022-06-28 08:00:00', 'matchType': '早盘', 'odds': 1.18, 'oddsType': '2', 'orderNo': 'XHwPAxhj928p', 'outcomeName': '大0.5', 'specifier': 'total=0.5', 'tournamentName': '国际俱乐部俱乐部友谊赛'}], 'orderNo': 'XHwPAxhj928p', 'sportsType': '足球', 'Total_Amount': 150.0}, {'account': 'd0d1d2d30k/fceshi010', 'betAmount': 10.0, 'betIp': '192.168.10.120', 'betIpAddress': '局域网', 'betResult': '未结算', 'betType': 2, 'bettingTime': '2022-06-27 08:15:29', 'level0CommissionRatio': 0.0, 'level0Percentage': 0.2, 'level1CommissionRatio': 0.0, 'level1Percentage': 0.2, 'level2CommissionRatio': 0.0, 'level2Percentage': 0.2, 'level3CommissionRatio': 0.0, 'level3Percentage': 0.2, 'memberCommissionRatio': 0.0, 'memberName': '杜鑫test账号ak', 'mixNum': '7_1_0', 'odds': 4275.55, 'oddsType': '1', 'options': [{'awayTeamName': 'Portland Timbers', 'betScore': None, 'homeTeamName': 'Nashville SC', 'marketName': '让球', 'matchTimeStr': '2022-07-03 20:30:00', 'matchType': '早盘', 'odds': 1.23, 'oddsType': '2', 'orderNo': 'XHwDWTNm2xZJ', 'outcomeName': '纳什维尔SC ', 'specifier': 'hcp=-0.75', 'tournamentName': '美国职业足球大联盟'}, {'awayTeamName': '沃罗涅日火炬II队', 'betScore': None, 'homeTeamName': 'FK Krasnodar', 'marketName': 'FK Krasnodar 赢任何半场', 'matchTimeStr': '2022-07-17 13:00:00', 'matchType': '早盘', 'odds': 2.8, 'oddsType': '1', 'orderNo': 'XHwDWTNm2xZJ', 'outcomeName': '不是', 'specifier': '', 'tournamentName': '俄罗斯足球超级联赛'}, {'awayTeamName': 'SC克里西乌马', 'betScore': None, 'homeTeamName': 'SP伊图阿诺', 'marketName': '双重机会&大/小', 'matchTimeStr': '2022-07-02 15:00:00', 'matchType': '早盘', 'odds': 20.95, 'oddsType': '1', 'orderNo': 'XHwDWTNm2xZJ', 'outcomeName': 'SP伊图阿诺/和局 & 大 4.5', 'specifier': 'total=4.5', 'tournamentName': '巴西乙级联赛'}, {'awayTeamName': '亚隆城', 'betScore': None, 'homeTeamName': '韦克斯福德', 'marketName': '韦克斯福德 胜利退款', 'matchTimeStr': '2022-07-01 14:45:00', 'matchType': '早盘', 'odds': 1.71, 'oddsType': '1', 'orderNo': 'XHwDWTNm2xZJ', 'outcomeName': '和局', 'specifier': '', 'tournamentName': '爱尔兰甲级联赛'}, {'awayTeamName': 'FC Cincinnati', 'betScore': None, 'homeTeamName': 'New England Revolution', 'marketName': '上半场 - 让球', 'matchTimeStr': '2022-07-03 19:30:00', 'matchType': '早盘', 'odds': 0.69, 'oddsType': '2', 'orderNo': 'XHwDWTNm2xZJ', 'outcomeName': '新英格兰革命 ', 'specifier': 'hcp=-0.25', 'tournamentName': '美国职业足球大联盟'}, {'awayTeamName': '法林明高RJ', 'betScore': None, 'homeTeamName': '托利马', 'marketName': '托利马 进球数', 'matchTimeStr': '2022-06-29 20:30:00', 'matchType': '早盘', 'odds': 9.75, 'oddsType': '1', 'orderNo': 'XHwDWTNm2xZJ', 'outcomeName': '3+', 'specifier': 'variant=sr:exact_goals:3+', 'tournamentName': '国际俱乐部解放者杯'}, {'awayTeamName': 'Houston Dynamo', 'betScore': None, 'homeTeamName': 'Portland Timbers', 'marketName': 'Houston Dynamo 不失球', 'matchTimeStr': '2022-06-29 22:30:00', 'matchType': '早盘', 'odds': 1.16, 'oddsType': '1', 'orderNo': 'XHwDWTNm2xZJ', 'outcomeName': '不是', 'specifier': '', 'tournamentName': '美国职业足球大联盟'}], 'orderNo': 'XHwDWTNm2xZJ', 'sportsType': '足球', 'Total_Amount': 10.0}, {'account': 'd0d1d2d30m/fceshi012', 'betAmount': 100.0, 'betIp': '192.168.10.120', 'betIpAddress': '局域网', 'betResult': '未结算', 'betType': 3, 'bettingTime': '2022-06-27 08:43:26', 'level0CommissionRatio': 0.0, 'level0Percentage': 0.2, 'level1CommissionRatio': 0.0, 'level1Percentage': 0.2, 'level2CommissionRatio': 0.0, 'level2Percentage': 0.2, 'level3CommissionRatio': 0.0, 'level3Percentage': 0.2, 'memberCommissionRatio': 0.0, 'memberName': '杜鑫test账号am', 'mixNum': '3_10_0', 'odds': 73.56, 'oddsType': '2', 'options': [{'awayTeamName': '萨马拉苏维埃之翼足球俱乐部', 'betScore': None, 'homeTeamName': '喀山鲁宾', 'marketName': '上半场 - 让球', 'matchTimeStr': '2022-06-28 08:00:00', 'matchType': '早盘', 'odds': 0.73, 'oddsType': '2', 'orderNo': 'XHwPvMmteY95', 'outcomeName': '喀山鲁宾 ', 'specifier': 'hcp=0.25', 'tournamentName': '国际俱乐部俱乐部友谊赛'}, {'awayTeamName': '琉球', 'betScore': None, 'homeTeamName': '东京绿茵', 'marketName': '上半场 - 东京绿茵 大/小', 'matchTimeStr': '2022-07-03 05:00:00', 'matchType': '早盘', 'odds': 0.69, 'oddsType': '2', 'orderNo': 'XHwPvMmteY95', 'outcomeName': '大0.5', 'specifier': 'total=0.5', 'tournamentName': '日本乙级联赛'}, {'awayTeamName': '纽维尔旧生', 'betScore': None, 'homeTeamName': '艾度思维', 'marketName': '上半场 - 大/小', 'matchTimeStr': '2022-06-29 17:05:00', 'matchType': '早盘', 'odds': 1.51, 'oddsType': '2', 'orderNo': 'XHwPvMmteY95', 'outcomeName': '大1/1.5', 'specifier': 'total=1.25', 'tournamentName': '阿根廷杯'}, {'awayTeamName': '因勒乌德联', 'betScore': None, 'homeTeamName': '科克本市', 'marketName': '大/小', 'matchTimeStr': '2022-07-02 03:00:00', 'matchType': '早盘', 'odds': 0.54, 'oddsType': '2', 'orderNo': 'XHwPvMmteY95', 'outcomeName': '大2.5/3', 'specifier': 'total=2.75', 'tournamentName': '澳大利亚全国超级联赛,西澳大利亚'}, {'awayTeamName': 'Fortaleza EC CE', 'betScore': None, 'homeTeamName': 'Coritiba FC PR', 'marketName': '上半场 - Coritiba FC PR 大/小', 'matchTimeStr': '2022-07-03 17:00:00', 'matchType': '早盘', 'odds': 1.35, 'oddsType': '2', 'orderNo': 'XHwPvMmteY95', 'outcomeName': '大0.5', 'specifier': 'total=0.5', 'tournamentName': '巴西甲级联赛'}], 'orderNo': 'XHwPvMmteY95', 'sportsType': '足球', 'Total_Amount': 100.0}, {'account': 'd0d1d2d30q/fceshi016', 'betAmount': 10.0, 'betIp': '192.168.10.120', 'betIpAddress': '局域网', 'betResult': '未结算', 'betType': 1, 'bettingTime': '2022-07-05 04:06:18', 'level0CommissionRatio': 0.0, 'level0Percentage': 0.2, 'level1CommissionRatio': 0.0, 'level1Percentage': 0.2, 'level2CommissionRatio': 0.0, 'level2Percentage': 0.2, 'level3CommissionRatio': 0.0, 'level3Percentage': 0.2, 'memberCommissionRatio': 0.0, 'memberName': '杜鑫test账号aq', 'mixNum': '1_1_0', 'odds': 1.24, 'oddsType': '1', 'options': [{'awayTeamName': 'EC 维拉赫 SV', 'betScore': None, 'homeTeamName': '法杰达BK', 'marketName': '独赢', 'matchTimeStr': '2022-09-02 14:35:00', 'matchType': '早盘', 'odds': 1.24, 'oddsType': '1', 'orderNo': 'XJKqFw7EAaVd', 'outcomeName': '法杰达BK', 'specifier': '', 'tournamentName': '国际冰球冠军联赛'}], 'orderNo': 'XJKqFw7EAaVd', 'sportsType': '冰球', 'Total_Amount': 60.0}, {'account': 'd0d1d2d30q/fceshi016', 'betAmount': 50.0, 'betIp': '192.168.10.120', 'betIpAddress': '局域网', 'betResult': '未结算', 'betType': 3, 'bettingTime': '2022-06-27 08:06:19', 'level0CommissionRatio': 0.0, 'level0Percentage': 0.2, 'level1CommissionRatio': 0.0, 'level1Percentage': 0.2, 'level2CommissionRatio': 0.0, 'level2Percentage': 0.2, 'level3CommissionRatio': 0.0, 'level3Percentage': 0.2, 'memberCommissionRatio': 0.0, 'memberName': '杜鑫test账号aq', 'mixNum': '4_5_0', 'odds': 6637.46, 'oddsType': '1', 'options': [{'awayTeamName': 'AC Milan', 'betScore': None, 'homeTeamName': 'Atalanta BC', 'marketName': '独赢 & 大/小', 'matchTimeStr': '2022-08-21 09:00:00', 'matchType': '早盘', 'odds': 7.35, 'oddsType': '1', 'orderNo': 'XHwAPu97BGnn', 'outcomeName': '阿特兰大 & 大 3.5', 'specifier': 'total=3.5', 'tournamentName': '意大利甲级联赛'}, {'awayTeamName': '坎贝尔市体育馆', 'betScore': None, 'homeTeamName': '斯图特狮子', 'marketName': '独赢 & 大/小', 'matchTimeStr': '2022-07-02 01:30:00', 'matchType': '早盘', 'odds': 8.55, 'oddsType': '1', 'orderNo': 'XHwAPu97BGnn', 'outcomeName': '斯图特狮子 & 大 3.5', 'specifier': 'total=3.5', 'tournamentName': '澳大利亚全国超级联赛,南澳大利亚'}, {'awayTeamName': '瑞士', 'betScore': None, 'homeTeamName': '葡萄牙', 'marketName': '哪队进球', 'matchTimeStr': '2022-07-09 12:00:00', 'matchType': '早盘', 'odds': 17.95, 'oddsType': '1', 'orderNo': 'XHwAPu97BGnn', 'outcomeName': '无', 'specifier': '', 'tournamentName': '国际欧洲锦标赛，女子'}, {'awayTeamName': '仁川联队', 'betScore': None, 'homeTeamName': '水原三星', 'marketName': '仁川联队 赢任何半场', 'matchTimeStr': '2022-07-03 06:30:00', 'matchType': '早盘', 'odds': 1.91, 'oddsType': '1', 'orderNo': 'XHwAPu97BGnn', 'outcomeName': '是', 'specifier': '', 'tournamentName': '韩国K1联赛'}, {'awayTeamName': '小阿根廷人', 'betScore': None, 'homeTeamName': '科尔多瓦中央队', 'marketName': '上半场 - 总入球 ', 'matchTimeStr': '2022-07-01 18:00:00', 'matchType': '早盘', 'odds': 2.5, 'oddsType': '1', 'orderNo': 'XHwAPu97BGnn', 'outcomeName': '1', 'specifier': 'variant=sr:exact_goals:3+', 'tournamentName': '阿根廷足球甲级联赛'}], 'orderNo': 'XHwAPu97BGnn', 'sportsType': '足球', 'Total_Amount': 60.0}, {'account': 'd0d1d2d30w/fceshi022', 'betAmount': 10.0, 'betIp': '192.168.10.120', 'betIpAddress': '局域网', 'betResult': '未结算', 'betType': 2, 'bettingTime': '2022-06-27 08:05:38', 'level0CommissionRatio': 0.0, 'level0Percentage': 0.2, 'level1CommissionRatio': 0.0, 'level1Percentage': 0.2, 'level2CommissionRatio': 0.0, 'level2Percentage': 0.2, 'level3CommissionRatio': 0.0, 'level3Percentage': 0.2, 'memberCommissionRatio': 0.0, 'memberName': '杜鑫test账号aw', 'mixNum': '3_1_0', 'odds': 66.09, 'oddsType': '1', 'options': [{'awayTeamName': 'Houston Dynamo', 'betScore': None, 'homeTeamName': 'Portland Timbers', 'marketName': '独赢 & 大/小', 'matchTimeStr': '2022-06-29 22:30:00', 'matchType': '早盘', 'odds': 2.8, 'oddsType': '1', 'orderNo': 'XHwAAwyz67du', 'outcomeName': '波特兰木材 & 大 2.5', 'specifier': 'total=2.5', 'tournamentName': '美国职业足球大联盟'}, {'awayTeamName': '黄昏', 'betScore': None, 'homeTeamName': '费基尔', 'marketName': '两队都进球', 'matchTimeStr': '2022-07-01 15:15:00', 'matchType': '早盘', 'odds': 1.48, 'oddsType': '1', 'orderNo': 'XHwAAwyz67du', 'outcomeName': '是', 'specifier': '', 'tournamentName': '冰岛甲级联赛'}, {'awayTeamName': 'Chicago Fire', 'betScore': None, 'homeTeamName': 'San Jose Earthquakes', 'marketName': '上半场 - 独赢 & 两队都进球', 'matchTimeStr': '2022-07-03 21:00:00', 'matchType': '早盘', 'odds': 15.95, 'oddsType': '1', 'orderNo': 'XHwAAwyz67du', 'outcomeName': '圣荷西地震 & 是', 'specifier': '', 'tournamentName': '美国职业足球大联盟'}], 'orderNo': 'XHwAAwyz67du', 'sportsType': '足球', 'Total_Amount': 580.0}, {'account': 'd0d1d2d30w/fceshi022', 'betAmount': 570.0, 'betIp': '192.168.10.120', 'betIpAddress': '局域网', 'betResult': '未结算', 'betType': 3, 'bettingTime': '2022-06-27 08:00:45', 'level0CommissionRatio': 0.0, 'level0Percentage': 0.2, 'level1CommissionRatio': 0.0, 'level1Percentage': 0.2, 'level2CommissionRatio': 0.0, 'level2Percentage': 0.2, 'level3CommissionRatio': 0.0, 'level3Percentage': 0.2, 'memberCommissionRatio': 0.0, 'memberName': '杜鑫test账号aw', 'mixNum': '6_57_1', 'odds': 27350.98, 'oddsType': '1', 'options': [{'awayTeamName': 'Kashima Antlers', 'betScore': None, 'homeTeamName': 'Kashiwa Reysol', 'marketName': '双重机会&大/小', 'matchTimeStr': '2022-07-02 05:30:00', 'matchType': '早盘', 'odds': 14.95, 'oddsType': '1', 'orderNo': 'XHwyUYuABcWv', 'outcomeName': '柏雷素尔/和局 & 大 4.5', 'specifier': 'total=4.5', 'tournamentName': '日本J联赛'}, {'awayTeamName': '长野帕塞罗', 'betScore': None, 'homeTeamName': 'SC相模原', 'marketName': '净胜球数', 'matchTimeStr': '2022-07-02 05:00:00', 'matchType': '早盘', 'odds': 15.95, 'oddsType': '1', 'orderNo': 'XHwyUYuABcWv', 'outcomeName': 'SC相模原 3+', 'specifier': 'variant=sr:winning_margin:3+', 'tournamentName': '日本丙级联赛'}, {'awayTeamName': '塞尔福斯', 'betScore': None, 'homeTeamName': '格林达维克', 'marketName': '两个半场 大1.5', 'matchTimeStr': '2022-07-01 15:15:00', 'matchType': '早盘', 'odds': 3.2, 'oddsType': '1', 'orderNo': 'XHwyUYuABcWv', 'outcomeName': '是', 'specifier': 'total=1.5', 'tournamentName': '冰岛甲级联赛'}, {'awayTeamName': '特罗姆瑟B队', 'betScore': None, 'homeTeamName': '迈恩达伦二队', 'marketName': '双重机会&两队都进球', 'matchTimeStr': '2022-06-28 08:00:00', 'matchType': '早盘', 'odds': 1.81, 'oddsType': '1', 'orderNo': 'XHwyUYuABcWv', 'outcomeName': '迈恩达伦二队/和局 & 是', 'specifier': '', 'tournamentName': '挪威丙级联赛第6组'}, {'awayTeamName': '防卫者', 'betScore': None, 'homeTeamName': '甘拿斯亚', 'marketName': '上半场 - 独赢 & 两队都进球', 'matchTimeStr': '2022-07-02 19:30:00', 'matchType': '早盘', 'odds': 3.25, 'oddsType': '1', 'orderNo': 'XHwyUYuABcWv', 'outcomeName': '甘拿斯亚 & 不是', 'specifier': '', 'tournamentName': '阿根廷足球甲级联赛'}, {'awayTeamName': '奥地利', 'betScore': None, 'homeTeamName': '英格兰', 'marketName': '平局退款', 'matchTimeStr': '2022-07-06 15:00:00', 'matchType': '早盘', 'odds': 1.02, 'oddsType': '1', 'orderNo': 'XHwyUYuABcWv', 'outcomeName': '英格兰', 'specifier': '', 'tournamentName': '国际欧洲锦标赛，女子'}], 'orderNo': 'XHwyUYuABcWv', 'sportsType': '足球', 'Total_Amount': 580.0}, {'account': 'd0d1d2d30x/fceshi023', 'betAmount': 100.0, 'betIp': '192.168.10.120', 'betIpAddress': '局域网', 'betResult': '未结算', 'betType': 3, 'bettingTime': '2022-06-27 08:43:22', 'level0CommissionRatio': 0.0, 'level0Percentage': 0.2, 'level1CommissionRatio': 0.0, 'level1Percentage': 0.2, 'level2CommissionRatio': 0.0, 'level2Percentage': 0.2, 'level3CommissionRatio': 0.0, 'level3Percentage': 0.2, 'memberCommissionRatio': 0.0, 'memberName': '杜鑫test账号ax', 'mixNum': '2_10_0', 'odds': 51.46, 'oddsType': '2', 'options': [{'awayTeamName': '史克德二队', 'betScore': None, 'homeTeamName': '基奥罗迪二队', 'marketName': '让球', 'matchTimeStr': '2022-06-28 13:00:00', 'matchType': '早盘', 'odds': 1.05, 'oddsType': '2', 'orderNo': 'XHwPuBqMakDY', 'outcomeName': '基奥罗迪二队 ', 'specifier': 'hcp=0', 'tournamentName': '挪威丙级联赛第1组'}, {'awayTeamName': '长野帕塞罗', 'betScore': None, 'homeTeamName': 'SC相模原', 'marketName': 'SC相模原 大/小', 'matchTimeStr': '2022-07-02 05:00:00', 'matchType': '早盘', 'odds': 1.5, 'oddsType': '2', 'orderNo': 'XHwPuBqMakDY', 'outcomeName': '大1.5', 'specifier': 'total=1.5', 'tournamentName': '日本丙级联赛'}, {'awayTeamName': 'Minnesota United FC', 'betScore': None, 'homeTeamName': 'Los Angeles Galaxy', 'marketName': '让球', 'matchTimeStr': '2022-06-29 22:30:00', 'matchType': '早盘', 'odds': 1.32, 'oddsType': '2', 'orderNo': 'XHwPuBqMakDY', 'outcomeName': '洛杉矶银河 ', 'specifier': 'hcp=-1', 'tournamentName': '美国职业足球大联盟'}, {'awayTeamName': 'Dunfermline Athletic FC', 'betScore': None, 'homeTeamName': 'Forfar Athletic FC', 'marketName': '上半场 - Forfar Athletic FC 大/小', 'matchTimeStr': '2022-06-28 14:30:00', 'matchType': '早盘', 'odds': 1.16, 'oddsType': '2', 'orderNo': 'XHwPuBqMakDY', 'outcomeName': '大0.5', 'specifier': 'total=0.5', 'tournamentName': '国际俱乐部俱乐部友谊赛'}, {'awayTeamName': '奥地利', 'betScore': None, 'homeTeamName': '英格兰', 'marketName': '上半场 - 英格兰 大/小', 'matchTimeStr': '2022-07-06 15:00:00', 'matchType': '早盘', 'odds': 1.32, 'oddsType': '2', 'orderNo': 'XHwPuBqMakDY', 'outcomeName': '大1.5', 'specifier': 'total=1.5', 'tournamentName': '国际欧洲锦标赛，女子'}], 'orderNo': 'XHwPuBqMakDY', 'sportsType': '足球', 'Total_Amount': 110.0}, {'account': 'd0d1d2d30x/fceshi023', 'betAmount': 10.0, 'betIp': '192.168.10.120', 'betIpAddress': '局域网', 'betResult': '未结算', 'betType': 2, 'bettingTime': '2022-06-27 08:43:19', 'level0CommissionRatio': 0.0, 'level0Percentage': 0.2, 'level1CommissionRatio': 0.0, 'level1Percentage': 0.2, 'level2CommissionRatio': 0.0, 'level2Percentage': 0.2, 'level3CommissionRatio': 0.0, 'level3Percentage': 0.2, 'memberCommissionRatio': 0.0, 'memberName': '杜鑫test账号ax', 'mixNum': '5_1_0', 'odds': 36.5, 'oddsType': '2', 'options': [{'awayTeamName': '挪威', 'betScore': None, 'homeTeamName': '丹麦', 'marketName': '让球', 'matchTimeStr': '2022-06-29 12:00:00', 'matchType': '早盘', 'odds': 1.31, 'oddsType': '2', 'orderNo': 'XHwPttJm3L5Y', 'outcomeName': '丹麦 ', 'specifier': 'hcp=-0.25', 'tournamentName': '国际友谊赛，女子'}, {'awayTeamName': 'Hellas Verona', 'betScore': None, 'homeTeamName': 'Bologna FC', 'marketName': '上半场 - 大/小', 'matchTimeStr': '2022-08-21 09:00:00', 'matchType': '早盘', 'odds': 0.88, 'oddsType': '2', 'orderNo': 'XHwPttJm3L5Y', 'outcomeName': '大1', 'specifier': 'total=1', 'tournamentName': '意大利甲级联赛'}, {'awayTeamName': '沧州雄狮', 'betScore': None, 'homeTeamName': '梅州客家', 'marketName': '上半场 - 让球', 'matchTimeStr': '2022-06-29 04:30:00', 'matchType': '早盘', 'odds': 1.28, 'oddsType': '2', 'orderNo': 'XHwPttJm3L5Y', 'outcomeName': '梅州客家 ', 'specifier': 'hcp=-0.25', 'tournamentName': '中国超级联赛'}, {'awayTeamName': 'SC Corinthians SP', 'betScore': None, 'homeTeamName': 'Fluminense FC RJ', 'marketName': '上半场 - 大/小', 'matchTimeStr': '2022-07-02 15:30:00', 'matchType': '早盘', 'odds': 0.61, 'oddsType': '2', 'orderNo': 'XHwPttJm3L5Y', 'outcomeName': '大0.5', 'specifier': 'total=0.5', 'tournamentName': '巴西甲级联赛'}, {'awayTeamName': '小阿根廷人', 'betScore': None, 'homeTeamName': '科尔多瓦中央队', 'marketName': '上半场 - 科尔多瓦中央队 大/小', 'matchTimeStr': '2022-07-01 18:00:00', 'matchType': '早盘', 'odds': 1.29, 'oddsType': '2', 'orderNo': 'XHwPttJm3L5Y', 'outcomeName': '大0.5', 'specifier': 'total=0.5', 'tournamentName': '阿根廷足球甲级联赛'}], 'orderNo': 'XHwPttJm3L5Y', 'sportsType': '足球', 'Total_Amount': 110.0}, {'account': 'd0d1d2d30y/fceshi024', 'betAmount': 10.0, 'betIp': '192.168.10.120', 'betIpAddress': '局域网', 'betResult': '未结算', 'betType': 2, 'bettingTime': '2022-06-27 08:06:07', 'level0CommissionRatio': 0.0, 'level0Percentage': 0.2, 'level1CommissionRatio': 0.0, 'level1Percentage': 0.2, 'level2CommissionRatio': 0.0, 'level2Percentage': 0.2, 'level3CommissionRatio': 0.0, 'level3Percentage': 0.2, 'memberCommissionRatio': 0.0, 'memberName': '杜鑫test账号ay', 'mixNum': '5_1_0', 'odds': 60.45, 'oddsType': '1', 'options': [{'awayTeamName': 'Urawa Red Diamonds', 'betScore': None, 'homeTeamName': 'Gamba Osaka', 'marketName': '独赢', 'matchTimeStr': '2022-07-02 06:00:00', 'matchType': '早盘', 'odds': 3.25, 'oddsType': '1', 'orderNo': 'XHwAKUSppxEs', 'outcomeName': '大阪飞脚', 'specifier': '', 'tournamentName': '日本J联赛'}, {'awayTeamName': 'FK Ural Yekaterinburg', 'betScore': None, 'homeTeamName': 'CSKA Moscow', 'marketName': '上半场 - 独赢 & 两队都进球', 'matchTimeStr': '2022-07-16 08:00:00', 'matchType': '早盘', 'odds': 2.24, 'oddsType': '1', 'orderNo': 'XHwAKUSppxEs', 'outcomeName': '莫斯科中央陆军 & 不是', 'specifier': '', 'tournamentName': '俄罗斯足球超级联赛'}, {'awayTeamName': '科帕沃于尔布列达布利克', 'betScore': None, 'homeTeamName': '韦斯特曼纳埃亚尔', 'marketName': '科帕沃于尔布列达布利克 两个半场都进球', 'matchTimeStr': '2022-07-02 12:00:00', 'matchType': '早盘', 'odds': 2.04, 'oddsType': '1', 'orderNo': 'XHwAKUSppxEs', 'outcomeName': '是', 'specifier': '', 'tournamentName': '冰岛足球超级联赛'}, {'awayTeamName': 'Daejeon Citizen FC', 'betScore': None, 'homeTeamName': '富川FC', 'marketName': '上半场 - 独赢', 'matchTimeStr': '2022-07-02 05:00:00', 'matchType': '早盘', 'odds': 3.45, 'oddsType': '1', 'orderNo': 'XHwAKUSppxEs', 'outcomeName': '富川FC', 'specifier': '', 'tournamentName': '韩国职业足球乙级联赛'}, {'awayTeamName': '特罗姆瑟', 'betScore': None, 'homeTeamName': '莫尔德', 'marketName': '上半场 - 双重机会', 'matchTimeStr': '2022-07-10 12:00:00', 'matchType': '早盘', 'odds': 1.18, 'oddsType': '1', 'orderNo': 'XHwAKUSppxEs', 'outcomeName': '莫尔德 或和局', 'specifier': '', 'tournamentName': '挪威超级联赛'}], 'orderNo': 'XHwAKUSppxEs', 'sportsType': '足球', 'Total_Amount': 40.0}, {'account': 'd0d1d2d30y/fceshi024', 'betAmount': 30.0, 'betIp': '192.168.10.120', 'betIpAddress': '局域网', 'betResult': '未结算', 'betType': 3, 'bettingTime': '2022-06-27 08:05:42', 'level0CommissionRatio': 0.0, 'level0Percentage': 0.2, 'level1CommissionRatio': 0.0, 'level1Percentage': 0.2, 'level2CommissionRatio': 0.0, 'level2Percentage': 0.2, 'level3CommissionRatio': 0.0, 'level3Percentage': 0.2, 'memberCommissionRatio': 0.0, 'memberName': '杜鑫test账号ay', 'mixNum': '2_3_0', 'odds': 865.41, 'oddsType': '1', 'options': [{'awayTeamName': '沃罗涅日火炬II队', 'betScore': None, 'homeTeamName': 'FK Krasnodar', 'marketName': '沃罗涅日火炬II队 不失球', 'matchTimeStr': '2022-07-17 13:00:00', 'matchType': '早盘', 'odds': 4.65, 'oddsType': '1', 'orderNo': 'XHwABRVbDQjf', 'outcomeName': '是', 'specifier': '', 'tournamentName': '俄罗斯足球超级联赛'}, {'awayTeamName': '法林明高RJ', 'betScore': None, 'homeTeamName': '托利马', 'marketName': '波胆', 'matchTimeStr': '2022-06-29 20:30:00', 'matchType': '早盘', 'odds': 100.95, 'oddsType': '1', 'orderNo': 'XHwABRVbDQjf', 'outcomeName': '4:1', 'specifier': '', 'tournamentName': '国际俱乐部解放者杯'}, {'awayTeamName': '瑞士', 'betScore': None, 'homeTeamName': '葡萄牙', 'marketName': '瑞士 赢两个半场', 'matchTimeStr': '2022-07-09 12:00:00', 'matchType': '早盘', 'odds': 3.75, 'oddsType': '1', 'orderNo': 'XHwABRVbDQjf', 'outcomeName': '是', 'specifier': '', 'tournamentName': '国际欧洲锦标赛，女子'}], 'orderNo': 'XHwABRVbDQjf', 'sportsType': '足球', 'Total_Amount': 40.0}, {'account': 'd0d1d2d30z/fceshi025', 'betAmount': 150.0, 'betIp': '192.168.10.120', 'betIpAddress': '局域网', 'betResult': '未结算', 'betType': 3, 'bettingTime': '2022-06-27 08:00:29', 'level0CommissionRatio': 0.0, 'level0Percentage': 0.2, 'level1CommissionRatio': 0.0, 'level1Percentage': 0.2, 'level2CommissionRatio': 0.0, 'level2Percentage': 0.2, 'level3CommissionRatio': 0.0, 'level3Percentage': 0.2, 'memberCommissionRatio': 0.0, 'memberName': '杜鑫test账号az', 'mixNum': '2_15_0', 'odds': 2190.46, 'oddsType': '1', 'options': [{'awayTeamName': '欧克莱卡诺', 'betScore': None, 'homeTeamName': '埃文代尔', 'marketName': '波胆', 'matchTimeStr': '2022-07-09 01:00:00', 'matchType': '早盘', 'odds': 9.75, 'oddsType': '1', 'orderNo': 'XHwyQ3rDrA6S', 'outcomeName': '2:1', 'specifier': '', 'tournamentName': '澳大利亚全国超级联赛,维多利亚'}, {'awayTeamName': '阿东那', 'betScore': None, 'homeTeamName': '丹德农城', 'marketName': '阿东那 单/双', 'matchTimeStr': '2022-07-09 02:45:00', 'matchType': '早盘', 'odds': 1.86, 'oddsType': '1', 'orderNo': 'XHwyQ3rDrA6S', 'outcomeName': '单', 'specifier': '', 'tournamentName': '澳大利亚全国超级联赛,维多利亚'}, {'awayTeamName': '奥地利', 'betScore': None, 'homeTeamName': '英格兰', 'marketName': '半场/全场', 'matchTimeStr': '2022-07-06 15:00:00', 'matchType': '早盘', 'odds': 100.95, 'oddsType': '1', 'orderNo': 'XHwyQ3rDrA6S', 'outcomeName': '英格兰/奥地利', 'specifier': '', 'tournamentName': '国际欧洲锦标赛，女子'}, {'awayTeamName': '山口雷法', 'betScore': None, 'homeTeamName': 'Blaublitz Akita', 'marketName': '山口雷法 胜利退款', 'matchTimeStr': '2022-07-02 01:00:00', 'matchType': '早盘', 'odds': 1.52, 'oddsType': '1', 'orderNo': 'XHwyQ3rDrA6S', 'outcomeName': '秋田蓝色闪电', 'specifier': '', 'tournamentName': '日本乙级联赛'}, {'awayTeamName': '科隆竞技', 'betScore': None, 'homeTeamName': '葛度尔古斯', 'marketName': '上半场 - 独赢', 'matchTimeStr': '2022-07-02 17:00:00', 'matchType': '早盘', 'odds': 2.32, 'oddsType': '1', 'orderNo': 'XHwyQ3rDrA6S', 'outcomeName': '葛度尔古斯', 'specifier': '', 'tournamentName': '阿根廷足球甲级联赛'}, {'awayTeamName': '圣彼得堡泽尼特', 'betScore': None, 'homeTeamName': 'FK Khimki', 'marketName': '双重机会&两队都进球', 'matchTimeStr': '2022-07-15 13:00:00', 'matchType': '早盘', 'odds': 4.85, 'oddsType': '1', 'orderNo': 'XHwyQ3rDrA6S', 'outcomeName': '希姆基/和局 & 是', 'specifier': '', 'tournamentName': '俄罗斯足球超级联赛'}], 'orderNo': 'XHwyQ3rDrA6S', 'sportsType': '足球', 'Total_Amount': 150.0}, {'account': 'd0d1d2d31b/fceshi027', 'betAmount': 10.0, 'betIp': '192.168.10.120', 'betIpAddress': '局域网', 'betResult': '未结算', 'betType': 2, 'bettingTime': '2022-06-27 08:00:25', 'level0CommissionRatio': 0.0, 'level0Percentage': 0.2, 'level1CommissionRatio': 0.0, 'level1Percentage': 0.2, 'level2CommissionRatio': 0.0, 'level2Percentage': 0.2, 'level3CommissionRatio': 0.0, 'level3Percentage': 0.2, 'memberCommissionRatio': 0.0, 'memberName': '杜鑫test账号bb', 'mixNum': '6_1_0', 'odds': 160.97, 'oddsType': '1', 'options': [{'awayTeamName': 'Bodoe/G"]
+        # sport_report_list =[{'account': 'd0d1d2d30d/fceshi03', 'betAmount': 10.0, 'betIp': '192.168.10.120', 'betIpAddress': '局域网', 'betResult': '未结算', 'betType': 1, 'bettingTime': '2022-07-11 03:33:57', 'level0CommissionRatio': 0.0021, 'level0Percentage': 0.2, 'level1CommissionRatio': 0.0021, 'level1Percentage': 0.2, 'level2CommissionRatio': 0.0021, 'level2Percentage': 0.2, 'level3CommissionRatio': 0.0021, 'level3Percentage': 0.2, 'memberCommissionRatio': 0.0011, 'memberName': '杜鑫test账号ad', 'mixNum': '1_1_0', 'odds': 1.44, 'oddsType': '1', 'options': [{'awayTeamName': 'Cerezo Osaka', 'betScore': None, 'homeTeamName': '名古屋鲸鱼', 'marketName': '名古屋鲸鱼 大/小', 'matchTimeStr': '2022-07-13 05:30:00', 'matchType': '早盘', 'odds': 1.44, 'oddsType': '1', 'orderNo': 'XKFVwSWDkcXz', 'outcomeName': '大0.5', 'specifier': 'total=0.5', 'tournamentName': '日本天皇杯'}], 'orderNo': 'XKFVwSWDkcXz', 'sportsType': '足球', 'Total_Amount': 120.0}]
+        # sport_report_dict =['account', 'betAmount', 'betIp', 'betIpAddress', 'betResult', 'betType', 'bettingTime', 'level0CommissionRatio', 'level0Percentage', 'level1CommissionRatio', 'level1Percentage', 'level2CommissionRatio', 'level2Percentage', 'level3CommissionRatio', 'level3Percentage', 'memberCommissionRatio', 'memberName', 'mixNum', 'odds', 'oddsType', 'options', 'orderNo', 'sportsType', 'Total_Amount']
+        # yyds=bc.sport_report_sql(begin="2022-06-22 00:00:00",end="2022-06-28 23:59:59", excel_report=excel_report, sport_report_dict=sport_report_dict,sport_report_list=sport_report_list)
 
 
-
-
+        # A=[{'account': 'd0d1d2d3pe/fceshi0646', 'betAmount': 10.0, 'betIp': '192.168.10.120', 'betIpAddress': '局域网', 'betResult': '输', 'betTime': '2022-06-24 09:02:58', 'betType': '单注', 'level0Commission': 0.0, 'level0CommissionRatio': 0.0, 'level0Percentage': 0.2, 'level0Total': 2.0, 'level0WinOrLose': 2.0, 'level1Commission': 0.0, 'level1CommissionRatio': 0.0, 'level1Percentage': 0.2, 'level1Total': 2.0, 'level1WinOrLose': 2.0, 'level2Commission': 0.0, 'level2CommissionRatio': 0.0, 'level2Percentage': 0.2, 'level2Total': 2.0, 'level2WinOrLose': 2.0, 'level3Commission': 0.0, 'level3CommissionRatio': 0.0, 'level3Percentage': 0.2, 'level3Total': 2.0, 'level3WinOrLose': 2.0, 'memberCommission': 0.0, 'memberCommissionRatio': 0.0, 'memberTotal': -10.0, 'memberWinOrLose': -10.0, 'name': '杜鑫test账号pe', 'odds': 2.75, 'oddsType': '1', 'options': [{'awayTeamName': '海德堡联', 'betScore': None, 'homeTeamName': '阿东那', 'marketName': '独赢', 'matchTime': '2022-06-25 04:00:00', 'matchType': '早盘', 'odds': 2.75, 'oddsType': '1', 'orderNo': 'XH4AeukHvicj', 'outcomeName': '阿东那', 'specifier': '', 'tournamentName': '澳大利亚全国超级联赛,维多利亚'}], 'orderNo': 'XH4AeukHvicj', 'settlementTime': '2022-06-25 05:58:10', 'sportId': 'sr:sport:1', 'sportType': '足球', 'validAmount': 10.0, 'winOrLose': -10.0}]
+        # B=[{'account': 'd0d1d2d39v/fceshi0247', 'betAmount': 10.0, 'betIp': '192.168.10.120', 'betIpAddress': '局域网', 'betResult': '输', 'betTime': '2022-06-24 08:40:18', 'betType': '单注', 'level0Commission': 0.0, 'level0CommissionRatio': 0.0, 'level0Percentage': 0.2, 'level0Total': 2.0, 'level0WinOrLose': 2.0, 'level1Commission': 0.0, 'level1CommissionRatio': 0.0, 'level1Percentage': 0.2, 'level1Total': 2.0, 'level1WinOrLose': 2.0, 'level2Commission': 0.0, 'level2CommissionRatio': 0.0, 'level2Percentage': 0.2, 'level2Total': 2.0, 'level2WinOrLose': 2.0, 'level3Commission': 0.0, 'level3CommissionRatio': 0.0, 'level3Percentage': 0.2, 'level3Total': 2.0, 'level3WinOrLose': 2.0, 'memberCommission': 0.0, 'memberCommissionRatio': 0.0, 'memberTotal': -10.0, 'memberWinOrLose': -10.0, 'name': '杜鑫test账号jv', 'odds': 2.28, 'oddsType': '1', 'options': [{'awayTeamName': '巴恩斯利', 'betScore': None, 'homeTeamName': '沃克索谱镇', 'marketName': '总入球', 'matchTime': '2022-06-25 10:00:00', 'matchType': '早盘', 'odds': 2.28, 'oddsType': '1', 'orderNo': 'XH4suBVmDm3E', 'outcomeName': '2-3', 'specifier': 'variant=sr:goal_range:7+', 'tournamentName': '国际俱乐部俱乐部友谊赛'}], 'orderNo': 'XH4suBVmDm3E', 'settlementTime': '2022-06-25 12:16:57', 'sportId': 'sr:sport:1', 'sportType': '足球', 'validAmount': 10.0, 'winOrLose': -10.0}]
+        # yyds = bc.if_error(A=A,B=B)
 
 
 
