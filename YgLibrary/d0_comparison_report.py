@@ -83,7 +83,7 @@ class report_data(object):
         time01 = datetime.datetime.strptime(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),'%Y-%m-%d %H:%M:%S')
 
         #循环Excel所有表
-        for gg in range(0,1):
+        for gg in range(3,4):
             gg = shenames[gg]
         # for gg in shenames:
             # 获取该表相应的行数和列数
@@ -104,7 +104,7 @@ class report_data(object):
                 # 循环行数
                 qqt=100
                 # for i in range(4,5):
-                for i in range(2, rows+1):
+                for i in range(3, rows+1):
                     if i==qqt:
                         pass
                     else:
@@ -1037,83 +1037,17 @@ class BetController(object):
                             mix_number.append("2-1")
                             print(len(sport_report_list), sql_count)
                         elif len(yyds) == 2:
-                            if excel_report[0] not in("报表-球类报表-订单查询（根据其盘口查询订单）"):
-                                sql01 = self.if_f(BBQ=yyds[0],all=all,num=num,all_order_no=all_order_no,begin=begin,end=end)
-                                sql02 = self.if_f(BBQ=yyds[1],all=all,num=num,all_order_no=all_order_no,begin=begin,end=end)
-                                sort_num01 = self.my.query_data(sql01, db_name='bfty_credit')
-                                sort_num02 = self.my.query_data(sql02, db_name='bfty_credit')
-                                sort_num_list.append(sort_num01)
-                                sort_num_list.append(sort_num02)
-                                num_list.append(sort_num_list)
-                                sort_num = num_list
-                                mix_number.append("2-2")
-                                sql_count = sql_count + 1
-                                print(len(sport_report_list), sql_count)
-                            elif excel_report[0] in ("报表-球类报表-订单查询（根据其盘口查询订单）"):
-                                yyrt_list=[]
-                                #获取球类的单注盘口的会员数据
-                                sql01 = self.if_f(BBQ=yyds[0], all=all, num=num, all_order_no=all_order_no,begin=begin, end=end)
-                                sort_num01 = self.my.query_data(sql01, db_name='bfty_credit')
-                                #获取球类的串关的会员数据
-                                sql02 = self.if_f(BBQ=yyds[1], all=all, num=num, all_order_no=all_order_no,begin=begin, end=end)
-                                sort_num02 = self.my.query_data(sql02, db_name='bfty_credit')
-
-                                #for循环单注和串关的会员数据
-                                for member in (sort_num01,sort_num02):
-                                    for num in range(0,len(member)):
-                                        tuple_new_01=[]
-                                        tuple_new=member[num]
-                                        tuple_new_01.append(tuple_new)
-                                        num_list.append(tuple_new_01)
-                                        # exit("调试一次就结束")
-
-                                # 遍历options里的键值对，方便写入组装数据
-                                aa_list = []
-                                for key, value in sport_report_list[0]['options'][0].items():
-                                    aa_list.append(key)
-                                # print(aa_list)
-                                # 获取单注赛事选项
-                                sql03 = self.if_f(BBQ=yyds[2], all=all, num=num, all_order_no=all_order_no, begin=begin,end=end)
-                                sort_num03 = self.my.query_data(sql03, db_name='bfty_credit')
-                                # 单独获取options列表的数据，然后组装回去
-                                jkk_list = []
-                                jkk_dict = {}
-                                for single in sort_num03:
-                                    jkk_dict = {}
-                                    for jkk in range(0, len(single)):
-                                        if str(type(single[jkk])) in type_list:
-                                            if single[jkk] == None:
-                                                new_jkk = None
-                                            else:
-                                                new_jkk = str(single[jkk])
-                                        else:
-                                            new_jkk = float(single[jkk])
-                                        jkk_dict[aa_list[jkk]] = new_jkk
-                                    jkk_list.append(jkk_dict)
-                                    #去比对数据订单后，然后相同的组装在一起，不同的分开组装
-                                self.order_no_new(yyds_list=jkk_list)
-
-                                #获取串关options的数据
-                                sql04 = self.if_f(BBQ=yyds[3], all=all, num=num, all_order_no=all_order_no, begin=begin,end=end)
-                                sort_num04 = self.my.query_data(sql04, db_name='bfty_credit')
-                                # 单独获取options列表的数据，然后组装回去
-                                jkk_list = []
-                                jkk_dict = {}
-                                for Duplex in sort_num04:
-                                    jkk_dict = {}
-                                    for jkk in range(0, len(Duplex)):
-                                        if str(type(Duplex[jkk])) in type_list:
-                                            if Duplex[jkk] == None:
-                                                new_jkk = None
-                                            else:
-                                                new_jkk = str(Duplex[jkk])
-                                        else:
-                                            new_jkk = float(Duplex[jkk])
-                                        jkk_dict[aa_list[jkk]] = new_jkk
-                                    jkk_list.append(jkk_dict)
-                                    # 去比对数据订单后，然后相同的组装在一起，不同的分开组装
-                                self.order_no_new(yyds_list=jkk_list)
-                                print(len(num_list),len(options_list),all)
+                            sql01 = self.if_f(BBQ=yyds[0],all=all,num=num,all_order_no=all_order_no,begin=begin,end=end)
+                            sql02 = self.if_f(BBQ=yyds[1],all=all,num=num,all_order_no=all_order_no,begin=begin,end=end)
+                            sort_num01 = self.my.query_data(sql01, db_name='bfty_credit')
+                            sort_num02 = self.my.query_data(sql02, db_name='bfty_credit')
+                            sort_num_list.append(sort_num01)
+                            sort_num_list.append(sort_num02)
+                            num_list.append(sort_num_list)
+                            sort_num = num_list
+                            mix_number.append("2-2")
+                            sql_count = sql_count + 1
+                            print(len(sport_report_list), sql_count)
                     mix_number.append("2-1")
                     sort_num= num_list
 
