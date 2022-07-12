@@ -83,7 +83,7 @@ class report_data(object):
         time01 = datetime.datetime.strptime(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),'%Y-%m-%d %H:%M:%S')
 
         #循环Excel所有表
-        for gg in range(3,4):
+        for gg in range(0,4):
             gg = shenames[gg]
         # for gg in shenames:
             # 获取该表相应的行数和列数
@@ -104,7 +104,7 @@ class report_data(object):
                 # 循环行数
                 qqt=100
                 # for i in range(4,5):
-                for i in range(3, rows+1):
+                for i in range(2, rows+1):
                     if i==qqt:
                         pass
                     else:
@@ -658,6 +658,7 @@ class BetController(object):
                                                     print("\033[31m" + str(sport_list[i][ppxt_lsit[0]]) + "-" + str(sport_list[i][ppxt_lsit[1]] + "-" + yyth),str(yyds_list[report]),"数据对比错误：" + str(sport_list[i][yyds_list[report]]) + "/" + str(sql_list[j][yyds_list[report]]) + "\033[0m",type(sport_list[i][yyds_list[report]]),type(sql_list[j][yyds_list[report]]))
 
                                             else:
+                                                all_yyds.append(1)
                                                 sport_all_error.append(str(str(sport_list[i][ppxt_lsit[0]]) + "-" + str(sport_list[i][ppxt_lsit[1]])) + "/" +yyth+ "/" + str(yyds_list[report]) + "的数据对比错误,请检查SQL查询的字段与接口字段数据是否一致,数据对比：" + str(sport_list[i][yyds_list[report]]) + "/" + str(sql_list[j][yyds_list[report]]))
                                                 print("\033[31m" + str(sport_list[i][ppxt_lsit[0]]) + "-" + str(sport_list[i][ppxt_lsit[1]] + "-" + yyth), str(yyds_list[report]),"数据对比错误：" + str(sport_list[i][yyds_list[report]]) + "/" + str(sql_list[j][yyds_list[report]]) + "\033[0m",type(sport_list[i][yyds_list[report]]),type(sql_list[j][yyds_list[report]]))
             if sport_list== []:
@@ -929,8 +930,9 @@ class BetController(object):
                 if excel_report[0]=='总投注-混合串关-子查询(查询其注单号，包含的比赛)':
                     sql = self.if_f(BBQ=yyds[0], all=all, num=num, all_order_no=all_order_no, begin=begin, end=end)
                     sort_num = self.my.query_data(sql, db_name='bfty_credit')
-                    num_list =self.order_no_orderno(yyds_list=sort_num, excel_report=excel_report)
+                    num_list = self.order_no_orderno(yyds_list=sort_num, excel_report=excel_report)
                     mix_number.append("2-1")
+                    sort_num = num_list
                 elif excel_report[0]=='报表-球类报表-订单查询（根据其盘口查询订单）':
                     sql01 = self.if_f(BBQ=yyds[0], all=all, num=num, all_order_no=all_order_no, begin=begin, end=end)
                     sql02 = self.if_f(BBQ=yyds[1], all=all, num=num, all_order_no=all_order_no, begin=begin, end=end)
@@ -1048,8 +1050,6 @@ class BetController(object):
                             mix_number.append("2-2")
                             sql_count = sql_count + 1
                             print(len(sport_report_list), sql_count)
-                    mix_number.append("2-1")
-                    sort_num= num_list
 
         else:
             sql011=self.if_f(BBQ=yyds[0],all=all,num=num,all_order_no=all_order_no,begin=begin,end=end)
