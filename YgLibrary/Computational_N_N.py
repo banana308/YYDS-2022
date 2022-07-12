@@ -740,8 +740,8 @@ class water_ammount(BetController):
                 sum01 = self.my.query_data(sql01, db_name='bfty_credit')
 
                 # 根据查询等级，进行参数替换
-                num = int(sum01[0][0])+1
-                sql02 = f"SELECT {water_SQL_list[num]} as '总佣金' FROM o_account_order as c WHERE {proxy_id_list[num]}='{agent_id}' AND c.award_time>='{begin}' AND c.award_time<='{end}'"
+                num = int(sum01[0][0])
+                sql02 = f"SELECT {water_SQL_list[num_new]} as '总佣金' FROM o_account_order as c WHERE {proxy_id_list[num]}='{agent_id}' AND c.award_time>='{begin}' AND c.award_time<='{end}'"
                 sum02 = self.my.query_data(sql02, db_name='bfty_credit')
                 sum02 = float(sum02[0][0])
                 sum02 = self.water_intercept(number=sum02)
@@ -1045,9 +1045,9 @@ if __name__ == "__main__":
 
     # yyds=bc.water()
     #佣金计算：
-    order_no_list=['XFMvkaAa2EyQ', 'XH4ss4C8CJrA', 'XH4svST7h8L2', 'XH4tqsrmgi4u', 'XH4tRJjpTbw4', 'XH4tSR96m5dQ', 'XH4tVrSP4AfW', 'XH4u4xZyAimC', 'XH4uaSmddnM3', 'XH4uhKSs4EG5', 'XH4unwkeUDy4', 'XH4uDywxHmRv', 'XH4uZjmuZh7p', 'XH4v2VDFg9eb', 'XH4v8HX6evZx', 'XH4vdh7MXkgA', 'XH4veP3HQaBY', 'XH4vjsHg5K4S', 'XH4vmG2AR4vB', 'XH4vq98PBVgg', 'XH4vygGCgd6b', 'XH4vCZGr2NT9', 'XH4vGtjuxzu8', 'XH4vPj6YQNFy', 'XH4vS8mLWXVS', 'XH4vZWTcx3gC', 'XH4w4aWhGz36', 'XH4wf2et6e54', 'XH4wssFn5Zxa', 'XH4wGvtBj9en']
-    for order_no in order_no_list:
-        tt.water(order_no=order_no, num_0=1)
+    # order_no_list=['XFMvkaAa2EyQ', 'XH4ss4C8CJrA', 'XH4svST7h8L2', 'XH4tqsrmgi4u', 'XH4tRJjpTbw4', 'XH4tSR96m5dQ', 'XH4tVrSP4AfW', 'XH4u4xZyAimC', 'XH4uaSmddnM3', 'XH4uhKSs4EG5', 'XH4unwkeUDy4', 'XH4uDywxHmRv', 'XH4uZjmuZh7p', 'XH4v2VDFg9eb', 'XH4v8HX6evZx', 'XH4vdh7MXkgA', 'XH4veP3HQaBY', 'XH4vjsHg5K4S', 'XH4vmG2AR4vB', 'XH4vq98PBVgg', 'XH4vygGCgd6b', 'XH4vCZGr2NT9', 'XH4vGtjuxzu8', 'XH4vPj6YQNFy', 'XH4vS8mLWXVS', 'XH4vZWTcx3gC', 'XH4w4aWhGz36', 'XH4wf2et6e54', 'XH4wssFn5Zxa', 'XH4wGvtBj9en']
+    # for order_no in order_no_list:
+    #     tt.water(order_no=order_no, num_0=1)
     #总赔率计算
     # order_no_list=['XH4ud8cbEa8M','XH4tL4REXVDW','XH4ud8cbEa8M','XHwDVJrkf2Ae']
     # for order_no in order_no_list:
@@ -1069,13 +1069,21 @@ if __name__ == "__main__":
     agent_id_list=['1531516017847869442','1531517033355976705','1531517351158390786','1531517760300163074']
     member_id_list=['fceshi04','fceshi056','fceshi0126','fceshi0190','fceshi0223','fceshi0280','fceshi0315','fceshi0362','fceshi0418','fceshi0444','fceshi0480','fceshi0551','fceshi0572','fceshi0623','fceshi0661','fceshi0735']
 
+    yyds=tt.total_commission(agent_id=agent_id_list[0],member_id='',sportId='',marketId='',tournamentId='',matchId='',login_account=login_account)
+
+
+
+
+
+
+
     # for member_id in member_id_list:
     #     yy_num = tt.total_commission(agent_id='', member_id=member_id, sportId='', marketId='',tournamentId='', matchId='', login_account=login_account, begin=begin, end=end, Duplex='')
 
-    for agent_id in range(len(agent_id_list)+len(member_id_list)):
-        if agent_id<=len(agent_id_list)-1:
-            yyds=tt.total_commission(agent_id=agent_id_list[agent_id],member_id='',sportId='',marketId='',tournamentId='',matchId='',login_account=login_account)
-            yyqt=tt.Company_winlose(agent_id=agent_id_list[agent_id],member_id='',login_account=login_account)
+    # for agent_id in range(len(agent_id_list)+len(member_id_list)):
+    #     if agent_id<=len(agent_id_list)-1:
+    #         yyds=tt.total_commission(agent_id=agent_id_list[agent_id],member_id='',sportId='',marketId='',tournamentId='',matchId='',login_account=login_account)
+    #         yyqt=tt.Company_winlose(agent_id=agent_id_list[agent_id],member_id='',login_account=login_account)
     #     else:
     #         yyds=tt.total_commission(agent_id='', member_id=member_id_list[agent_id-(len(agent_id_list))])
     #         yyqt=tt.Company_winlose(agent_id='', member_id=member_id_list[agent_id-(len(agent_id_list))],login_account=login_account)

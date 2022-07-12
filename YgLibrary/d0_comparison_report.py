@@ -83,7 +83,7 @@ class report_data(object):
         time01 = datetime.datetime.strptime(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),'%Y-%m-%d %H:%M:%S')
 
         #循环Excel所有表
-        for gg in range(1,3):
+        for gg in range(0,1):
             gg = shenames[gg]
         # for gg in shenames:
             # 获取该表相应的行数和列数
@@ -164,6 +164,7 @@ class report_data(object):
                     response = session.get(url=url, headers=headers, params=data)
                 #判断接口返回code,是否为：200
                 interface_returns_data=response.json()
+                # print(interface_returns_data)
                 if interface_returns_data['message']=="签名处理异常! 可能原因: 系统维护中，请稍后再试" or interface_returns_data['message']=='登录状态已过期，请重新登录':
                     self.login(URL=URL,excel_report=excel_report,data=0)
                 else:
@@ -565,21 +566,41 @@ class BetController(object):
                 yyds_list.append(key)
             for i in range(0, len(sport_list)):
                 for j in range(0, len(sql_list)):
-                    # print(sport_list[i][Compared],sql_list[j][Compared])
-                    if sport_list[i][Compared] == sql_list[j][Compared]:
+                    ppxt_lsit = Compared.split(",")
+                    if sport_list[i][ppxt_lsit[0]] == sql_list[j][ppxt_lsit[0]]:
                         if sport_list[i] == sql_list[j]:
                             correct_list.append(sql_list[j])
                             # print(correct_list[-1])
                             # print(sport_list[i][Compared],"数据对比正确：" + str(sport_list[i]) + "/" + str(sql_list[j]))
                             break
                         else:
+                            all_yyds=[]
                             for report in range(0, len(sql_list[j])):
                                 if sport_list[i][yyds_list[report]] == sql_list[j][yyds_list[report]]:
-                                    pass
+                                    all_yyds.append(0)
+                                    if report == len(sql_list[j]) - 1:
+                                        if 1 in all_yyds:
+                                            pass
+                                        else:
+                                            correct_list.append(sql_list[j])
                                     # print(sport_list[i][Compared], str(yyds_list[report]),"数据对比正确：" + str(sport_list[i][yyds_list[report]]) + "/" + str(sql_list[j][yyds_list[report]]))
                                 else:
-                                    sport_all_error.append(str(sport_list[i][Compared]) + "/" + str(yyds_list[report]) + "的数据对比错误,请检查SQL查询的字段与接口字段数据是否一致,数据对比：" + str({sport_list[i][Compared]}) + "/" + (str({sql_list[j][Compared]})))
-                                    print("\033[31m" + sport_list[i][Compared], str(yyds_list[report]),"数据对比错误：" + str(sport_list[i][yyds_list[report]]) + "/" + str(sql_list[j][yyds_list[report]]) + "\033[0m",type(sport_list[i][yyds_list[report]]),type(sql_list[j][yyds_list[report]]))
+                                    if i < len(sportId_list):
+                                        yyth = sportId_list[i]
+                                    else:
+                                        yyth = "参数已用完"
+                                    if yyds_list[report]=='options':
+                                        num=self.options_report(A=sport_list[i][ppxt_lsit[0]],B='', C=yyds_list[report],D=sport_list[i][yyds_list[report]],E=sql_list[j][yyds_list[report]])
+                                        if num==0:
+                                            all_yyds.append(0)
+                                        else:
+                                            all_yyds.append(1)
+                                            print("\033[31m" + str(sport_list[i][ppxt_lsit[0]]) + "-" + yyth+str(yyds_list[report]),"数据对比错误：" + str(sport_list[i][yyds_list[report]]) + "/" + str(sql_list[j][yyds_list[report]]) + "\033[0m",type(sport_list[i][yyds_list[report]]),type(sql_list[j][yyds_list[report]]))
+                                    else:
+                                        all_yyds.append(1)
+                                        sport_all_error.append(str(str(sport_list[i][ppxt_lsit[0]]) + "/" +yyth+ str(yyds_list[report]) + "的数据对比错误,请检查SQL查询的字段与接口字段数据是否一致,数据对比：" + str(sport_list[i][yyds_list[report]]) + "/" + str(sql_list[j][yyds_list[report]])))
+                                        print("\033[31m" + str(sport_list[i][ppxt_lsit[0]]) +"-" + yyth, str(yyds_list[report]),"数据对比错误：" + str(sport_list[i][yyds_list[report]]) + "/" + str(sql_list[j][yyds_list[report]]) + "\033[0m",type(sport_list[i][yyds_list[report]]),type(sql_list[j][yyds_list[report]]))
+
         else:
             if sport_list== []:
                 sport_all_error.append("接口数据为空")
@@ -613,26 +634,32 @@ class BetController(object):
                                 break
                             else:
                                 # print(sport_list[i],"\n",sql_list[j])
+                                all_yyds=[]
                                 for report in range(0, len(sql_list[j])):
                                     if sport_list[i][yyds_list[report]] == sql_list[j][yyds_list[report]]:
-                                        pass
+                                        all_yyds.append(0)
+                                        if report == len(sql_list[j]) - 1:
+                                            if 1 in all_yyds:
+                                                pass
+                                            else:
+                                                correct_list.append(sql_list[j])
                                         # print(str(sport_list[i][ppxt_lsit[0]])+"-"+str(sport_list[i][ppxt_lsit[1]]), str(yyds_list[report]),"数据对比正确：" + str(sport_list[i][yyds_list[report]]) + "/" + str(sql_list[j][yyds_list[report]]))
                                     else:
                                         if i<len(sportId_list):
                                             yyth = sportId_list[i]
                                         else:
                                             yyth="参数已用完"
-                                        if excel_report[3] == 1:
-                                            sport_all_error.append(str(str(sport_list[i][ppxt_lsit[0]])+"-"+str(sport_list[i][ppxt_lsit[1]])) + "/" + str(yyds_list[report]) + "的数据对比错误,请检查SQL查询的字段与接口字段数据是否一致,数据对比：" +  str(sport_list[i][yyds_list[report]]) + "/" + str(sql_list[j][yyds_list[report]]))
-                                            print("\033[31m" + str(sport_list[i][ppxt_lsit[0]])+"-"+str(sport_list[i][ppxt_lsit[1]]), str(yyds_list[report]),"数据对比错误：" + str(sport_list[i][yyds_list[report]]) + "/" + str( sql_list[j][yyds_list[report]]) + "\033[0m",type(sport_list[i][yyds_list[report]]),type(sql_list[j][yyds_list[report]]))
                                             if yyds_list[report] == 'options':
-                                                self.options_report(A=sport_list[i][ppxt_lsit[0]],B=sport_list[i][ppxt_lsit[1]],C=yyds_list[report],D=sport_list[i][yyds_list[report]],E=sql_list[j][yyds_list[report]])
-                                        else:
-                                            sport_all_error.append(str(str(sport_list[i][ppxt_lsit[0]])+"-"+str(sport_list[i][ppxt_lsit[1]])) + "/" +yyth + "/"+str(yyds_list[report]) + "的数据对比错误,请检查SQL查询的字段与接口字段数据是否一致,数据对比：" +  str(sport_list[i][yyds_list[report]]) + "/" + str(sql_list[j][yyds_list[report]]))
-                                            print("\033[31m" + str(sport_list[i][ppxt_lsit[0]])+"-"+str(sport_list[i][ppxt_lsit[1]]+"-"+yyth), str(yyds_list[report]),"数据对比错误：" + str(sport_list[i][yyds_list[report]]) + "/" + str( sql_list[j][yyds_list[report]]) +"\033[0m",type(sport_list[i][yyds_list[report]]),type(sql_list[j][yyds_list[report]]))
-                                            if yyds_list[report]=='options':
-                                                self.options_report(A=sport_list[i][ppxt_lsit[0]],B=sport_list[i][ppxt_lsit[1]], C=yyds_list[report],D=sport_list[i][yyds_list[report]], E=sql_list[j][yyds_list[report]])
+                                                num=self.options_report(A=sport_list[i][ppxt_lsit[0]],B=sport_list[i][ppxt_lsit[1]],C=yyds_list[report],D=sport_list[i][yyds_list[report]],E=sql_list[j][yyds_list[report]])
+                                                if num == 0:
+                                                    all_yyds.append(0)
+                                                else:
+                                                    all_yyds.append(1)
+                                                    print("\033[31m" + str(sport_list[i][ppxt_lsit[0]]) + "-" + str(sport_list[i][ppxt_lsit[1]] + "-" + yyth),str(yyds_list[report]),"数据对比错误：" + str(sport_list[i][yyds_list[report]]) + "/" + str(sql_list[j][yyds_list[report]]) + "\033[0m",type(sport_list[i][yyds_list[report]]),type(sql_list[j][yyds_list[report]]))
 
+                                            else:
+                                                sport_all_error.append(str(str(sport_list[i][ppxt_lsit[0]]) + "-" + str(sport_list[i][ppxt_lsit[1]])) + "/" +yyth+ "/" + str(yyds_list[report]) + "的数据对比错误,请检查SQL查询的字段与接口字段数据是否一致,数据对比：" + str(sport_list[i][yyds_list[report]]) + "/" + str(sql_list[j][yyds_list[report]]))
+                                                print("\033[31m" + str(sport_list[i][ppxt_lsit[0]]) + "-" + str(sport_list[i][ppxt_lsit[1]] + "-" + yyth), str(yyds_list[report]),"数据对比错误：" + str(sport_list[i][yyds_list[report]]) + "/" + str(sql_list[j][yyds_list[report]]) + "\033[0m",type(sport_list[i][yyds_list[report]]),type(sql_list[j][yyds_list[report]]))
             if sport_list== []:
                 sport_all_error.append("接口数据为空")
             if sql_list== []:
@@ -682,8 +709,9 @@ class BetController(object):
         options_yyds=0
         print(f"\033[32m{A}-{B},{C}：options字典数据对比开始---------------------------------------------------------------------------\033[0m")
         aa_list = []
-        print(D[0])
-        print(E[0])
+        # print(D[0])
+        # print(E[0])
+        tyyt=0
         for key, value in D[0].items():
             aa_list.append(key)
         if D==E:
@@ -691,13 +719,26 @@ class BetController(object):
         else:
             if len(D)==len(E):
                 for ykk in range(0, len(D)):
-                    for i in aa_list:
-                        if D[ykk][i] == E[ykk][i]:
-                            print(f"{A}-{B},{C}options数据对比正确：{D[ykk][i]}/{E[ykk][i]}")
-                            options_yyds=0
+                    for ytt in range(0, len(E)):
+                        if D[ykk][aa_list[0]]==E[ytt][aa_list[0]]:
+                            if D[ykk]==E[ytt]:
+                                print(f"{A}-{B},{C}options数据对比正确：{D[ykk]}/{E[ytt]}")
+                            else:
+                                 for i in aa_list:
+                                     print(i)
+                                     if D[ykk][i] == E[ytt][i]:
+                                         print(f"{A}-{B},{C}options数据对比正确：{D[ykk][i]}/{E[ytt][i]}")
+                                         options_yyds=0
+                                     else:
+                                         print(f"\033[31m{A}-{B},{C}options数据对比错误：{D[ykk][i]}/{E[ytt][i]}\033[0m{type(D[ykk][i])}/{type(E[ytt][i])}-")
+                                         options_yyds=1
+
                         else:
-                            print(f"\033[31m{A}-{B},{C}options数据对比错误：{D[ykk][i]}/{E[ykk][i]}\033[0m{type(D[ykk][i])}/{type(E[ykk][i])}-")
-                            options_yyds=1
+                            # if ytt==len(E)-1:
+                            #     if tyyt==0:
+                            #         print(f"\033[31m{A}-{B},{C}options数据对比错误：{D}/{E}\033[0m")
+                            #         tyyt=tyyt+1
+                            continue
             else:
                 print(f"\033[31m{A}-{B},{C}数据字典数量不一致错误:{len(D)}/{len(E)}")
         print(f"\033[32m{A}-{B},{C}：options字典数据对比结束----------------------------------------------------------------------------------------------\033[0m")
@@ -884,12 +925,39 @@ class BetController(object):
                 else:
                     pass
         elif excel_report[3] == 2:
-            if excel_report[0] in ('总投注-混合串关-子查询(查询其注单号，包含的比赛',"未完成交易-登0-登3-会员-查看订单详情-子查询","盈亏详情-登0-登3-会员-查看订单详情-子查询"):
+            if excel_report[0] in ('总投注-混合串关-子查询(查询其注单号，包含的比赛)',"未完成交易-登0-登3-会员-查看订单详情-子查询","盈亏详情-登0-登3-会员-查看订单详情-子查询","报表-球类报表-订单查询（根据其盘口查询订单）"):
                 if excel_report[0]=='总投注-混合串关-子查询(查询其注单号，包含的比赛)':
                     sql = self.if_f(BBQ=yyds[0], all=all, num=num, all_order_no=all_order_no, begin=begin, end=end)
                     sort_num = self.my.query_data(sql, db_name='bfty_credit')
-                    sort_num =self.order_no_orderno(yyds_list=sort_num, excel_report=excel_report)
+                    num_list =self.order_no_orderno(yyds_list=sort_num, excel_report=excel_report)
                     mix_number.append("2-1")
+                elif excel_report[0]=='报表-球类报表-订单查询（根据其盘口查询订单）':
+                    sql01 = self.if_f(BBQ=yyds[0], all=all, num=num, all_order_no=all_order_no, begin=begin, end=end)
+                    sql02 = self.if_f(BBQ=yyds[1], all=all, num=num, all_order_no=all_order_no, begin=begin, end=end)
+                    print(sql01)
+                    print(sql02)
+                    sort_num01 = self.my.query_data(sql01, db_name='bfty_credit')
+                    sort_num02 = self.my.query_data(sql02, db_name='bfty_credit')
+                    # 单独获取options列表的数据，然后组装回去
+                    aa_list = []
+                    jkk_list = []
+                    for key, value in sport_report_list[0]['options'][0].items():
+                        aa_list.append(key)
+                    for jkk in sort_num02:
+                        jkk_dict = {}
+                        for jkk_2 in range(0, len(jkk)):
+                            if str(type(jkk[jkk_2])) in type_list:
+                                if jkk[jkk_2] == None:
+                                    new_jkk = None
+                                else:
+                                    new_jkk = str(jkk[jkk_2])
+                            else:
+                                new_jkk = float(jkk[jkk_2])
+                            jkk_dict[aa_list[jkk_2]] = new_jkk
+                        jkk_list.append(jkk_dict)
+                    self.order_no_new(yyds_list=jkk_list)
+                    mix_number.append("1-1")
+                    sort_num = sort_num01
                 elif excel_report[0] in ('未完成交易-登0-登3-会员-查看订单详情-子查询',"盈亏详情-登0-登3-会员-查看订单详情-子查询"):
                     sql01 = self.if_f(BBQ=yyds[0], all=all, num=num, all_order_no=all_order_no, begin=begin, end=end)
                     sql02 = self.if_f(BBQ=yyds[1], all=all, num=num, all_order_no=all_order_no, begin=begin, end=end)
@@ -940,8 +1008,8 @@ class BetController(object):
                             jkk_dict[aa_list[jkk_2]] = new_jkk
                         jkk_list.append(jkk_dict)
                     self.order_no_new(yyds_list=jkk_list)
-                mix_number.append("2-1")
-                sort_num = num_list
+                    mix_number.append("2-1")
+                    sort_num = num_list
                 #判断是SQL内容是否为空
                 if report_null == []:
                     self.null_report(sport_report_list=sport_report_list, sql_report_list=report_null, excel_report=excel_report)
@@ -969,82 +1037,83 @@ class BetController(object):
                             mix_number.append("2-1")
                             print(len(sport_report_list), sql_count)
                         elif len(yyds) == 2:
-                            sql01 = self.if_f(BBQ=yyds[0],all=all,num=num,all_order_no=all_order_no,begin=begin,end=end)
-                            sql02 = self.if_f(BBQ=yyds[1],all=all,num=num,all_order_no=all_order_no,begin=begin,end=end)
-                            sort_num01 = self.my.query_data(sql01, db_name='bfty_credit')
-                            sort_num02 = self.my.query_data(sql02, db_name='bfty_credit')
-                            sort_num_list.append(sort_num01)
-                            sort_num_list.append(sort_num02)
-                            num_list.append(sort_num_list)
-                            sort_num = num_list
-                            mix_number.append("2-2")
-                            sql_count = sql_count + 1
-                            print(len(sport_report_list), sql_count)
-                        elif excel_report[0] in ("报表-球类报表-订单查询（根据其盘口查询订单）"):
-                            yyrt_list=[]
-                            #获取球类的单注盘口的会员数据
-                            sql01 = self.if_f(BBQ=yyds[0], all=all, num=num, all_order_no=all_order_no,begin=begin, end=end)
-                            sort_num01 = self.my.query_data(sql01, db_name='bfty_credit')
-                            #获取球类的串关的会员数据
-                            sql02 = self.if_f(BBQ=yyds[1], all=all, num=num, all_order_no=all_order_no,begin=begin, end=end)
-                            sort_num02 = self.my.query_data(sql02, db_name='bfty_credit')
+                            if excel_report[0] not in("报表-球类报表-订单查询（根据其盘口查询订单）"):
+                                sql01 = self.if_f(BBQ=yyds[0],all=all,num=num,all_order_no=all_order_no,begin=begin,end=end)
+                                sql02 = self.if_f(BBQ=yyds[1],all=all,num=num,all_order_no=all_order_no,begin=begin,end=end)
+                                sort_num01 = self.my.query_data(sql01, db_name='bfty_credit')
+                                sort_num02 = self.my.query_data(sql02, db_name='bfty_credit')
+                                sort_num_list.append(sort_num01)
+                                sort_num_list.append(sort_num02)
+                                num_list.append(sort_num_list)
+                                sort_num = num_list
+                                mix_number.append("2-2")
+                                sql_count = sql_count + 1
+                                print(len(sport_report_list), sql_count)
+                            elif excel_report[0] in ("报表-球类报表-订单查询（根据其盘口查询订单）"):
+                                yyrt_list=[]
+                                #获取球类的单注盘口的会员数据
+                                sql01 = self.if_f(BBQ=yyds[0], all=all, num=num, all_order_no=all_order_no,begin=begin, end=end)
+                                sort_num01 = self.my.query_data(sql01, db_name='bfty_credit')
+                                #获取球类的串关的会员数据
+                                sql02 = self.if_f(BBQ=yyds[1], all=all, num=num, all_order_no=all_order_no,begin=begin, end=end)
+                                sort_num02 = self.my.query_data(sql02, db_name='bfty_credit')
 
-                            #for循环单注和串关的会员数据
-                            for member in (sort_num01,sort_num02):
-                                for num in range(0,len(member)):
-                                    tuple_new_01=[]
-                                    tuple_new=member[num]
-                                    tuple_new_01.append(tuple_new)
-                                    num_list.append(tuple_new_01)
-                                    # exit("调试一次就结束")
+                                #for循环单注和串关的会员数据
+                                for member in (sort_num01,sort_num02):
+                                    for num in range(0,len(member)):
+                                        tuple_new_01=[]
+                                        tuple_new=member[num]
+                                        tuple_new_01.append(tuple_new)
+                                        num_list.append(tuple_new_01)
+                                        # exit("调试一次就结束")
 
-                            # 遍历options里的键值对，方便写入组装数据
-                            aa_list = []
-                            for key, value in sport_report_list[0]['options'][0].items():
-                                aa_list.append(key)
-                            # print(aa_list)
-                            # 获取单注赛事选项
-                            sql03 = self.if_f(BBQ=yyds[2], all=all, num=num, all_order_no=all_order_no, begin=begin,end=end)
-                            sort_num03 = self.my.query_data(sql03, db_name='bfty_credit')
-                            # 单独获取options列表的数据，然后组装回去
-                            jkk_list = []
-                            jkk_dict = {}
-                            for single in sort_num03:
+                                # 遍历options里的键值对，方便写入组装数据
+                                aa_list = []
+                                for key, value in sport_report_list[0]['options'][0].items():
+                                    aa_list.append(key)
+                                # print(aa_list)
+                                # 获取单注赛事选项
+                                sql03 = self.if_f(BBQ=yyds[2], all=all, num=num, all_order_no=all_order_no, begin=begin,end=end)
+                                sort_num03 = self.my.query_data(sql03, db_name='bfty_credit')
+                                # 单独获取options列表的数据，然后组装回去
+                                jkk_list = []
                                 jkk_dict = {}
-                                for jkk in range(0, len(single)):
-                                    if str(type(single[jkk])) in type_list:
-                                        if single[jkk] == None:
-                                            new_jkk = None
+                                for single in sort_num03:
+                                    jkk_dict = {}
+                                    for jkk in range(0, len(single)):
+                                        if str(type(single[jkk])) in type_list:
+                                            if single[jkk] == None:
+                                                new_jkk = None
+                                            else:
+                                                new_jkk = str(single[jkk])
                                         else:
-                                            new_jkk = str(single[jkk])
-                                    else:
-                                        new_jkk = float(single[jkk])
-                                    jkk_dict[aa_list[jkk]] = new_jkk
-                                jkk_list.append(jkk_dict)
-                                #去比对数据订单后，然后相同的组装在一起，不同的分开组装
-                            self.order_no_new(yyds_list=jkk_list)
+                                            new_jkk = float(single[jkk])
+                                        jkk_dict[aa_list[jkk]] = new_jkk
+                                    jkk_list.append(jkk_dict)
+                                    #去比对数据订单后，然后相同的组装在一起，不同的分开组装
+                                self.order_no_new(yyds_list=jkk_list)
 
-                            #获取串关options的数据
-                            sql04 = self.if_f(BBQ=yyds[3], all=all, num=num, all_order_no=all_order_no, begin=begin,end=end)
-                            sort_num04 = self.my.query_data(sql04, db_name='bfty_credit')
-                            # 单独获取options列表的数据，然后组装回去
-                            jkk_list = []
-                            jkk_dict = {}
-                            for Duplex in sort_num04:
+                                #获取串关options的数据
+                                sql04 = self.if_f(BBQ=yyds[3], all=all, num=num, all_order_no=all_order_no, begin=begin,end=end)
+                                sort_num04 = self.my.query_data(sql04, db_name='bfty_credit')
+                                # 单独获取options列表的数据，然后组装回去
+                                jkk_list = []
                                 jkk_dict = {}
-                                for jkk in range(0, len(Duplex)):
-                                    if str(type(Duplex[jkk])) in type_list:
-                                        if Duplex[jkk] == None:
-                                            new_jkk = None
+                                for Duplex in sort_num04:
+                                    jkk_dict = {}
+                                    for jkk in range(0, len(Duplex)):
+                                        if str(type(Duplex[jkk])) in type_list:
+                                            if Duplex[jkk] == None:
+                                                new_jkk = None
+                                            else:
+                                                new_jkk = str(Duplex[jkk])
                                         else:
-                                            new_jkk = str(Duplex[jkk])
-                                    else:
-                                        new_jkk = float(Duplex[jkk])
-                                    jkk_dict[aa_list[jkk]] = new_jkk
-                                jkk_list.append(jkk_dict)
-                                # 去比对数据订单后，然后相同的组装在一起，不同的分开组装
-                            self.order_no_new(yyds_list=jkk_list)
-                            print(len(num_list),len(options_list),all)
+                                            new_jkk = float(Duplex[jkk])
+                                        jkk_dict[aa_list[jkk]] = new_jkk
+                                    jkk_list.append(jkk_dict)
+                                    # 去比对数据订单后，然后相同的组装在一起，不同的分开组装
+                                self.order_no_new(yyds_list=jkk_list)
+                                print(len(num_list),len(options_list),all)
                     mix_number.append("2-1")
                     sort_num= num_list
 
@@ -1124,20 +1193,31 @@ class BetController(object):
         if mix[0]==str('1-1'):
             print(sort_num[0])
             # print(sort_num)
-            # print(sort_num[0])
+            print(len(sort_num), len(options_list))
             for i in range(0, len(sort_num)):
                 sql_dict = {}
                 for j in range(0, len(sort_num[i])):
                     if str(type(sort_num[i][j])) in type_list:
                         if sort_num[i][j]=="odds":
-                            yy_num =self.sr.credit_odds(order_no=sort_num[i][j+1],bet_type="",AB_list=AB_list,dict=dict)
-                        elif sql_name_list[j]=="oddType":
-                            yy_num = self.sr.total_odds(order_no=sort_num[i][j+2],number='str')
+                            if excel_report[0] == '报表-球类报表-订单查询（根据其盘口查询订单）':
+                                yy_num =float(self.sr.credit_odds(order_no=sort_num[i][35], bet_type="", AB_list=AB_list,dict=dict))
+                            else:
+                                yy_num =self.sr.credit_odds(order_no=sort_num[i][j+1],bet_type="",AB_list=AB_list,dict=dict)
+                        elif sort_num[i][j]=="odds_type":
+                            if excel_report[0] == '报表-球类报表-订单查询（根据其盘口查询订单）':
+                                yy_num = str(self.sr.total_odds(order_no=sort_num[i][35], number=' '))
+                            else:
+                                yy_num = self.sr.total_odds(order_no=sort_num[i][j+2],number='str')
+                        elif sort_num[i][j]=="options":
+                            yy_num = options_list[i]
                         elif sql_name_list[j] in int_list:
                             if sql_name_list[j]=="levelId":
                                 yy_num = int(sort_num[i][j])+1
                             else:
-                                yy_num = int(sort_num[i][j])
+                                if excel_report[0] == '报表-球类报表-订单查询（根据其盘口查询订单）':
+                                    yy_num=(sort_num[i][j])
+                                else:
+                                    yy_num = int(sort_num[i][j])
                         elif sort_num[i][j] == "公司总计":
                             if excel_report[0] in options_report_list:
                                 yy_num = self.wt.Company_winlose(agent_id='',member_id=sort_num[i][1],sportId='',marketId='',tournamentId='',matchId='',login_account=Dl_list[pkk],begin=begin,end=end,Duplex='')
@@ -1183,10 +1263,10 @@ class BetController(object):
                                     else:
                                         yy_num = int(sort_num[i][j][g])
                             elif sort_num[i][j][g]=="odds":
-                                if excel_report[0]=='报表-球类报表-订单查询（根据其盘口查询订单）':
-                                    yy_num =self.sr.credit_odds(order_no=sort_num[i][j][35],bet_type="",AB_list=AB_list,dict=dict)
-                                elif excel_report[0]=='未完成交易-登0-登3-会员-查看订单详情-子查询':
+                                if excel_report[0]=='未完成交易-登0-登3-会员-查看订单详情-子查询':
                                         yy_num =float(self.sr.credit_odds(order_no=sort_num[i][j][-3], bet_type="",AB_list=AB_list, dict=dict))
+                                elif excel_report[0]=='盈亏详情-登0-登3-会员-查看订单详情-子查询':
+                                        yy_num =float(self.sr.credit_odds(order_no=sort_num[i][j][-23], bet_type="",AB_list=AB_list, dict=dict))
                             elif sort_num[i][j][g] == "options":
                                 if excel_report[0]=="未完成交易-登0-登3-会员-查看订单详情-子查询":
                                     if sort_num[i][j][-3] in orderNo_list:
@@ -1194,10 +1274,10 @@ class BetController(object):
                                 else:
                                     yy_num = options_list[i]
                             elif sort_num[i][j][g] == "odds_type":
-                                if excel_report[0] == '报表-球类报表-订单查询（根据其盘口查询订单）':
-                                    yy_num =str(self.sr.total_odds(order_no=sort_num[i][j][35], number=' '))
-                                elif excel_report[0] == '未完成交易-登0-登3-会员-查看订单详情-子查询':
+                                if excel_report[0] == '未完成交易-登0-登3-会员-查看订单详情-子查询':
                                     yy_num = self.sr.total_odds(order_no=sort_num[i][j][-3], number=' ')
+                                elif excel_report[0] == '盈亏详情-登0-登3-会员-查看订单详情-子查询':
+                                    yy_num = self.sr.total_odds(order_no=sort_num[i][j][-23], number=' ')
                             elif sort_num[i][j][g] == "公司总计":
                                 if excel_report[0] in interface_list:
                                     yy_num = self.wt.Company_winlose(agent_id=sort_num[i][j][1], member_id='', sportId='',marketId='', tournamentId='', matchId='',login_account=Dl_list[pkk], begin=begin, end=end,Duplex='')
@@ -1253,6 +1333,12 @@ class BetController(object):
                                         yy_num = self.wt.total_commission(agent_id='', member_id='', sportId='',marketId='', tournamentId=sort_num[i][j][l][-2],matchId='', login_account=Dl_list[pkk],begin=begin, end=end,Duplex='')
                                     elif excel_report[0] == "报表-赛事盈亏-主查询":
                                         yy_num = self.wt.total_commission(agent_id='', member_id='', sportId='',marketId='', tournamentId='',matchId=str(sort_num[i][j][l][-6]),login_account=Dl_list[pkk], begin=begin,end=end,Duplex='')
+                                # elif sort_num[i][j][l][g] == "odds":
+                                #     if excel_report[0] == '报表-球类报表-订单查询（根据其盘口查询订单）':
+                                #         yy_num = self.sr.credit_odds(order_no=sort_num[i][j][35], bet_type="",AB_list=AB_list, dict=dict)
+                                # elif sort_num[i][j][l][g] == "odds_type":
+                                #     if excel_report[0] == '报表-球类报表-订单查询（根据其盘口查询订单）':
+                                #         yy_num = str(self.sr.total_odds(order_no=sort_num[i][j][35], number=' '))
                                 elif type(sort_num[i][j][l][g]) == type(None):
                                     yy_num = sort_num[i][j][l][g]
                                 else:
@@ -1385,7 +1471,7 @@ if __name__ == "__main__":
 
         # 调用本地Exce读取数据
         print_num=0
-        token='eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjE1MzE1MTYwMTc4NDc4Njk0NDIiLCJleHAiOjE2NTc1MjQwMjAsInVzZXJuYW1lIjoiZDAifQ.QVmqJ8Nhs-bwpL3WueOB1BTLrRF4IMOKR7ua395reAo'
+        token='eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjE1MzE1MTYwMTc4NDc4Njk0NDIiLCJleHAiOjE2NTc2MjYyMTQsInVzZXJuYW1lIjoiZDAifQ.lmNj86Nt_GNtjWAW-yARo2qzRdYO94QXZuWmJrwzj-c'
         ccds=cc.reading_Excel(excel=excel, save_excel=save_excel,begin="2022-07-01",end="2022-07-07", URL=URL)
 
 
