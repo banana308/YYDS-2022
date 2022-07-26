@@ -787,6 +787,7 @@ class water_ammount(BetController):
                 sql02 = f"SELECT {water_SQL_list[num_new]} as '总佣金' FROM o_account_order as c WHERE {proxy_id_list[num]}='{agent_id}' AND c.award_time>='{begin}' AND c.award_time<='{end}' AND c.status=2"
                 sum02 = self.my.query_data(sql02, db_name='bfty_credit')
                 sum02 = float(sum02[0][0])
+                print(sum02)
                 sum02 = self.water_intercept(number=sum02)
                 print(f"\033[34m{time_value}-登{num}查询-登{num_new}-{agent_id}的总佣金为{sum02}\033[0m")
             elif total_list[0]=='member_id':
@@ -801,8 +802,9 @@ class water_ammount(BetController):
                 sum02 = self.my.query_data(sql02, db_name='bfty_credit')
                 username = (sum02[0][1])
                 sum02 = float(sum02[0][0])
+                print(sum02)
                 sum02 = self.water_intercept(number=sum02)
-                print(f"\033[34m{time_value}-登{num}查询-会员{username}-{member_id}的总佣金为{sum02}\033[0m")
+                print(f"\033[34m{time_value}-登{num-1}查询-会员{username}-{member_id}的总佣金为{sum02}\033[0m")
             elif total_list[0]=='sportId':
                 # 根据球类ID，进行参数替换：
                 if sportId=='串关':
@@ -1024,7 +1026,7 @@ class water_ammount(BetController):
                 marketId = (sum02[0][1])
                 sum02=float(sum02[0][0])
                 print(f"\033[32m{time_value}-登{num}查询{username}-{marketId}的总公司输赢为{sum02}\033[0m")
-        # print(sql02)
+        print(sql02)
         return sum02
 
     #查询首页详细资料

@@ -18,8 +18,7 @@ class MysqlFunc(object):
     ROBOT_LIBRARY_SCOPE = 'GLOBAL'
 
     def __init__(self, mysql_info, *args, **kwargs):
-        self.connect = pymysql.connect(host=mysql_info[0], user=mysql_info[1], password=mysql_info[2],
-                                       database='bfty_credit', charset='utf8', port=int(mysql_info[3]), autocommit=True)
+        self.connect = pymysql.connect(host=mysql_info[0], user=mysql_info[1], password=mysql_info[2], database='bfty_credit', charset='utf8', port=int(mysql_info[3]), autocommit=True)
         self.cursor = self.connect.cursor()
 
     # 关闭数据库
